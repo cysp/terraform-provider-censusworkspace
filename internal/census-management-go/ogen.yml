@@ -5,14 +5,14 @@ generator:
   features:
     enable:
       - "paths/client"
-      - "paths/server"
-      - "server/response/validation"
-      - "client/request/validation"
       - "client/security/reentrant"
     disable:
-      - "debug/example_tests"
-      - "ogen/otel"
-      - "ogen/unimplemented"
+      - "paths/server"
       - "webhooks/client"
       - "webhooks/server"
-  convenient_errors: "on"
+      - "client/request/validation"
+      - "server/response/validation"
+      - "ogen/otel"
+      - "ogen/unimplemented"
+      - "debug/example_tests"
+  convenient_errors: "off"
