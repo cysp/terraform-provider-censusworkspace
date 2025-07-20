@@ -29,6 +29,14 @@ component_management:
       name: provider
       paths:
         - internal/provider/**
+    - component_id: terraform-plugin-framework-reflection
+      name: terraform-plugin-framework-reflection
+      paths:
+        - internal/terraform-plugin-framework-reflection/**
+    - component_id: terraform-plugin-framework-typed
+      name: terraform-plugin-framework-typed
+      paths:
+        - internal/terraform-plugin-framework-typed/**
 
 ignore:
   - "main.go"

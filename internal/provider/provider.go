@@ -145,6 +145,7 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 
 	censusManagementClient, err := cm.NewClient(
 		baseURL,
+		cm.NewWorkspaceApiKeySecuritySource(workspaceApiKey),
 		cm.WithClient(NewHttpClientWithUserAgent(retryableClient.StandardClient(), "terraform-provider-censusworkspace/"+p.version)),
 	)
 	if err != nil {
@@ -169,5 +170,7 @@ func (p *Provider) DataSources(_ context.Context) []func() datasource.DataSource
 }
 
 func (p *Provider) Resources(_ context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+	return []func() resource.Resource{
+		NewSourceResource,
+	}
 }

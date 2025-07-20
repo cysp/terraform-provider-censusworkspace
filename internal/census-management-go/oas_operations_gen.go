@@ -5,4 +5,9 @@ package censusmanagement
 // OperationName is the ogen operation name
 type OperationName = string
 
-const ()
+const (
+	CreateSourceOperation OperationName = "CreateSource"
+	DeleteSourceOperation OperationName = "DeleteSource"
+	GetSourceOperation    OperationName = "GetSource"
+	UpdateSourceOperation OperationName = "UpdateSource"
+)
