@@ -25,6 +25,13 @@ component_management:
       statuses:
         - type: project
           informational: true
+    - component_id: census-management-testserver
+      name: census-management-testserver
+      paths:
+        - internal/census-management-testserver/**
+      statuses:
+        - type: project
+          informational: true
     - component_id: provider
       name: provider
       paths:
