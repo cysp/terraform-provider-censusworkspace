@@ -1,11 +1,11 @@
-package censusmanagementtestserver
+package testserver
 
 import (
 	"context"
 	"errors"
 	"net/http"
 
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/server"
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
 type NotFoundError struct {

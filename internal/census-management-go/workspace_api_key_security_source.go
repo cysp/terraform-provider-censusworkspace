@@ -1,4 +1,4 @@
-package client
+package censusmanagement
 
 import (
 	"context"

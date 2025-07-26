@@ -1,12 +1,12 @@
 //nolint:dupl
-package censusmanagementtestserver
+package testserver
 
 import (
 	"context"
 	"errors"
 	"net/http"
 
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/server"
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
 func (h *handler) CreateSource(ctx context.Context, req *cm.CreateSourceData) (*cm.SourceResponseStatusCode, error) {

@@ -1,8 +1,10 @@
 package censusmanagement
 
+//go:generate go run github.com/ogen-go/ogen/cmd/ogen -target . -package censusmanagement -clean openapi.yml
+
 const (
-	// DefaultBaseURL is the default base URL of the Census API.
-	DefaultBaseURL = "https://app.getcensus.com"
+	// DefaultServerURL is the default URL of the server.
+	DefaultServerURL = "https://app.getcensus.com"
 
 	// DefaultUserAgent is the default user agent.
 	DefaultUserAgent = "census-management-go/0.1"

@@ -1,7 +1,7 @@
-package censusmanagementtestserver
+package testserver
 
 import (
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/server"
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
 func NewSourceFromCreateSourceData(ID int64, data cm.CreateSourceData) cm.SourceData {

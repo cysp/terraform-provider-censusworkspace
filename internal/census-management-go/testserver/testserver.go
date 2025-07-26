@@ -1,10 +1,10 @@
-package censusmanagementtestserver
+package testserver
 
 import (
 	"net/http/httptest"
 	"sync"
 
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/server"
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
 const (

@@ -1,11 +1,11 @@
-package censusmanagementtestserver
+package testserver
 
 import (
-	cms "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/server"
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
 type handler struct {
 	ts *CensusManagementTestServer
 }
 
-var _ cms.Handler = (*handler)(nil)
+var _ cm.Handler = (*handler)(nil)
