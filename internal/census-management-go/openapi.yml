@@ -46,10 +46,9 @@ components:
           nullable: true
         credentials:
           description: Credentials that should be associated with this source (e.g. hostname, port)
-          # additionalProperties: true
       required:
         - label
-    Source:
+    SourceData:
       type: object
       properties:
         id:
@@ -91,7 +90,7 @@ components:
       scheme: bearer
       bearerFormat: Census Workspace API Key
   responses:
-    status:
+    statusResponse:
       description: Status response
       content:
         application/json:
@@ -100,26 +99,24 @@ components:
             properties:
               status:
                 $ref: "#/components/schemas/ResponseStatus"
-  #   no-content:
-  #     description: No content
-  # unauthorized:
-  #   description: Unauthorized
-  # content:
-  #   application/json:
-  #         schema:
-  #           $ref: "#/components/schemas/Error"
-  #       application/vnd.contentful.management.v1+json:
-  #         schema:
-  #           $ref: "#/components/schemas/Error"
-  # error:
-  #   description: An error
-  #     content:
-  #       application/json:
-  #         schema:
-  #           $ref: "#/components/schemas/Error"
-  #       application/vnd.contentful.management.v1+json:
-  #         schema:
-  #           $ref: "#/components/schemas/Error"
+              message:
+                type: string
+            required:
+              - status
+    sourceResponse:
+      description: A source
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: "#/components/schemas/ResponseStatus"
+              data:
+                $ref: "#/components/schemas/SourceData"
+            required:
+              - status
+              - data
 security:
   - workspaceApiKey: []
 paths:
@@ -135,20 +132,9 @@ paths:
               $ref: "#/components/schemas/CreateSourceData"
       responses:
         2XX:
-          description: A source
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    $ref: "#/components/schemas/ResponseStatus"
-                  data:
-                    $ref: "#/components/schemas/Source"
-        # 401:
-        #   $ref: "#/components/responses/unauthorized"
-        # default:
-        #   $ref: "#/components/responses/error"
+          $ref: "#/components/responses/sourceResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
   /api/v1/sources/{source_id}:
     parameters:
       - $ref: "#/components/parameters/source_id"
@@ -156,21 +142,10 @@ paths:
       operationId: getSource
       summary: Fetch source
       responses:
-        200:
-          description: A source
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    $ref: "#/components/schemas/ResponseStatus"
-                  data:
-                    $ref: "#/components/schemas/Source"
-        # 401:
-        #   $ref: "#/components/responses/unauthorized"
-        # default:
-        #   $ref: "#/components/responses/error"
+        2XX:
+          $ref: "#/components/responses/sourceResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
     put:
       operationId: updateSource
       summary: Update source
@@ -182,27 +157,14 @@ paths:
               $ref: "#/components/schemas/UpdateSourceData"
       responses:
         2XX:
-          description: A source
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    $ref: "#/components/schemas/ResponseStatus"
-                  data:
-                    $ref: "#/components/schemas/Source"
-        # 401:
-        #   $ref: "#/components/responses/unauthorized"
-        # default:
-        #   $ref: "#/components/responses/error"
+          $ref: "#/components/responses/sourceResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
     delete:
       operationId: deleteSource
       summary: Delete source
       responses:
         2XX:
-          $ref: "#/components/responses/status"
-        # 401:
-        #   $ref: "#/components/responses/unauthorized"
-        # default:
-        #   $ref: "#/components/responses/error"
+          $ref: "#/components/responses/statusResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"

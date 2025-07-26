@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/client"
 	"github.com/cysp/terraform-provider-censusworkspace/internal/provider/util"
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"

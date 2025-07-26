@@ -3,7 +3,7 @@ package provider
 import (
 	"context"
 
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/client"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
@@ -74,14 +74,12 @@ func (r *sourceResource) Create(ctx context.Context, req resource.CreateRequest,
 		"err":      err,
 	})
 
-	responseSource, responseSourceOk := response.Response.Data.Get()
-
-	if !responseSourceOk {
-		resp.Diagnostics.AddError("Failed to create source", "")
+	if response == nil {
+		resp.Diagnostics.AddError("Failed to create source", err.Error())
 		return
 	}
 
-	responseModel, responseModelDiags := NewSourceResourceModelFromResponse(ctx, responseSource)
+	responseModel, responseModelDiags := NewSourceResourceModelFromResponse(ctx, response.Response.Data)
 	resp.Diagnostics.Append(responseModelDiags...)
 
 	data = responseModel
@@ -114,14 +112,12 @@ func (r *sourceResource) Read(ctx context.Context, req resource.ReadRequest, res
 		"err":      err,
 	})
 
-	responseSource, responseSourceOk := response.Data.Get()
-
-	if !responseSourceOk {
+	if response == nil {
 		resp.Diagnostics.AddError("Failed to read source", "")
 		return
 	}
 
-	responseModel, responseModelDiags := NewSourceResourceModelFromResponse(ctx, responseSource)
+	responseModel, responseModelDiags := NewSourceResourceModelFromResponse(ctx, response.Response.Data)
 	resp.Diagnostics.Append(responseModelDiags...)
 
 	data = responseModel
@@ -162,14 +158,12 @@ func (r *sourceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		"err":      err,
 	})
 
-	responseSource, responseSourceOk := response.Response.Data.Get()
-
-	if !responseSourceOk {
+	if response == nil {
 		resp.Diagnostics.AddError("Failed to update source", "")
 		return
 	}
 
-	responseModel, responseModelDiags := NewSourceResourceModelFromResponse(ctx, responseSource)
+	responseModel, responseModelDiags := NewSourceResourceModelFromResponse(ctx, response.Response.Data)
 	resp.Diagnostics.Append(responseModelDiags...)
 
 	data = responseModel
@@ -198,10 +192,8 @@ func (r *sourceResource) Delete(ctx context.Context, req resource.DeleteRequest,
 		"err":      err,
 	})
 
-	responseSource, responseSourceOk := response.Response.Status.Get()
-
-	if !responseSourceOk || responseSource != cm.ResponseStatusSuccess {
-		resp.Diagnostics.AddError("Failed to delete source", "")
+	if response == nil || response.Response.Status != cm.ResponseStatusSuccess {
+		resp.Diagnostics.AddError("Failed to delete source", response.Response.Message.Or(err.Error()))
 		return
 	}
 }

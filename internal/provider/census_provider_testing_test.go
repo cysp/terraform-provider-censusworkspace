@@ -5,23 +5,23 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cysp/terraform-provider-census/internal/provider"
+	"github.com/cysp/terraform-provider-censusworkspace/internal/provider"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func CensusProviderMockedResourceTest(t *testing.T, testserver *httptest.Server, testcase resource.TestCase) {
 	t.Helper()
 
-	contentfulProviderMockableResourceTest(t, testserver, true, testcase)
+	censusProviderMockableResourceTest(t, testserver, true, testcase)
 }
 
 func CensusProviderMockableResourceTest(t *testing.T, testserver *httptest.Server, testcase resource.TestCase) {
 	t.Helper()
 
-	contentfulProviderMockableResourceTest(t, testserver, false, testcase)
+	censusProviderMockableResourceTest(t, testserver, false, testcase)
 }
 
-func contentfulProviderMockableResourceTest(t *testing.T, testserver *httptest.Server, alwaysMock bool, testcase resource.TestCase) {
+func censusProviderMockableResourceTest(t *testing.T, testserver *httptest.Server, alwaysMock bool, testcase resource.TestCase) {
 	t.Helper()
 
 	switch {

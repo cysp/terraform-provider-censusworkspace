@@ -3,7 +3,7 @@ package provider
 import (
 	"context"
 
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/client"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 

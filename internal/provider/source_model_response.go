@@ -3,12 +3,12 @@ package provider
 import (
 	"context"
 
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/client"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func NewSourceResourceModelFromResponse(_ context.Context, response cm.Source) (SourceModel, diag.Diagnostics) {
+func NewSourceResourceModelFromResponse(_ context.Context, response cm.SourceData) (SourceModel, diag.Diagnostics) {
 	model := SourceModel{
 		ID:    types.Int64Value(response.ID),
 		Type:  types.StringValue(response.Type),
