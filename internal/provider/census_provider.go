@@ -67,7 +67,7 @@ func WithHTTPClient(httpClient *http.Client) Option {
 	}
 }
 
-func WithAccessToken(apiKey string) Option {
+func WithApiKey(apiKey string) Option {
 	return func(p *CensusProvider) {
 		p.apiKey = apiKey
 	}

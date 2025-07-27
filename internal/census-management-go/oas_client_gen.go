@@ -192,7 +192,7 @@ func (c *Client) sendDeleteSource(ctx context.Context, params DeleteSourceParams
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.Int64ToString(params.SourceID))
+			return e.EncodeValue(conv.StringToString(params.SourceID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -279,7 +279,7 @@ func (c *Client) sendGetSource(ctx context.Context, params GetSourceParams) (res
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.Int64ToString(params.SourceID))
+			return e.EncodeValue(conv.StringToString(params.SourceID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}
@@ -366,7 +366,7 @@ func (c *Client) sendUpdateSource(ctx context.Context, request *UpdateSourceData
 			Explode: false,
 		})
 		if err := func() error {
-			return e.EncodeValue(conv.Int64ToString(params.SourceID))
+			return e.EncodeValue(conv.StringToString(params.SourceID))
 		}(); err != nil {
 			return res, errors.Wrap(err, "encode path")
 		}

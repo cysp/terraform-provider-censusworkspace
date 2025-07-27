@@ -7,21 +7,23 @@ import (
 
 	"github.com/cysp/terraform-provider-censusworkspace/internal/provider"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
-func CensusProviderMockedResourceTest(t *testing.T, testserver *httptest.Server, testcase resource.TestCase) {
+func CensusProviderMockedResourceTest(t *testing.T, server *cm.Server, testcase resource.TestCase) {
 	t.Helper()
 
-	censusProviderMockableResourceTest(t, testserver, true, testcase)
+	censusProviderMockableResourceTest(t, server, true, testcase)
 }
 
-func CensusProviderMockableResourceTest(t *testing.T, testserver *httptest.Server, testcase resource.TestCase) {
+func CensusProviderMockableResourceTest(t *testing.T, server *cm.Server, testcase resource.TestCase) {
 	t.Helper()
 
-	censusProviderMockableResourceTest(t, testserver, false, testcase)
+	censusProviderMockableResourceTest(t, server, false, testcase)
 }
 
-func censusProviderMockableResourceTest(t *testing.T, testserver *httptest.Server, alwaysMock bool, testcase resource.TestCase) {
+func censusProviderMockableResourceTest(t *testing.T, server *cm.Server, alwaysMock bool, testcase resource.TestCase) {
 	t.Helper()
 
 	switch {
@@ -30,7 +32,13 @@ func censusProviderMockableResourceTest(t *testing.T, testserver *httptest.Serve
 			t.Fatal("tc.ProtoV6ProviderFactories must be nil")
 		}
 
-		testcase.ProtoV6ProviderFactories = makeTestAccProtoV6ProviderFactories(CensusProviderOptionsWithHTTPTestServer(testserver)...)
+		var hts *httptest.Server
+		if server != nil {
+			hts = httptest.NewServer(server)
+			defer hts.Close()
+		}
+
+		testcase.ProtoV6ProviderFactories = makeTestAccProtoV6ProviderFactories(CensusProviderOptionsWithHTTPTestServer(hts)...)
 		resource.Test(t, testcase)
 
 	default:
@@ -50,6 +58,6 @@ func CensusProviderOptionsWithHTTPTestServer(testserver *httptest.Server) []prov
 	return []provider.Option{
 		provider.WithCensusURL(testserver.URL),
 		provider.WithHTTPClient(testserver.Client()),
-		provider.WithAccessToken("12345"),
+		provider.WithApiKey("12345"),
 	}
 }

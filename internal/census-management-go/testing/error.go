@@ -1,4 +1,4 @@
-package testserver
+package testing
 
 import (
 	"context"
@@ -8,21 +8,15 @@ import (
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
-type NotFoundError struct {
-}
+var errNotFound = errors.New("not found")
 
-func (e NotFoundError) Error() string {
-	return "not found"
-}
-
-func (h *handler) NewError(ctx context.Context, err error) *cm.StatusResponseStatusCode {
-	var notFoundError NotFoundError
-	if errors.As(err, &notFoundError) {
+func (h *Handler) NewError(ctx context.Context, err error) *cm.StatusResponseStatusCode {
+	if err == errNotFound {
 		return &cm.StatusResponseStatusCode{
 			StatusCode: http.StatusNotFound,
 			Response: cm.StatusResponse{
 				Status:  cm.ResponseStatusNotFound,
-				Message: cm.NewOptString(notFoundError.Error()),
+				Message: cm.NewOptString(err.Error()),
 			},
 		}
 	}

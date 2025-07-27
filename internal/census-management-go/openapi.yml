@@ -11,8 +11,7 @@ components:
       name: source_id
       required: true
       schema:
-        type: integer
-        format: int64
+        type: string
   schemas:
     ResponseStatus:
       type: string

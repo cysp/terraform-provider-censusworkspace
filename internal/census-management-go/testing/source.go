@@ -1,4 +1,4 @@
-package testserver
+package testing
 
 import (
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
@@ -9,12 +9,12 @@ func NewSourceFromCreateSourceData(ID int64, data cm.CreateSourceData) cm.Source
 		ID: ID,
 	}
 
-	UpdateSourceFromCreateSourceData(&source, data)
+	UpdateSourceWithCreateSourceData(&source, data)
 
 	return source
 }
 
-func UpdateSourceFromCreateSourceData(source *cm.SourceData, data cm.CreateSourceData) {
+func UpdateSourceWithCreateSourceData(source *cm.SourceData, data cm.CreateSourceData) {
 	source.Name = data.Type
 	source.Type = data.Type
 
@@ -27,7 +27,7 @@ func UpdateSourceFromCreateSourceData(source *cm.SourceData, data cm.CreateSourc
 	source.ConnectionDetails = data.Credentials
 }
 
-func UpdateSourceFromUpdateSourceData(source *cm.SourceData, data cm.UpdateSourceData) {
+func UpdateSourceWithUpdateSourceData(source *cm.SourceData, data cm.UpdateSourceData) {
 	if label, labelOk := data.Label.Get(); labelOk {
 		source.Label.SetTo(label)
 	} else {

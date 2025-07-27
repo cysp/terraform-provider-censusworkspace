@@ -101,7 +101,7 @@ func TestProtocol6ProviderServerConfigure(t *testing.T) {
 		},
 		"env: url,api_key": {
 			env: map[string]string{
-				"CENSUS_BASE_URL":                     "https://app-test.census.com",
+				"CENSUS_BASE_URL":          "https://app-test.census.com",
 				"CENSUS_WORKSPACE_API_KEY": "CFPAT-12345",
 			},
 			expectedSuccess: true,

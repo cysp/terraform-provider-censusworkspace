@@ -2,6 +2,8 @@ package provider
 
 import (
 	"context"
+	"errors"
+	"net/http"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -41,7 +43,7 @@ func (r *sourceResource) Configure(_ context.Context, req resource.ConfigureRequ
 func (r *sourceResource) IdentitySchema(_ context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
 	resp.IdentitySchema = identityschema.Schema{
 		Attributes: map[string]identityschema.Attribute{
-			"id": identityschema.StringAttribute{RequiredForImport: true},
+			"id": identityschema.Int64Attribute{RequiredForImport: true},
 		},
 	}
 }
@@ -101,7 +103,7 @@ func (r *sourceResource) Read(ctx context.Context, req resource.ReadRequest, res
 	}
 
 	params := cm.GetSourceParams{
-		SourceID: data.ID.ValueInt64(),
+		SourceID: data.ID.ValueString(),
 	}
 
 	response, err := r.providerData.client.GetSource(ctx, params)
@@ -113,8 +115,16 @@ func (r *sourceResource) Read(ctx context.Context, req resource.ReadRequest, res
 	})
 
 	if response == nil {
-		resp.Diagnostics.AddError("Failed to read source", "")
-		return
+		var srsc *cm.StatusResponseStatusCode
+		if errors.As(err, &srsc) {
+			if srsc.StatusCode == http.StatusNotFound {
+				resp.Diagnostics.AddWarning("Failed to read source", err.Error())
+				resp.State.RemoveResource(ctx)
+				return
+			}
+		}
+
+		resp.Diagnostics.AddError("Failed to read source", err.Error())
 	}
 
 	responseModel, responseModelDiags := NewSourceResourceModelFromResponse(ctx, response.Response.Data)
@@ -139,7 +149,7 @@ func (r *sourceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 
 	params := cm.UpdateSourceParams{
-		SourceID: data.ID.ValueInt64(),
+		SourceID: data.ID.ValueString(),
 	}
 
 	request, requestDiags := data.ToUpdateSourceData(ctx)
@@ -181,7 +191,7 @@ func (r *sourceResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	}
 
 	params := cm.DeleteSourceParams{
-		SourceID: data.ID.ValueInt64(),
+		SourceID: data.ID.ValueString(),
 	}
 
 	response, err := r.providerData.client.DeleteSource(ctx, params)

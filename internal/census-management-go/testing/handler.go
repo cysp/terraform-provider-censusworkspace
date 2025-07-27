@@ -8,12 +8,9 @@ import (
 
 type Handler struct {
 	mu sync.Mutex
+
+	Sources      map[string]*cm.SourceData
+	sourceIDLast int64
 }
 
 var _ cm.Handler = (*Handler)(nil)
-
-func NewCensusManagementHandler() *Handler {
-	return &Handler{
-		mu: sync.Mutex{},
-	}
-}

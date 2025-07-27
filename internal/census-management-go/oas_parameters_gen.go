@@ -17,7 +17,7 @@ import (
 
 // DeleteSourceParams is parameters of deleteSource operation.
 type DeleteSourceParams struct {
-	SourceID int64
+	SourceID string
 }
 
 func unpackDeleteSourceParams(packed middleware.Parameters) (params DeleteSourceParams) {
@@ -26,7 +26,7 @@ func unpackDeleteSourceParams(packed middleware.Parameters) (params DeleteSource
 			Name: "source_id",
 			In:   "path",
 		}
-		params.SourceID = packed[key].(int64)
+		params.SourceID = packed[key].(string)
 	}
 	return params
 }
@@ -56,7 +56,7 @@ func decodeDeleteSourceParams(args [1]string, argsEscaped bool, r *http.Request)
 					return err
 				}
 
-				c, err := conv.ToInt64(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
@@ -82,7 +82,7 @@ func decodeDeleteSourceParams(args [1]string, argsEscaped bool, r *http.Request)
 
 // GetSourceParams is parameters of getSource operation.
 type GetSourceParams struct {
-	SourceID int64
+	SourceID string
 }
 
 func unpackGetSourceParams(packed middleware.Parameters) (params GetSourceParams) {
@@ -91,7 +91,7 @@ func unpackGetSourceParams(packed middleware.Parameters) (params GetSourceParams
 			Name: "source_id",
 			In:   "path",
 		}
-		params.SourceID = packed[key].(int64)
+		params.SourceID = packed[key].(string)
 	}
 	return params
 }
@@ -121,7 +121,7 @@ func decodeGetSourceParams(args [1]string, argsEscaped bool, r *http.Request) (p
 					return err
 				}
 
-				c, err := conv.ToInt64(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
@@ -147,7 +147,7 @@ func decodeGetSourceParams(args [1]string, argsEscaped bool, r *http.Request) (p
 
 // UpdateSourceParams is parameters of updateSource operation.
 type UpdateSourceParams struct {
-	SourceID int64
+	SourceID string
 }
 
 func unpackUpdateSourceParams(packed middleware.Parameters) (params UpdateSourceParams) {
@@ -156,7 +156,7 @@ func unpackUpdateSourceParams(packed middleware.Parameters) (params UpdateSource
 			Name: "source_id",
 			In:   "path",
 		}
-		params.SourceID = packed[key].(int64)
+		params.SourceID = packed[key].(string)
 	}
 	return params
 }
@@ -186,7 +186,7 @@ func decodeUpdateSourceParams(args [1]string, argsEscaped bool, r *http.Request)
 					return err
 				}
 
-				c, err := conv.ToInt64(val)
+				c, err := conv.ToString(val)
 				if err != nil {
 					return err
 				}
