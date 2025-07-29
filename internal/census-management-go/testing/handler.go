@@ -14,3 +14,11 @@ type Handler struct {
 }
 
 var _ cm.Handler = (*Handler)(nil)
+
+func NewCensusManagementHandler() *Handler {
+	return &Handler{
+		mu: sync.Mutex{},
+
+		Sources: make(map[string]*cm.SourceData),
+	}
+}

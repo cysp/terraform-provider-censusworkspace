@@ -1,7 +1,7 @@
 package testing
 
 import (
-	"sync"
+	"net/http"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
@@ -13,16 +13,12 @@ type Server struct {
 	sec *SecurityHandler
 }
 
+var _ http.Handler = (*Server)(nil)
+
 func NewCensusManagementServer() (*Server, error) {
-	h := &Handler{
-		mu: sync.Mutex{},
+	h := NewCensusManagementHandler()
 
-		Sources: make(map[string]*cm.SourceData),
-	}
-
-	sec := &SecurityHandler{
-		mu: sync.Mutex{},
-	}
+	sec := NewCensusManagementSecurityHandler()
 
 	server, err := cm.NewServer(h, sec)
 	if err != nil {
@@ -36,14 +32,14 @@ func NewCensusManagementServer() (*Server, error) {
 	}, nil
 }
 
-func (s *Server) Server() *cm.Server {
-	return s.server
-}
-
 func (s *Server) Handler() *Handler {
 	return s.h
 }
 
 func (s *Server) SecurityHandler() *SecurityHandler {
 	return s.sec
+}
+
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.server.ServeHTTP(w, r)
 }

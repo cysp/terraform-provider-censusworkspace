@@ -1,29 +1,28 @@
 package provider_test
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 
 	"github.com/cysp/terraform-provider-censusworkspace/internal/provider"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
-
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
-func CensusProviderMockedResourceTest(t *testing.T, server *cm.Server, testcase resource.TestCase) {
+func CensusProviderMockedResourceTest(t *testing.T, server http.Handler, testcase resource.TestCase) {
 	t.Helper()
 
 	censusProviderMockableResourceTest(t, server, true, testcase)
 }
 
-func CensusProviderMockableResourceTest(t *testing.T, server *cm.Server, testcase resource.TestCase) {
+func CensusProviderMockableResourceTest(t *testing.T, server http.Handler, testcase resource.TestCase) {
 	t.Helper()
 
 	censusProviderMockableResourceTest(t, server, false, testcase)
 }
 
-func censusProviderMockableResourceTest(t *testing.T, server *cm.Server, alwaysMock bool, testcase resource.TestCase) {
+func censusProviderMockableResourceTest(t *testing.T, server http.Handler, alwaysMock bool, testcase resource.TestCase) {
 	t.Helper()
 
 	switch {

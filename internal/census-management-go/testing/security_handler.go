@@ -13,6 +13,12 @@ type SecurityHandler struct {
 
 var _ cm.SecurityHandler = (*SecurityHandler)(nil)
 
+func NewCensusManagementSecurityHandler() *SecurityHandler {
+	return &SecurityHandler{
+		mu: sync.Mutex{},
+	}
+}
+
 func (h *SecurityHandler) HandleWorkspaceApiKey(ctx context.Context, operationName cm.OperationName, t cm.WorkspaceApiKey) (context.Context, error) {
 	return ctx, nil
 }
