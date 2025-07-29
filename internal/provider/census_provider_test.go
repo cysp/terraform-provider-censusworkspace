@@ -123,7 +123,7 @@ func TestProtocol6ProviderServerConfigure(t *testing.T) {
 				t.Setenv(key, value)
 			}
 
-			providerServer, err := testAccProtoV6ProviderFactories["contentful"]()
+			providerServer, err := testAccProtoV6ProviderFactories["census"]()
 			require.NotNil(t, providerServer)
 			require.NoError(t, err)
 

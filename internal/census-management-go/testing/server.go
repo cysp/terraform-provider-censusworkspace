@@ -9,35 +9,35 @@ import (
 type Server struct {
 	server *cm.Server
 
-	h   *Handler
-	sec *SecurityHandler
+	handler         *Handler
+	securityHandler *SecurityHandler
 }
 
 var _ http.Handler = (*Server)(nil)
 
 func NewCensusManagementServer() (*Server, error) {
-	h := NewCensusManagementHandler()
+	handler := NewCensusManagementHandler()
 
-	sec := NewCensusManagementSecurityHandler()
+	securityHandler := NewCensusManagementSecurityHandler()
 
-	server, err := cm.NewServer(h, sec)
+	server, err := cm.NewServer(handler, securityHandler)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Server{
-		server: server,
-		h:      h,
-		sec:    sec,
+		server:          server,
+		handler:         handler,
+		securityHandler: securityHandler,
 	}, nil
 }
 
 func (s *Server) Handler() *Handler {
-	return s.h
+	return s.handler
 }
 
 func (s *Server) SecurityHandler() *SecurityHandler {
-	return s.sec
+	return s.securityHandler
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {

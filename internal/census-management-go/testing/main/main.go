@@ -13,16 +13,16 @@ func main() {
 		panic(serverErr)
 	}
 
-	ln, lnErr := net.Listen("tcp", ":0")
-	if lnErr != nil {
-		panic(lnErr)
+	listener, listenerErr := net.Listen("tcp", ":0")
+	if listenerErr != nil {
+		panic(listenerErr)
 	}
 
-	print("Server is running at: ", ln.Addr().String(), "\n")
+	defer listener.Close()
 
-	defer ln.Close()
+	print("census-management/testing/server: ", listener.Addr().String(), "\n")
 
-	err := http.Serve(ln, server.Server())
+	err := http.Serve(listener, server)
 	if err != nil {
 		panic(err)
 	}

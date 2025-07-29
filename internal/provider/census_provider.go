@@ -97,22 +97,22 @@ func (p *CensusProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	var contentfulURL string
+	var censusBaseURL string
 	if !data.URL.IsNull() {
-		contentfulURL = data.URL.ValueString()
-	} else if contentfulURLFromEnv, found := os.LookupEnv("CENSUS_BASE_URL"); found {
-		contentfulURL = contentfulURLFromEnv
+		censusBaseURL = data.URL.ValueString()
+	} else if censusBaseURLFromEnv, found := os.LookupEnv("CENSUS_BASE_URL"); found {
+		censusBaseURL = censusBaseURLFromEnv
 	}
 
-	if contentfulURL == "" {
-		contentfulURL = p.baseURL
+	if censusBaseURL == "" {
+		censusBaseURL = p.baseURL
 	}
 
-	if contentfulURL == "" {
-		contentfulURL = cm.DefaultServerURL
+	if censusBaseURL == "" {
+		censusBaseURL = cm.DefaultServerURL
 	}
 
-	if contentfulURL == "" {
+	if censusBaseURL == "" {
 		resp.Diagnostics.AddAttributeError(path.Root("url"), "Failed to configure client", "No API URL provided")
 	}
 
@@ -146,8 +146,8 @@ func (p *CensusProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		retryableClient.HTTPClient = p.httpClient
 	}
 
-	contentfulManagementClient, err := cm.NewClient(
-		contentfulURL,
+	censusManagementClient, err := cm.NewClient(
+		censusBaseURL,
 		cm.NewWorkspaceApiKeySecuritySource(apiKey),
 		cm.WithClient(util.NewClientWithUserAgent(retryableClient.StandardClient(), "terraform-provider-censusworkspace/"+p.version)),
 	)
@@ -156,7 +156,7 @@ func (p *CensusProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	}
 
 	providerData := CensusProviderData{
-		client: contentfulManagementClient,
+		client: censusManagementClient,
 	}
 
 	resp.DataSourceData = providerData
