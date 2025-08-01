@@ -3,7 +3,7 @@ package typed_test
 import (
 	"testing"
 
-	typed "github.com/cysp/terraform-provider-censusworkspace/internal/terraform-plugin-framework-typed"
+	. "github.com/cysp/terraform-provider-censusworkspace/internal/terraform-plugin-framework-typed"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/stretchr/testify/assert"
@@ -14,34 +14,34 @@ func TestTypedMapEqual(t *testing.T) {
 
 	ctx := t.Context()
 
-	map1 := DiagsNoErrorsMust(typed.NewTypedMap(ctx, map[string]types.String{
+	map1 := DiagsNoErrorsMust(NewTypedMap(ctx, map[string]types.String{
 		"key1": types.StringValue("value1"),
 		"key2": types.StringValue("value2"),
 	}))
 
-	map2 := DiagsNoErrorsMust(typed.NewTypedMap(ctx, map[string]types.String{
+	map2 := DiagsNoErrorsMust(NewTypedMap(ctx, map[string]types.String{
 		"key1": types.StringValue("value1"),
 		"key2": types.StringValue("value2"),
 	}))
 
-	mapDifferentValues := DiagsNoErrorsMust(typed.NewTypedMap(ctx, map[string]types.String{
+	mapDifferentValues := DiagsNoErrorsMust(NewTypedMap(ctx, map[string]types.String{
 		"key1": types.StringValue("different"),
 		"key2": types.StringValue("value2"),
 	}))
 
-	mapDifferentKeys := DiagsNoErrorsMust(typed.NewTypedMap(ctx, map[string]types.String{
+	mapDifferentKeys := DiagsNoErrorsMust(NewTypedMap(ctx, map[string]types.String{
 		"key1": types.StringValue("value1"),
 		"key3": types.StringValue("value3"),
 	}))
 
-	mapDifferentLength := DiagsNoErrorsMust(typed.NewTypedMap(ctx, map[string]types.String{
+	mapDifferentLength := DiagsNoErrorsMust(NewTypedMap(ctx, map[string]types.String{
 		"key1": types.StringValue("value1"),
 		"key2": types.StringValue("value2"),
 		"key3": types.StringValue("value3"),
 	}))
 
 	testcases := map[string]struct {
-		map1     typed.TypedMap[types.String]
+		map1     TypedMap[types.String]
 		map2     attr.Value
 		expected bool
 	}{
@@ -66,23 +66,23 @@ func TestTypedMapEqual(t *testing.T) {
 			expected: false,
 		},
 		"null != known": {
-			map1:     typed.NewTypedMapNull[types.String](ctx),
+			map1:     NewTypedMapNull[types.String](ctx),
 			map2:     map1,
 			expected: false,
 		},
 		"unknown != known": {
-			map1:     typed.NewTypedMapUnknown[types.String](ctx),
+			map1:     NewTypedMapUnknown[types.String](ctx),
 			map2:     map1,
 			expected: false,
 		},
 		"null == null": {
-			map1:     typed.NewTypedMapNull[types.String](ctx),
-			map2:     typed.NewTypedMapNull[types.String](ctx),
+			map1:     NewTypedMapNull[types.String](ctx),
+			map2:     NewTypedMapNull[types.String](ctx),
 			expected: true,
 		},
 		"unknown == unknown": {
-			map1:     typed.NewTypedMapUnknown[types.String](ctx),
-			map2:     typed.NewTypedMapUnknown[types.String](ctx),
+			map1:     NewTypedMapUnknown[types.String](ctx),
+			map2:     NewTypedMapUnknown[types.String](ctx),
 			expected: true,
 		},
 		"different type": {
