@@ -164,7 +164,7 @@ func (p *CensusProvider) Configure(ctx context.Context, req provider.ConfigureRe
 }
 
 func (p *CensusProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
-	resp.TypeName = "census"
+	resp.TypeName = "censusworkspace"
 	resp.Version = p.version
 }
 
