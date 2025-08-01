@@ -15,7 +15,7 @@ import (
 
 func makeTestAccProtoV6ProviderFactories(options ...provider.Option) map[string]func() (tfprotov6.ProviderServer, error) {
 	return map[string]func() (tfprotov6.ProviderServer, error){
-		"census": providerserver.NewProtocol6WithError(provider.Factory("test", options...)()),
+		"censusworkspace": providerserver.NewProtocol6WithError(provider.Factory("test", options...)()),
 	}
 }
 
@@ -45,7 +45,7 @@ func providerConfigDynamicValue(config map[string]interface{}) (tfprotov6.Dynami
 func TestProtocol6ProviderServerSchemaVersion(t *testing.T) {
 	t.Parallel()
 
-	providerServer, err := testAccProtoV6ProviderFactories["census"]()
+	providerServer, err := testAccProtoV6ProviderFactories["censusworkspace"]()
 	require.NotNil(t, providerServer)
 	require.NoError(t, err)
 
@@ -123,7 +123,7 @@ func TestProtocol6ProviderServerConfigure(t *testing.T) {
 				t.Setenv(key, value)
 			}
 
-			providerServer, err := testAccProtoV6ProviderFactories["census"]()
+			providerServer, err := testAccProtoV6ProviderFactories["censusworkspace"]()
 			require.NotNil(t, providerServer)
 			require.NoError(t, err)
 
