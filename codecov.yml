@@ -33,6 +33,10 @@ component_management:
       name: terraform-plugin-framework-reflection
       paths:
         - internal/terraform-plugin-framework-reflection/**
+    - component_id: terraform-plugin-framework-typed
+      name: terraform-plugin-framework-typed
+      paths:
+        - internal/terraform-plugin-framework-typed/**
 
 ignore:
   - "main.go"
