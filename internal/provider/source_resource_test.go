@@ -26,7 +26,7 @@ func TestAccSourceResourceImport(t *testing.T) {
 		Name: "Test Source",
 	}
 
-	CensusProviderMockableResourceTest(t, server, resource.TestCase{
+	ProviderMockableResourceTest(t, server, resource.TestCase{
 		Steps: []resource.TestStep{
 			{
 				ConfigDirectory: config.TestNameDirectory(),
@@ -48,7 +48,7 @@ func TestAccSourceResourceImportNotFound(t *testing.T) {
 
 	configVariables := config.Variables{}
 
-	CensusProviderMockableResourceTest(t, server, resource.TestCase{
+	ProviderMockableResourceTest(t, server, resource.TestCase{
 		Steps: []resource.TestStep{
 			{
 				ConfigDirectory: config.TestNameDirectory(),
@@ -71,7 +71,7 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 
 	configVariables := config.Variables{}
 
-	CensusProviderMockedResourceTest(t, server, resource.TestCase{
+	ProviderMockedResourceTest(t, server, resource.TestCase{
 		Steps: []resource.TestStep{
 			{
 				ConfigDirectory: config.TestStepDirectory(),

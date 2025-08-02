@@ -10,19 +10,19 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func CensusProviderMockedResourceTest(t *testing.T, server http.Handler, testcase resource.TestCase) {
+func ProviderMockedResourceTest(t *testing.T, server http.Handler, testcase resource.TestCase) {
 	t.Helper()
 
-	censusProviderMockableResourceTest(t, server, true, testcase)
+	providerMockableResourceTest(t, server, true, testcase)
 }
 
-func CensusProviderMockableResourceTest(t *testing.T, server http.Handler, testcase resource.TestCase) {
+func ProviderMockableResourceTest(t *testing.T, server http.Handler, testcase resource.TestCase) {
 	t.Helper()
 
-	censusProviderMockableResourceTest(t, server, false, testcase)
+	providerMockableResourceTest(t, server, false, testcase)
 }
 
-func censusProviderMockableResourceTest(t *testing.T, server http.Handler, alwaysMock bool, testcase resource.TestCase) {
+func providerMockableResourceTest(t *testing.T, server http.Handler, alwaysMock bool, testcase resource.TestCase) {
 	t.Helper()
 
 	switch {
@@ -37,7 +37,7 @@ func censusProviderMockableResourceTest(t *testing.T, server http.Handler, alway
 			defer hts.Close()
 		}
 
-		testcase.ProtoV6ProviderFactories = makeTestAccProtoV6ProviderFactories(CensusProviderOptionsWithHTTPTestServer(hts)...)
+		testcase.ProtoV6ProviderFactories = makeTestAccProtoV6ProviderFactories(ProviderOptionsWithHTTPTestServer(hts)...)
 		resource.Test(t, testcase)
 
 	default:
@@ -49,7 +49,7 @@ func censusProviderMockableResourceTest(t *testing.T, server http.Handler, alway
 	}
 }
 
-func CensusProviderOptionsWithHTTPTestServer(testserver *httptest.Server) []provider.Option {
+func ProviderOptionsWithHTTPTestServer(testserver *httptest.Server) []provider.Option {
 	if testserver == nil {
 		return nil
 	}
