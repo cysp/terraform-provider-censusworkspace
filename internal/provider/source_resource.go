@@ -25,7 +25,7 @@ func NewSourceResource() resource.Resource {
 }
 
 type sourceResource struct {
-	providerData CensusProviderData
+	providerData ProviderData
 }
 
 func (r *sourceResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {

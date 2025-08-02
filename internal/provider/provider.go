@@ -7,6 +7,7 @@ import (
 	"time"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
+	"github.com/cysp/terraform-provider-censusworkspace/internal/provider/util"
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -110,7 +111,7 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 	}
 
 	if baseURL == "" {
-		baseURL = cm.DefaultBaseURL
+		baseURL = cm.DefaultServerURL
 	}
 
 	var workspaceApiKey string
@@ -145,7 +146,8 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 
 	censusManagementClient, err := cm.NewClient(
 		baseURL,
-		cm.WithClient(NewHttpClientWithUserAgent(retryableClient.StandardClient(), "terraform-provider-censusworkspace/"+p.version)),
+		cm.NewWorkspaceApiKeySecuritySource(workspaceApiKey),
+		cm.WithClient(util.NewClientWithUserAgent(retryableClient.StandardClient(), "terraform-provider-censusworkspace/"+p.version)),
 	)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to create Census client: %s", err.Error())
@@ -169,5 +171,7 @@ func (p *Provider) DataSources(_ context.Context) []func() datasource.DataSource
 }
 
 func (p *Provider) Resources(_ context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+	return []func() resource.Resource{
+		NewSourceResource,
+	}
 }

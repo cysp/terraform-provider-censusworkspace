@@ -55,8 +55,8 @@ func CensusProviderOptionsWithHTTPTestServer(testserver *httptest.Server) []prov
 	}
 
 	return []provider.Option{
-		provider.WithCensusURL(testserver.URL),
+		provider.WithBaseURL(testserver.URL),
 		provider.WithHTTPClient(testserver.Client()),
-		provider.WithApiKey("12345"),
+		provider.WithWorkspaceApiKey("12345"),
 	}
 }
