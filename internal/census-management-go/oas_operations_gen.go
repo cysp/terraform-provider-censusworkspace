@@ -5,4 +5,6 @@ package censusmanagement
 // OperationName is the ogen operation name
 type OperationName = string
 
-const ()
+const (
+	GetApiV1Operation OperationName = "GetApiV1"
+)
