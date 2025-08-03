@@ -70,7 +70,7 @@ func (r *sourceResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	response, err := r.providerData.client.CreateSource(ctx, &request)
 
-	tflog.Info(ctx, "source.create", map[string]interface{}{
+	tflog.Info(ctx, "source.create", map[string]any{
 		"request":  request,
 		"response": response,
 		"err":      err,
@@ -108,7 +108,7 @@ func (r *sourceResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	response, err := r.providerData.client.GetSource(ctx, params)
 
-	tflog.Info(ctx, "source.read", map[string]interface{}{
+	tflog.Info(ctx, "source.read", map[string]any{
 		"params":   params,
 		"response": response,
 		"err":      err,
@@ -161,7 +161,7 @@ func (r *sourceResource) Update(ctx context.Context, req resource.UpdateRequest,
 
 	response, err := r.providerData.client.UpdateSource(ctx, &request, params)
 
-	tflog.Info(ctx, "source.update", map[string]interface{}{
+	tflog.Info(ctx, "source.update", map[string]any{
 		"params":   params,
 		"request":  request,
 		"response": response,
@@ -196,7 +196,7 @@ func (r *sourceResource) Delete(ctx context.Context, req resource.DeleteRequest,
 
 	response, err := r.providerData.client.DeleteSource(ctx, params)
 
-	tflog.Info(ctx, "source.delete", map[string]interface{}{
+	tflog.Info(ctx, "source.delete", map[string]any{
 		"params":   params,
 		"response": response,
 		"err":      err,
