@@ -65,6 +65,7 @@ const (
 	ResponseStatusSuccess  ResponseStatus = "success"
 	ResponseStatusUpdated  ResponseStatus = "updated"
 	ResponseStatusCreated  ResponseStatus = "created"
+	ResponseStatusDeleted  ResponseStatus = "deleted"
 	ResponseStatusNotFound ResponseStatus = "not_found"
 	ResponseStatusError    ResponseStatus = "error"
 )
@@ -75,6 +76,7 @@ func (ResponseStatus) AllValues() []ResponseStatus {
 		ResponseStatusSuccess,
 		ResponseStatusUpdated,
 		ResponseStatusCreated,
+		ResponseStatusDeleted,
 		ResponseStatusNotFound,
 		ResponseStatusError,
 	}
@@ -88,6 +90,8 @@ func (s ResponseStatus) MarshalText() ([]byte, error) {
 	case ResponseStatusUpdated:
 		return []byte(s), nil
 	case ResponseStatusCreated:
+		return []byte(s), nil
+	case ResponseStatusDeleted:
 		return []byte(s), nil
 	case ResponseStatusNotFound:
 		return []byte(s), nil
@@ -109,6 +113,9 @@ func (s *ResponseStatus) UnmarshalText(data []byte) error {
 		return nil
 	case ResponseStatusCreated:
 		*s = ResponseStatusCreated
+		return nil
+	case ResponseStatusDeleted:
+		*s = ResponseStatusDeleted
 		return nil
 	case ResponseStatusNotFound:
 		*s = ResponseStatusNotFound
