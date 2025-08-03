@@ -1,0 +1,18 @@
+parser:
+  infer_types: true
+
+generator:
+  features:
+    enable:
+      - "paths/client"
+      - "paths/server"
+      - "server/response/validation"
+      - "client/request/validation"
+      - "client/security/reentrant"
+    disable:
+      - "debug/example_tests"
+      - "ogen/otel"
+      - "ogen/unimplemented"
+      - "webhooks/client"
+      - "webhooks/server"
+  convenient_errors: "on"

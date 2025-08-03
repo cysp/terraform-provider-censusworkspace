@@ -1,0 +1,37 @@
+openapi: "3.0.3"
+info:
+  title: Census Management API
+  version: "0.1"
+servers:
+  - url: https://app.getcensus.com
+components:
+  schemas:
+    ResponseStatus:
+      type: string
+      enum:
+        - success
+        - updated
+        - created
+        - not_found
+        - error
+  securitySchemes:
+    workspaceApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: Census Workspace API Key
+  responses:
+    statusResponse:
+      description: Status response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: "#/components/schemas/ResponseStatus"
+              message:
+                type: string
+            required:
+              - status
+security:
+  - workspaceApiKey: []
