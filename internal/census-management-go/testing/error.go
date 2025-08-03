@@ -3,31 +3,24 @@ package testing
 import (
 	"fmt"
 	"net/http"
-
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
 var (
-	errNotFound = newStatusMessageError(http.StatusNotFound, cm.ResponseStatusNotFound, "not found")
+	errNotFound = newStatusCodeError(http.StatusNotFound, "not found")
 )
 
-type statusMessageError struct {
+type statusCodeError struct {
 	StatusCode int
-	Response   cm.StatusResponse
 }
 
-var _ error = (*statusMessageError)(nil)
+var _ error = (*statusCodeError)(nil)
 
-func newStatusMessageError(statusCode int, status cm.ResponseStatus, message string) statusMessageError {
-	return statusMessageError{
+func newStatusCodeError(statusCode int, message string) statusCodeError {
+	return statusCodeError{
 		StatusCode: statusCode,
-		Response: cm.StatusResponse{
-			Status:  status,
-			Message: cm.NewOptString(message),
-		},
 	}
 }
 
-func (e statusMessageError) Error() string {
-	return fmt.Sprintf("%d - %s: %s", e.StatusCode, e.Response.Status, e.Response.Message.Value)
+func (e statusCodeError) Error() string {
+	return fmt.Sprintf("error: %d", e.StatusCode)
 }
