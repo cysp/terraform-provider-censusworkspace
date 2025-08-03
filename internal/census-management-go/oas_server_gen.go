@@ -8,10 +8,34 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// CreateSource implements createSource operation.
+	//
+	// Create Source.
+	//
+	// POST /api/v1/sources
+	CreateSource(ctx context.Context, req *CreateSourceBody) (*IdResponseStatusCode, error)
+	// DeleteSource implements deleteSource operation.
+	//
+	// Delete source.
+	//
+	// DELETE /api/v1/sources/{source_id}
+	DeleteSource(ctx context.Context, params DeleteSourceParams) (*StatusResponseStatusCode, error)
 	// GetApiV1 implements getApiV1 operation.
 	//
 	// GET /api/v1
 	GetApiV1(ctx context.Context) (GetApiV1Res, error)
+	// GetSource implements getSource operation.
+	//
+	// Fetch source.
+	//
+	// GET /api/v1/sources/{source_id}
+	GetSource(ctx context.Context, params GetSourceParams) (*SourceResponseStatusCode, error)
+	// UpdateSource implements updateSource operation.
+	//
+	// Update source.
+	//
+	// PUT /api/v1/sources/{source_id}
+	UpdateSource(ctx context.Context, req *UpdateSourceBody, params UpdateSourceParams) (*SourceResponseStatusCode, error)
 	// NewError creates *StatusResponseStatusCode from error returned by handler.
 	//
 	// Used for common default response.
