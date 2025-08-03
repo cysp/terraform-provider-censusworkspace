@@ -451,6 +451,12 @@ func (s *SourceData) encodeFields(e *jx.Encoder) {
 		e.Str(s.Type)
 	}
 	{
+		if len(s.ConnectionDetails) != 0 {
+			e.FieldStart("connection_details")
+			e.Raw(s.ConnectionDetails)
+		}
+	}
+	{
 		e.FieldStart("created_at")
 		json.EncodeDateTime(e, s.CreatedAt)
 	}
@@ -466,12 +472,6 @@ func (s *SourceData) encodeFields(e *jx.Encoder) {
 			s.LastTestedAt.Encode(e, json.EncodeDateTime)
 		}
 	}
-	{
-		if len(s.ConnectionDetails) != 0 {
-			e.FieldStart("connection_details")
-			e.Raw(s.ConnectionDetails)
-		}
-	}
 }
 
 var jsonFieldsNameOfSourceData = [8]string{
@@ -479,10 +479,10 @@ var jsonFieldsNameOfSourceData = [8]string{
 	1: "name",
 	2: "label",
 	3: "type",
-	4: "created_at",
-	5: "last_test_succeeded",
-	6: "last_tested_at",
-	7: "connection_details",
+	4: "connection_details",
+	5: "created_at",
+	6: "last_test_succeeded",
+	7: "last_tested_at",
 }
 
 // Decode decodes SourceData from json.
@@ -540,8 +540,19 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"type\"")
 			}
+		case "connection_details":
+			if err := func() error {
+				v, err := d.RawAppend(nil)
+				s.ConnectionDetails = jx.Raw(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"connection_details\"")
+			}
 		case "created_at":
-			requiredBitSet[0] |= 1 << 4
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.CreatedAt = v
@@ -572,17 +583,6 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"last_tested_at\"")
 			}
-		case "connection_details":
-			if err := func() error {
-				v, err := d.RawAppend(nil)
-				s.ConnectionDetails = jx.Raw(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"connection_details\"")
-			}
 		default:
 			return d.Skip()
 		}
@@ -593,7 +593,7 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [1]uint8{
-		0b00011011,
+		0b00101011,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

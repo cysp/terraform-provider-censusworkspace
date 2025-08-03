@@ -20,16 +20,16 @@ func NewSourceResourceModelFromResponse(_ context.Context, response cm.SourceDat
 		CreatedAt: timetypes.NewRFC3339TimeValue(response.CreatedAt),
 	}
 
+	if response.ConnectionDetails != nil {
+		model.ConnectionDetails = jsontypes.NewNormalizedValue(string(response.ConnectionDetails))
+	}
+
 	if lastTestedAt, lastTestedAtOk := response.LastTestedAt.Get(); lastTestedAtOk {
 		model.LastTestedAt = timetypes.NewRFC3339TimeValue(lastTestedAt)
 	}
 
 	if lastTestSucceeded, lastTestSucceededOk := response.LastTestSucceeded.Get(); lastTestSucceededOk {
 		model.LastTestSucceeded = types.BoolValue(lastTestSucceeded)
-	}
-
-	if response.ConnectionDetails != nil {
-		model.ConnectionDetails = jsontypes.NewNormalizedValue(string(response.ConnectionDetails))
 	}
 
 	return model, nil

@@ -408,14 +408,14 @@ type SourceData struct {
 	Label OptNilString `json:"label"`
 	// The type of the data source. A valid type is the service_name of a source type returned from the
 	// /source_types endpoint, where the source type is marked as creatable_via_api.
-	Type string `json:"type"`
+	Type              string `json:"type"`
+	ConnectionDetails jx.Raw `json:"connection_details"`
 	// The timestamp when the source was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Indicates if the last connection test to this source was successful.
 	LastTestSucceeded OptNilBool `json:"last_test_succeeded"`
 	// Timestamp of when the last connection test was conducted on this source.
-	LastTestedAt      OptNilDateTime `json:"last_tested_at"`
-	ConnectionDetails jx.Raw         `json:"connection_details"`
+	LastTestedAt OptNilDateTime `json:"last_tested_at"`
 }
 
 // GetID returns the value of ID.
@@ -438,6 +438,11 @@ func (s *SourceData) GetType() string {
 	return s.Type
 }
 
+// GetConnectionDetails returns the value of ConnectionDetails.
+func (s *SourceData) GetConnectionDetails() jx.Raw {
+	return s.ConnectionDetails
+}
+
 // GetCreatedAt returns the value of CreatedAt.
 func (s *SourceData) GetCreatedAt() time.Time {
 	return s.CreatedAt
@@ -451,11 +456,6 @@ func (s *SourceData) GetLastTestSucceeded() OptNilBool {
 // GetLastTestedAt returns the value of LastTestedAt.
 func (s *SourceData) GetLastTestedAt() OptNilDateTime {
 	return s.LastTestedAt
-}
-
-// GetConnectionDetails returns the value of ConnectionDetails.
-func (s *SourceData) GetConnectionDetails() jx.Raw {
-	return s.ConnectionDetails
 }
 
 // SetID sets the value of ID.
@@ -478,6 +478,11 @@ func (s *SourceData) SetType(val string) {
 	s.Type = val
 }
 
+// SetConnectionDetails sets the value of ConnectionDetails.
+func (s *SourceData) SetConnectionDetails(val jx.Raw) {
+	s.ConnectionDetails = val
+}
+
 // SetCreatedAt sets the value of CreatedAt.
 func (s *SourceData) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
@@ -491,11 +496,6 @@ func (s *SourceData) SetLastTestSucceeded(val OptNilBool) {
 // SetLastTestedAt sets the value of LastTestedAt.
 func (s *SourceData) SetLastTestedAt(val OptNilDateTime) {
 	s.LastTestedAt = val
-}
-
-// SetConnectionDetails sets the value of ConnectionDetails.
-func (s *SourceData) SetConnectionDetails(val jx.Raw) {
-	s.ConnectionDetails = val
 }
 
 type SourceResponse struct {
