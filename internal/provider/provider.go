@@ -170,5 +170,7 @@ func (p *Provider) DataSources(_ context.Context) []func() datasource.DataSource
 }
 
 func (p *Provider) Resources(_ context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+	return []func() resource.Resource{
+		NewSourceResource,
+	}
 }
