@@ -2,25 +2,39 @@
 
 package censusmanagement
 
+import (
+	"context"
+)
+
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// GetApiV1 implements getApiV1 operation.
+	//
+	// GET /api/v1
+	GetApiV1(ctx context.Context) (GetApiV1Res, error)
+	// NewError creates *StatusResponseStatusCode from error returned by handler.
+	//
+	// Used for common default response.
+	NewError(ctx context.Context, err error) *StatusResponseStatusCode
 }
 
 // Server implements http server based on OpenAPI v3 specification and
 // calls Handler to handle requests.
 type Server struct {
-	h Handler
+	h   Handler
+	sec SecurityHandler
 	baseServer
 }
 
 // NewServer creates new Server.
-func NewServer(h Handler, opts ...ServerOption) (*Server, error) {
+func NewServer(h Handler, sec SecurityHandler, opts ...ServerOption) (*Server, error) {
 	s, err := newServerConfig(opts...).baseServer()
 	if err != nil {
 		return nil, err
 	}
 	return &Server{
 		h:          h,
+		sec:        sec,
 		baseServer: s,
 	}, nil
 }

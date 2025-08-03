@@ -145,6 +145,7 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 
 	censusManagementClient, err := cm.NewClient(
 		baseURL,
+		cm.NewWorkspaceApiKeySecuritySource(workspaceApiKey),
 		cm.WithClient(NewHttpClientWithUserAgent(retryableClient.StandardClient(), "terraform-provider-censusworkspace/"+p.version)),
 	)
 	if err != nil {

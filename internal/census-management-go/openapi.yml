@@ -35,3 +35,10 @@ components:
               - status
 security:
   - workspaceApiKey: []
+paths:
+  /api/v1:
+    get:
+      operationId: getApiV1
+      responses:
+        default:
+          $ref: "#/components/responses/statusResponse"
