@@ -69,6 +69,8 @@ func (s *ResponseStatus) Decode(d *jx.Decoder) error {
 		*s = ResponseStatusUpdated
 	case ResponseStatusCreated:
 		*s = ResponseStatusCreated
+	case ResponseStatusDeleted:
+		*s = ResponseStatusDeleted
 	case ResponseStatusNotFound:
 		*s = ResponseStatusNotFound
 	case ResponseStatusError:

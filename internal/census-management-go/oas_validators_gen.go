@@ -16,6 +16,8 @@ func (s ResponseStatus) Validate() error {
 		return nil
 	case "created":
 		return nil
+	case "deleted":
+		return nil
 	case "not_found":
 		return nil
 	case "error":

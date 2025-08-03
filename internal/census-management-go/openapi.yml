@@ -12,6 +12,7 @@ components:
         - success
         - updated
         - created
+        - deleted
         - not_found
         - error
   securitySchemes:
