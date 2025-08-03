@@ -122,12 +122,12 @@ func (s *ResponseStatus) UnmarshalText(data []byte) error {
 }
 
 type StatusResponse struct {
-	Status  ResponseStatus `json:"status"`
-	Message OptString      `json:"message"`
+	Status  StatusResponseStatus `json:"status"`
+	Message OptString            `json:"message"`
 }
 
 // GetStatus returns the value of Status.
-func (s *StatusResponse) GetStatus() ResponseStatus {
+func (s *StatusResponse) GetStatus() StatusResponseStatus {
 	return s.Status
 }
 
@@ -137,13 +137,79 @@ func (s *StatusResponse) GetMessage() OptString {
 }
 
 // SetStatus sets the value of Status.
-func (s *StatusResponse) SetStatus(val ResponseStatus) {
+func (s *StatusResponse) SetStatus(val StatusResponseStatus) {
 	s.Status = val
 }
 
 // SetMessage sets the value of Message.
 func (s *StatusResponse) SetMessage(val OptString) {
 	s.Message = val
+}
+
+// StatusResponseStatus represents sum type.
+type StatusResponseStatus struct {
+	Type           StatusResponseStatusType // switch on this field
+	ResponseStatus ResponseStatus
+	Int            int
+}
+
+// StatusResponseStatusType is oneOf type of StatusResponseStatus.
+type StatusResponseStatusType string
+
+// Possible values for StatusResponseStatusType.
+const (
+	ResponseStatusStatusResponseStatus StatusResponseStatusType = "ResponseStatus"
+	IntStatusResponseStatus            StatusResponseStatusType = "int"
+)
+
+// IsResponseStatus reports whether StatusResponseStatus is ResponseStatus.
+func (s StatusResponseStatus) IsResponseStatus() bool {
+	return s.Type == ResponseStatusStatusResponseStatus
+}
+
+// IsInt reports whether StatusResponseStatus is int.
+func (s StatusResponseStatus) IsInt() bool { return s.Type == IntStatusResponseStatus }
+
+// SetResponseStatus sets StatusResponseStatus to ResponseStatus.
+func (s *StatusResponseStatus) SetResponseStatus(v ResponseStatus) {
+	s.Type = ResponseStatusStatusResponseStatus
+	s.ResponseStatus = v
+}
+
+// GetResponseStatus returns ResponseStatus and true boolean if StatusResponseStatus is ResponseStatus.
+func (s StatusResponseStatus) GetResponseStatus() (v ResponseStatus, ok bool) {
+	if !s.IsResponseStatus() {
+		return v, false
+	}
+	return s.ResponseStatus, true
+}
+
+// NewResponseStatusStatusResponseStatus returns new StatusResponseStatus from ResponseStatus.
+func NewResponseStatusStatusResponseStatus(v ResponseStatus) StatusResponseStatus {
+	var s StatusResponseStatus
+	s.SetResponseStatus(v)
+	return s
+}
+
+// SetInt sets StatusResponseStatus to int.
+func (s *StatusResponseStatus) SetInt(v int) {
+	s.Type = IntStatusResponseStatus
+	s.Int = v
+}
+
+// GetInt returns int and true boolean if StatusResponseStatus is int.
+func (s StatusResponseStatus) GetInt() (v int, ok bool) {
+	if !s.IsInt() {
+		return v, false
+	}
+	return s.Int, true
+}
+
+// NewIntStatusResponseStatus returns new StatusResponseStatus from int.
+func NewIntStatusResponseStatus(v int) StatusResponseStatus {
+	var s StatusResponseStatus
+	s.SetInt(v)
+	return s
 }
 
 // StatusResponseStatusCode wraps StatusResponse with StatusCode.

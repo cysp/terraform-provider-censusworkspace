@@ -9,13 +9,12 @@ import (
 )
 
 func (h *Handler) NewError(ctx context.Context, err error) *cm.StatusResponseStatusCode {
-	var sme statusMessageError
-	if errors.As(err, &sme) {
+	var sce statusCodeError
+	if errors.As(err, &sce) {
 		return &cm.StatusResponseStatusCode{
-			StatusCode: sme.StatusCode,
+			StatusCode: sce.StatusCode,
 			Response: cm.StatusResponse{
-				Status:  cm.ResponseStatusNotFound,
-				Message: cm.NewOptString(err.Error()),
+				Status: cm.NewIntStatusResponseStatus(sce.StatusCode),
 			},
 		}
 	}
@@ -23,7 +22,7 @@ func (h *Handler) NewError(ctx context.Context, err error) *cm.StatusResponseSta
 	return &cm.StatusResponseStatusCode{
 		StatusCode: http.StatusInternalServerError,
 		Response: cm.StatusResponse{
-			Status:  cm.ResponseStatusError,
+			Status:  cm.NewResponseStatusStatusResponseStatus(cm.ResponseStatusError),
 			Message: cm.NewOptString(err.Error()),
 		},
 	}

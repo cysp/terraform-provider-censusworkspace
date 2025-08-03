@@ -48,6 +48,20 @@ func (s *StatusResponse) Validate() error {
 	return nil
 }
 
+func (s StatusResponseStatus) Validate() error {
+	switch s.Type {
+	case ResponseStatusStatusResponseStatus:
+		if err := s.ResponseStatus.Validate(); err != nil {
+			return err
+		}
+		return nil
+	case IntStatusResponseStatus:
+		return nil // no validation needed
+	default:
+		return errors.Errorf("invalid type %q", s.Type)
+	}
+}
+
 func (s *StatusResponseStatusCode) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer

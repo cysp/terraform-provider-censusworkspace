@@ -28,7 +28,9 @@ components:
             type: object
             properties:
               status:
-                $ref: "#/components/schemas/ResponseStatus"
+                oneOf:
+                  - $ref: "#/components/schemas/ResponseStatus"
+                  - type: integer
               message:
                 type: string
             required:
