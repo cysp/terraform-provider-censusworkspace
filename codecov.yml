@@ -18,6 +18,13 @@ component_management:
         target: 65%
         threshold: 0%
   individual_components:
+    - component_id: census-management-go
+      name: census-management-go
+      paths:
+        - internal/census-management-go/**
+      statuses:
+        - type: project
+          informational: true
     - component_id: provider
       name: provider
       paths:
@@ -25,3 +32,4 @@ component_management:
 
 ignore:
   - "main.go"
+  - "internal/census-management-go/*_gen.go"
