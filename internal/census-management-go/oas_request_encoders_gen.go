@@ -25,8 +25,36 @@ func encodeCreateSourceRequest(
 	return nil
 }
 
+func encodeCreateSourceModelRequest(
+	req *CreateSourceModelBody,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeUpdateSourceRequest(
 	req *UpdateSourceBody,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSourceModelRequest(
+	req *UpdateSourceModelBody,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

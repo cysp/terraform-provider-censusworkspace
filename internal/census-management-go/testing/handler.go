@@ -11,6 +11,9 @@ type Handler struct {
 
 	Sources      map[string]*cm.SourceData
 	sourceIDLast int64
+
+	Models      multilevelMap2[string, string, *cm.SourceModelData]
+	modelIDLast int64
 }
 
 var _ cm.Handler = (*Handler)(nil)

@@ -6,6 +6,12 @@ servers:
   - url: https://app.getcensus.com
 components:
   parameters:
+    model_id:
+      in: path
+      name: model_id
+      required: true
+      schema:
+        type: string
     source_id:
       in: path
       name: source_id
@@ -98,6 +104,72 @@ components:
         - name
         - label
         - created_at
+    CreateSourceModelBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the model.
+        query:
+          type: string
+          description: The SQL query associated with this model.
+        description:
+          type: string
+          description: The description for this model.
+      required:
+        - name
+        - query
+    UpdateSourceModelBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the model.
+        query:
+          type: string
+          description: The SQL query associated with this model.
+        description:
+          type: string
+          description: The description for this model.
+    SourceModelData:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - model
+        id:
+          type: integer
+          format: int64
+          description: The id of this model.
+        name:
+          type: string
+          description: The name of this model.
+        dataset_id:
+          type: integer
+          format: int64
+          nullable: true
+          description: The identifier for the dataset that corresponds to this model.
+        description:
+          type: string
+          description: The description for this model.
+        query:
+          type: string
+          description: The SQL query associated with this model.
+        created_at:
+          type: string
+          format: date-time
+          description: When this model was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: When this model was last updated.
+      required:
+        - type
+        - id
+        - name
+        - query
+        - created_at
   securitySchemes:
     workspaceApiKey:
       type: http
@@ -153,6 +225,20 @@ components:
             required:
               - status
               - data
+    sourceModelResponse:
+      description: A source model
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: "#/components/schemas/ResponseStatus"
+              data:
+                $ref: "#/components/schemas/SourceModelData"
+            required:
+              - status
+              - data
 security:
   - workspaceApiKey: []
 paths:
@@ -205,6 +291,57 @@ paths:
     delete:
       operationId: deleteSource
       summary: Delete source
+      responses:
+        2XX:
+          $ref: "#/components/responses/statusResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+  /api/v1/sources/{source_id}/models:
+    parameters:
+      - $ref: "#/components/parameters/source_id"
+    post:
+      operationId: createSourceModel
+      summary: Create source model
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSourceModelBody"
+      responses:
+        2XX:
+          $ref: "#/components/responses/idResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+  /api/v1/sources/{source_id}/models/{model_id}:
+    parameters:
+      - $ref: "#/components/parameters/source_id"
+      - $ref: "#/components/parameters/model_id"
+    get:
+      operationId: getSourceModel
+      summary: Fetch source model
+      responses:
+        2XX:
+          $ref: "#/components/responses/sourceModelResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+    patch:
+      operationId: updateSourceModel
+      summary: Update source model
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSourceModelBody"
+      responses:
+        2XX:
+          $ref: "#/components/responses/sourceModelResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+    delete:
+      operationId: deleteSourceModel
+      summary: Delete source model
       responses:
         2XX:
           $ref: "#/components/responses/statusResponse"

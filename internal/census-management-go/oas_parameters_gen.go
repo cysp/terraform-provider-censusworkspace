@@ -15,6 +15,71 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
+// CreateSourceModelParams is parameters of createSourceModel operation.
+type CreateSourceModelParams struct {
+	SourceID string
+}
+
+func unpackCreateSourceModelParams(packed middleware.Parameters) (params CreateSourceModelParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "source_id",
+			In:   "path",
+		}
+		params.SourceID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeCreateSourceModelParams(args [1]string, argsEscaped bool, r *http.Request) (params CreateSourceModelParams, _ error) {
+	// Decode path: source_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "source_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.SourceID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "source_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // DeleteSourceParams is parameters of deleteSource operation.
 type DeleteSourceParams struct {
 	SourceID string
@@ -73,6 +138,124 @@ func decodeDeleteSourceParams(args [1]string, argsEscaped bool, r *http.Request)
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "source_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// DeleteSourceModelParams is parameters of deleteSourceModel operation.
+type DeleteSourceModelParams struct {
+	SourceID string
+	ModelID  string
+}
+
+func unpackDeleteSourceModelParams(packed middleware.Parameters) (params DeleteSourceModelParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "source_id",
+			In:   "path",
+		}
+		params.SourceID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "model_id",
+			In:   "path",
+		}
+		params.ModelID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeDeleteSourceModelParams(args [2]string, argsEscaped bool, r *http.Request) (params DeleteSourceModelParams, _ error) {
+	// Decode path: source_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "source_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.SourceID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "source_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: model_id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "model_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ModelID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "model_id",
 			In:   "path",
 			Err:  err,
 		}
@@ -145,6 +328,124 @@ func decodeGetSourceParams(args [1]string, argsEscaped bool, r *http.Request) (p
 	return params, nil
 }
 
+// GetSourceModelParams is parameters of getSourceModel operation.
+type GetSourceModelParams struct {
+	SourceID string
+	ModelID  string
+}
+
+func unpackGetSourceModelParams(packed middleware.Parameters) (params GetSourceModelParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "source_id",
+			In:   "path",
+		}
+		params.SourceID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "model_id",
+			In:   "path",
+		}
+		params.ModelID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeGetSourceModelParams(args [2]string, argsEscaped bool, r *http.Request) (params GetSourceModelParams, _ error) {
+	// Decode path: source_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "source_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.SourceID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "source_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: model_id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "model_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ModelID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "model_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // UpdateSourceParams is parameters of updateSource operation.
 type UpdateSourceParams struct {
 	SourceID string
@@ -203,6 +504,124 @@ func decodeUpdateSourceParams(args [1]string, argsEscaped bool, r *http.Request)
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "source_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateSourceModelParams is parameters of updateSourceModel operation.
+type UpdateSourceModelParams struct {
+	SourceID string
+	ModelID  string
+}
+
+func unpackUpdateSourceModelParams(packed middleware.Parameters) (params UpdateSourceModelParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "source_id",
+			In:   "path",
+		}
+		params.SourceID = packed[key].(string)
+	}
+	{
+		key := middleware.ParameterKey{
+			Name: "model_id",
+			In:   "path",
+		}
+		params.ModelID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeUpdateSourceModelParams(args [2]string, argsEscaped bool, r *http.Request) (params UpdateSourceModelParams, _ error) {
+	// Decode path: source_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "source_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.SourceID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "source_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	// Decode path: model_id.
+	if err := func() error {
+		param := args[1]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[1])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "model_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.ModelID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "model_id",
 			In:   "path",
 			Err:  err,
 		}

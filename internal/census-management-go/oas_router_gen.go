@@ -40,7 +40,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		s.notFound(w, r)
 		return
 	}
-	args := [1]string{}
+	args := [2]string{}
 
 	// Static code generated router with unwrapped path search.
 	switch {
@@ -96,16 +96,15 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					}
 
 					// Param: "source_id"
-					// Leaf parameter, slashes are prohibited
+					// Match until "/"
 					idx := strings.IndexByte(elem, '/')
-					if idx >= 0 {
-						break
+					if idx < 0 {
+						idx = len(elem)
 					}
-					args[0] = elem
-					elem = ""
+					args[0] = elem[:idx]
+					elem = elem[idx:]
 
 					if len(elem) == 0 {
-						// Leaf node.
 						switch r.Method {
 						case "DELETE":
 							s.handleDeleteSourceRequest([1]string{
@@ -125,6 +124,73 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 						return
 					}
+					switch elem[0] {
+					case '/': // Prefix: "/models"
+
+						if l := len("/models"); len(elem) >= l && elem[0:l] == "/models" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "POST":
+								s.handleCreateSourceModelRequest([1]string{
+									args[0],
+								}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "model_id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[1] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "DELETE":
+									s.handleDeleteSourceModelRequest([2]string{
+										args[0],
+										args[1],
+									}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleGetSourceModelRequest([2]string{
+										args[0],
+										args[1],
+									}, elemIsEscaped, w, r)
+								case "PATCH":
+									s.handleUpdateSourceModelRequest([2]string{
+										args[0],
+										args[1],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "DELETE,GET,PATCH")
+								}
+
+								return
+							}
+
+						}
+
+					}
 
 				}
 
@@ -142,7 +208,7 @@ type Route struct {
 	operationID string
 	pathPattern string
 	count       int
-	args        [1]string
+	args        [2]string
 }
 
 // Name returns ogen operation name.
@@ -265,16 +331,15 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					}
 
 					// Param: "source_id"
-					// Leaf parameter, slashes are prohibited
+					// Match until "/"
 					idx := strings.IndexByte(elem, '/')
-					if idx >= 0 {
-						break
+					if idx < 0 {
+						idx = len(elem)
 					}
-					args[0] = elem
-					elem = ""
+					args[0] = elem[:idx]
+					elem = elem[idx:]
 
 					if len(elem) == 0 {
-						// Leaf node.
 						switch method {
 						case "DELETE":
 							r.name = DeleteSourceOperation
@@ -303,6 +368,82 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						default:
 							return
 						}
+					}
+					switch elem[0] {
+					case '/': // Prefix: "/models"
+
+						if l := len("/models"); len(elem) >= l && elem[0:l] == "/models" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "POST":
+								r.name = CreateSourceModelOperation
+								r.summary = "Create source model"
+								r.operationID = "createSourceModel"
+								r.pathPattern = "/api/v1/sources/{source_id}/models"
+								r.args = args
+								r.count = 1
+								return r, true
+							default:
+								return
+							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "model_id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[1] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "DELETE":
+									r.name = DeleteSourceModelOperation
+									r.summary = "Delete source model"
+									r.operationID = "deleteSourceModel"
+									r.pathPattern = "/api/v1/sources/{source_id}/models/{model_id}"
+									r.args = args
+									r.count = 2
+									return r, true
+								case "GET":
+									r.name = GetSourceModelOperation
+									r.summary = "Fetch source model"
+									r.operationID = "getSourceModel"
+									r.pathPattern = "/api/v1/sources/{source_id}/models/{model_id}"
+									r.args = args
+									r.count = 2
+									return r, true
+								case "PATCH":
+									r.name = UpdateSourceModelOperation
+									r.summary = "Update source model"
+									r.operationID = "updateSourceModel"
+									r.pathPattern = "/api/v1/sources/{source_id}/models/{model_id}"
+									r.args = args
+									r.count = 2
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
 					}
 
 				}

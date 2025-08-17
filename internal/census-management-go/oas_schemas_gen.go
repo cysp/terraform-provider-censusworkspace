@@ -81,6 +81,46 @@ func (s *CreateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
 }
 
+// Ref: #/components/schemas/CreateSourceModelBody
+type CreateSourceModelBody struct {
+	// The name of the model.
+	Name string `json:"name"`
+	// The SQL query associated with this model.
+	Query string `json:"query"`
+	// The description for this model.
+	Description OptString `json:"description"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateSourceModelBody) GetName() string {
+	return s.Name
+}
+
+// GetQuery returns the value of Query.
+func (s *CreateSourceModelBody) GetQuery() string {
+	return s.Query
+}
+
+// GetDescription returns the value of Description.
+func (s *CreateSourceModelBody) GetDescription() OptString {
+	return s.Description
+}
+
+// SetName sets the value of Name.
+func (s *CreateSourceModelBody) SetName(val string) {
+	s.Name = val
+}
+
+// SetQuery sets the value of Query.
+func (s *CreateSourceModelBody) SetQuery(val string) {
+	s.Query = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CreateSourceModelBody) SetDescription(val OptString) {
+	s.Description = val
+}
+
 type IdResponse struct {
 	Status ResponseStatus `json:"status"`
 	Data   IdResponseData `json:"data"`
@@ -185,6 +225,52 @@ func (o NilString) Get() (v string, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o NilString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDateTime returns new OptDateTime with value set to v.
+func NewOptDateTime(v time.Time) OptDateTime {
+	return OptDateTime{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDateTime is optional time.Time.
+type OptDateTime struct {
+	Value time.Time
+	Set   bool
+}
+
+// IsSet returns true if OptDateTime was set.
+func (o OptDateTime) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDateTime) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDateTime) SetTo(v time.Time) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDateTime) Get() (v time.Time, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDateTime) Or(d time.Time) time.Time {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -311,6 +397,69 @@ func (o OptNilDateTime) Get() (v time.Time, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptNilDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilInt64 returns new OptNilInt64 with value set to v.
+func NewOptNilInt64(v int64) OptNilInt64 {
+	return OptNilInt64{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilInt64 is optional nullable int64.
+type OptNilInt64 struct {
+	Value int64
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilInt64 was set.
+func (o OptNilInt64) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilInt64) Reset() {
+	var v int64
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilInt64) SetTo(v int64) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilInt64) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilInt64) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v int64
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilInt64) Get() (v int64, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilInt64) Or(d int64) int64 {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -608,6 +757,190 @@ func (s *SourceData) SetLastTestedAt(val OptNilDateTime) {
 	s.LastTestedAt = val
 }
 
+// Ref: #/components/schemas/SourceModelData
+type SourceModelData struct {
+	Type SourceModelDataType `json:"type"`
+	// The id of this model.
+	ID int64 `json:"id"`
+	// The name of this model.
+	Name string `json:"name"`
+	// The identifier for the dataset that corresponds to this model.
+	DatasetID OptNilInt64 `json:"dataset_id"`
+	// The description for this model.
+	Description OptString `json:"description"`
+	// The SQL query associated with this model.
+	Query string `json:"query"`
+	// When this model was created.
+	CreatedAt time.Time `json:"created_at"`
+	// When this model was last updated.
+	UpdatedAt OptDateTime `json:"updated_at"`
+}
+
+// GetType returns the value of Type.
+func (s *SourceModelData) GetType() SourceModelDataType {
+	return s.Type
+}
+
+// GetID returns the value of ID.
+func (s *SourceModelData) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *SourceModelData) GetName() string {
+	return s.Name
+}
+
+// GetDatasetID returns the value of DatasetID.
+func (s *SourceModelData) GetDatasetID() OptNilInt64 {
+	return s.DatasetID
+}
+
+// GetDescription returns the value of Description.
+func (s *SourceModelData) GetDescription() OptString {
+	return s.Description
+}
+
+// GetQuery returns the value of Query.
+func (s *SourceModelData) GetQuery() string {
+	return s.Query
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *SourceModelData) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *SourceModelData) GetUpdatedAt() OptDateTime {
+	return s.UpdatedAt
+}
+
+// SetType sets the value of Type.
+func (s *SourceModelData) SetType(val SourceModelDataType) {
+	s.Type = val
+}
+
+// SetID sets the value of ID.
+func (s *SourceModelData) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *SourceModelData) SetName(val string) {
+	s.Name = val
+}
+
+// SetDatasetID sets the value of DatasetID.
+func (s *SourceModelData) SetDatasetID(val OptNilInt64) {
+	s.DatasetID = val
+}
+
+// SetDescription sets the value of Description.
+func (s *SourceModelData) SetDescription(val OptString) {
+	s.Description = val
+}
+
+// SetQuery sets the value of Query.
+func (s *SourceModelData) SetQuery(val string) {
+	s.Query = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *SourceModelData) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *SourceModelData) SetUpdatedAt(val OptDateTime) {
+	s.UpdatedAt = val
+}
+
+type SourceModelDataType string
+
+const (
+	SourceModelDataTypeModel SourceModelDataType = "model"
+)
+
+// AllValues returns all SourceModelDataType values.
+func (SourceModelDataType) AllValues() []SourceModelDataType {
+	return []SourceModelDataType{
+		SourceModelDataTypeModel,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SourceModelDataType) MarshalText() ([]byte, error) {
+	switch s {
+	case SourceModelDataTypeModel:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SourceModelDataType) UnmarshalText(data []byte) error {
+	switch SourceModelDataType(data) {
+	case SourceModelDataTypeModel:
+		*s = SourceModelDataTypeModel
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
+type SourceModelResponse struct {
+	Status ResponseStatus  `json:"status"`
+	Data   SourceModelData `json:"data"`
+}
+
+// GetStatus returns the value of Status.
+func (s *SourceModelResponse) GetStatus() ResponseStatus {
+	return s.Status
+}
+
+// GetData returns the value of Data.
+func (s *SourceModelResponse) GetData() SourceModelData {
+	return s.Data
+}
+
+// SetStatus sets the value of Status.
+func (s *SourceModelResponse) SetStatus(val ResponseStatus) {
+	s.Status = val
+}
+
+// SetData sets the value of Data.
+func (s *SourceModelResponse) SetData(val SourceModelData) {
+	s.Data = val
+}
+
+// SourceModelResponseStatusCode wraps SourceModelResponse with StatusCode.
+type SourceModelResponseStatusCode struct {
+	StatusCode int
+	Response   SourceModelResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *SourceModelResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *SourceModelResponseStatusCode) GetResponse() SourceModelResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *SourceModelResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *SourceModelResponseStatusCode) SetResponse(val SourceModelResponse) {
+	s.Response = val
+}
+
 type SourceResponse struct {
 	Status ResponseStatus `json:"status"`
 	Data   SourceData     `json:"data"`
@@ -816,6 +1149,46 @@ func (s *UpdateSourceBodyConnection) SetLabel(val OptNilString) {
 // SetCredentials sets the value of Credentials.
 func (s *UpdateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
+}
+
+// Ref: #/components/schemas/UpdateSourceModelBody
+type UpdateSourceModelBody struct {
+	// The name of the model.
+	Name OptString `json:"name"`
+	// The SQL query associated with this model.
+	Query OptString `json:"query"`
+	// The description for this model.
+	Description OptString `json:"description"`
+}
+
+// GetName returns the value of Name.
+func (s *UpdateSourceModelBody) GetName() OptString {
+	return s.Name
+}
+
+// GetQuery returns the value of Query.
+func (s *UpdateSourceModelBody) GetQuery() OptString {
+	return s.Query
+}
+
+// GetDescription returns the value of Description.
+func (s *UpdateSourceModelBody) GetDescription() OptString {
+	return s.Description
+}
+
+// SetName sets the value of Name.
+func (s *UpdateSourceModelBody) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetQuery sets the value of Query.
+func (s *UpdateSourceModelBody) SetQuery(val OptString) {
+	s.Query = val
+}
+
+// SetDescription sets the value of Description.
+func (s *UpdateSourceModelBody) SetDescription(val OptString) {
+	s.Description = val
 }
 
 type WorkspaceApiKey struct {

@@ -28,12 +28,24 @@ type Invoker interface {
 	//
 	// POST /api/v1/sources
 	CreateSource(ctx context.Context, request *CreateSourceBody) (*IdResponseStatusCode, error)
+	// CreateSourceModel invokes createSourceModel operation.
+	//
+	// Create source model.
+	//
+	// POST /api/v1/sources/{source_id}/models
+	CreateSourceModel(ctx context.Context, request *CreateSourceModelBody, params CreateSourceModelParams) (*IdResponseStatusCode, error)
 	// DeleteSource invokes deleteSource operation.
 	//
 	// Delete source.
 	//
 	// DELETE /api/v1/sources/{source_id}
 	DeleteSource(ctx context.Context, params DeleteSourceParams) (*StatusResponseStatusCode, error)
+	// DeleteSourceModel invokes deleteSourceModel operation.
+	//
+	// Delete source model.
+	//
+	// DELETE /api/v1/sources/{source_id}/models/{model_id}
+	DeleteSourceModel(ctx context.Context, params DeleteSourceModelParams) (*StatusResponseStatusCode, error)
 	// GetApiV1 invokes getApiV1 operation.
 	//
 	// GET /api/v1
@@ -44,12 +56,24 @@ type Invoker interface {
 	//
 	// GET /api/v1/sources/{source_id}
 	GetSource(ctx context.Context, params GetSourceParams) (*SourceResponseStatusCode, error)
+	// GetSourceModel invokes getSourceModel operation.
+	//
+	// Fetch source model.
+	//
+	// GET /api/v1/sources/{source_id}/models/{model_id}
+	GetSourceModel(ctx context.Context, params GetSourceModelParams) (*SourceModelResponseStatusCode, error)
 	// UpdateSource invokes updateSource operation.
 	//
 	// Update source.
 	//
 	// PUT /api/v1/sources/{source_id}
 	UpdateSource(ctx context.Context, request *UpdateSourceBody, params UpdateSourceParams) (*SourceResponseStatusCode, error)
+	// UpdateSourceModel invokes updateSourceModel operation.
+	//
+	// Update source model.
+	//
+	// PATCH /api/v1/sources/{source_id}/models/{model_id}
+	UpdateSourceModel(ctx context.Context, request *UpdateSourceModelBody, params UpdateSourceModelParams) (*SourceModelResponseStatusCode, error)
 }
 
 // Client implements OAS client.
@@ -173,6 +197,97 @@ func (c *Client) sendCreateSource(ctx context.Context, request *CreateSourceBody
 	return result, nil
 }
 
+// CreateSourceModel invokes createSourceModel operation.
+//
+// Create source model.
+//
+// POST /api/v1/sources/{source_id}/models
+func (c *Client) CreateSourceModel(ctx context.Context, request *CreateSourceModelBody, params CreateSourceModelParams) (*IdResponseStatusCode, error) {
+	res, err := c.sendCreateSourceModel(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendCreateSourceModel(ctx context.Context, request *CreateSourceModelBody, params CreateSourceModelParams) (res *IdResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [3]string
+	pathParts[0] = "/api/v1/sources/"
+	{
+		// Encode "source_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "source_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.SourceID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/models"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateSourceModelRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, CreateSourceModelOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCreateSourceModelResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // DeleteSource invokes deleteSource operation.
 //
 // Delete source.
@@ -253,6 +368,112 @@ func (c *Client) sendDeleteSource(ctx context.Context, params DeleteSourceParams
 	defer resp.Body.Close()
 
 	result, err := decodeDeleteSourceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteSourceModel invokes deleteSourceModel operation.
+//
+// Delete source model.
+//
+// DELETE /api/v1/sources/{source_id}/models/{model_id}
+func (c *Client) DeleteSourceModel(ctx context.Context, params DeleteSourceModelParams) (*StatusResponseStatusCode, error) {
+	res, err := c.sendDeleteSourceModel(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteSourceModel(ctx context.Context, params DeleteSourceModelParams) (res *StatusResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/api/v1/sources/"
+	{
+		// Encode "source_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "source_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.SourceID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/models/"
+	{
+		// Encode "model_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "model_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ModelID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, DeleteSourceModelOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteSourceModelResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -414,6 +635,112 @@ func (c *Client) sendGetSource(ctx context.Context, params GetSourceParams) (res
 	return result, nil
 }
 
+// GetSourceModel invokes getSourceModel operation.
+//
+// Fetch source model.
+//
+// GET /api/v1/sources/{source_id}/models/{model_id}
+func (c *Client) GetSourceModel(ctx context.Context, params GetSourceModelParams) (*SourceModelResponseStatusCode, error) {
+	res, err := c.sendGetSourceModel(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetSourceModel(ctx context.Context, params GetSourceModelParams) (res *SourceModelResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/api/v1/sources/"
+	{
+		// Encode "source_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "source_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.SourceID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/models/"
+	{
+		// Encode "model_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "model_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ModelID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, GetSourceModelOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetSourceModelResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // UpdateSource invokes updateSource operation.
 //
 // Update source.
@@ -497,6 +824,115 @@ func (c *Client) sendUpdateSource(ctx context.Context, request *UpdateSourceBody
 	defer resp.Body.Close()
 
 	result, err := decodeUpdateSourceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateSourceModel invokes updateSourceModel operation.
+//
+// Update source model.
+//
+// PATCH /api/v1/sources/{source_id}/models/{model_id}
+func (c *Client) UpdateSourceModel(ctx context.Context, request *UpdateSourceModelBody, params UpdateSourceModelParams) (*SourceModelResponseStatusCode, error) {
+	res, err := c.sendUpdateSourceModel(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateSourceModel(ctx context.Context, request *UpdateSourceModelBody, params UpdateSourceModelParams) (res *SourceModelResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [4]string
+	pathParts[0] = "/api/v1/sources/"
+	{
+		// Encode "source_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "source_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.SourceID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	pathParts[2] = "/models/"
+	{
+		// Encode "model_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "model_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.ModelID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[3] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateSourceModelRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, UpdateSourceModelOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeUpdateSourceModelResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

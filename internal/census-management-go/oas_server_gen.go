@@ -14,12 +14,24 @@ type Handler interface {
 	//
 	// POST /api/v1/sources
 	CreateSource(ctx context.Context, req *CreateSourceBody) (*IdResponseStatusCode, error)
+	// CreateSourceModel implements createSourceModel operation.
+	//
+	// Create source model.
+	//
+	// POST /api/v1/sources/{source_id}/models
+	CreateSourceModel(ctx context.Context, req *CreateSourceModelBody, params CreateSourceModelParams) (*IdResponseStatusCode, error)
 	// DeleteSource implements deleteSource operation.
 	//
 	// Delete source.
 	//
 	// DELETE /api/v1/sources/{source_id}
 	DeleteSource(ctx context.Context, params DeleteSourceParams) (*StatusResponseStatusCode, error)
+	// DeleteSourceModel implements deleteSourceModel operation.
+	//
+	// Delete source model.
+	//
+	// DELETE /api/v1/sources/{source_id}/models/{model_id}
+	DeleteSourceModel(ctx context.Context, params DeleteSourceModelParams) (*StatusResponseStatusCode, error)
 	// GetApiV1 implements getApiV1 operation.
 	//
 	// GET /api/v1
@@ -30,12 +42,24 @@ type Handler interface {
 	//
 	// GET /api/v1/sources/{source_id}
 	GetSource(ctx context.Context, params GetSourceParams) (*SourceResponseStatusCode, error)
+	// GetSourceModel implements getSourceModel operation.
+	//
+	// Fetch source model.
+	//
+	// GET /api/v1/sources/{source_id}/models/{model_id}
+	GetSourceModel(ctx context.Context, params GetSourceModelParams) (*SourceModelResponseStatusCode, error)
 	// UpdateSource implements updateSource operation.
 	//
 	// Update source.
 	//
 	// PUT /api/v1/sources/{source_id}
 	UpdateSource(ctx context.Context, req *UpdateSourceBody, params UpdateSourceParams) (*SourceResponseStatusCode, error)
+	// UpdateSourceModel implements updateSourceModel operation.
+	//
+	// Update source model.
+	//
+	// PATCH /api/v1/sources/{source_id}/models/{model_id}
+	UpdateSourceModel(ctx context.Context, req *UpdateSourceModelBody, params UpdateSourceModelParams) (*SourceModelResponseStatusCode, error)
 	// NewError creates *StatusResponseStatusCode from error returned by handler.
 	//
 	// Used for common default response.
