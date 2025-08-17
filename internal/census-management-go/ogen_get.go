@@ -13,3 +13,25 @@ func getValuePointer[T any](o valueGetter[T]) (v *T) {
 
 	return &value
 }
+
+type optNilValueGetter[T any] interface {
+	IsSet() bool
+	IsNull() bool
+	Get() (T, bool)
+}
+
+func getOptNilValuePointerPointer[T any](o optNilValueGetter[T]) (v **T) {
+	if !o.IsSet() {
+		return nil
+	}
+
+	value, ok := o.Get()
+
+	if !ok {
+		var rv *T = nil
+		return &rv
+	}
+
+	var rv = &value
+	return &rv
+}
