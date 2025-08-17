@@ -6,5 +6,9 @@ package censusmanagement
 type OperationName = string
 
 const (
-	GetApiV1Operation OperationName = "GetApiV1"
+	CreateSourceOperation OperationName = "CreateSource"
+	DeleteSourceOperation OperationName = "DeleteSource"
+	GetApiV1Operation     OperationName = "GetApiV1"
+	GetSourceOperation    OperationName = "GetSource"
+	UpdateSourceOperation OperationName = "UpdateSource"
 )
