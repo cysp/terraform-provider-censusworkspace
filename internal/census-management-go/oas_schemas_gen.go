@@ -4,12 +4,368 @@ package censusmanagement
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/go-faster/errors"
+	"github.com/go-faster/jx"
 )
 
 func (s *StatusResponseStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
+}
+
+// Ref: #/components/schemas/CreateSourceBody
+type CreateSourceBody struct {
+	Connection CreateSourceBodyConnection `json:"connection"`
+}
+
+// GetConnection returns the value of Connection.
+func (s *CreateSourceBody) GetConnection() CreateSourceBodyConnection {
+	return s.Connection
+}
+
+// SetConnection sets the value of Connection.
+func (s *CreateSourceBody) SetConnection(val CreateSourceBodyConnection) {
+	s.Connection = val
+}
+
+type CreateSourceBodyConnection struct {
+	// The type of the data source. A valid type is the service_name of a source type returned from the
+	// /source_types endpoint, where the source type is marked as creatable_via_api.
+	Type string `json:"type"`
+	// An optional label that can be assigned to the source for better categorization or identification.
+	Label OptNilString `json:"label"`
+	// Credentials that should be associated with this source (e.g. hostname, port).
+	Credentials jx.Raw `json:"credentials"`
+}
+
+// GetType returns the value of Type.
+func (s *CreateSourceBodyConnection) GetType() string {
+	return s.Type
+}
+
+// GetLabel returns the value of Label.
+func (s *CreateSourceBodyConnection) GetLabel() OptNilString {
+	return s.Label
+}
+
+// GetCredentials returns the value of Credentials.
+func (s *CreateSourceBodyConnection) GetCredentials() jx.Raw {
+	return s.Credentials
+}
+
+// SetType sets the value of Type.
+func (s *CreateSourceBodyConnection) SetType(val string) {
+	s.Type = val
+}
+
+// SetLabel sets the value of Label.
+func (s *CreateSourceBodyConnection) SetLabel(val OptNilString) {
+	s.Label = val
+}
+
+// SetCredentials sets the value of Credentials.
+func (s *CreateSourceBodyConnection) SetCredentials(val jx.Raw) {
+	s.Credentials = val
+}
+
+type IdResponse struct {
+	Status ResponseStatus `json:"status"`
+	Data   IdResponseData `json:"data"`
+}
+
+// GetStatus returns the value of Status.
+func (s *IdResponse) GetStatus() ResponseStatus {
+	return s.Status
+}
+
+// GetData returns the value of Data.
+func (s *IdResponse) GetData() IdResponseData {
+	return s.Data
+}
+
+// SetStatus sets the value of Status.
+func (s *IdResponse) SetStatus(val ResponseStatus) {
+	s.Status = val
+}
+
+// SetData sets the value of Data.
+func (s *IdResponse) SetData(val IdResponseData) {
+	s.Data = val
+}
+
+type IdResponseData struct {
+	ID int64 `json:"id"`
+}
+
+// GetID returns the value of ID.
+func (s *IdResponseData) GetID() int64 {
+	return s.ID
+}
+
+// SetID sets the value of ID.
+func (s *IdResponseData) SetID(val int64) {
+	s.ID = val
+}
+
+// IdResponseStatusCode wraps IdResponse with StatusCode.
+type IdResponseStatusCode struct {
+	StatusCode int
+	Response   IdResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *IdResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *IdResponseStatusCode) GetResponse() IdResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *IdResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *IdResponseStatusCode) SetResponse(val IdResponse) {
+	s.Response = val
+}
+
+// NewNilString returns new NilString with value set to v.
+func NewNilString(v string) NilString {
+	return NilString{
+		Value: v,
+	}
+}
+
+// NilString is nullable string.
+type NilString struct {
+	Value string
+	Null  bool
+}
+
+// SetTo sets value to v.
+func (o *NilString) SetTo(v string) {
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o NilString) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *NilString) SetToNull() {
+	o.Null = true
+	var v string
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o NilString) Get() (v string, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o NilString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilBool returns new OptNilBool with value set to v.
+func NewOptNilBool(v bool) OptNilBool {
+	return OptNilBool{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilBool is optional nullable bool.
+type OptNilBool struct {
+	Value bool
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilBool was set.
+func (o OptNilBool) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilBool) Reset() {
+	var v bool
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilBool) SetTo(v bool) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilBool) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilBool) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v bool
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilBool) Get() (v bool, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilDateTime returns new OptNilDateTime with value set to v.
+func NewOptNilDateTime(v time.Time) OptNilDateTime {
+	return OptNilDateTime{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilDateTime is optional nullable time.Time.
+type OptNilDateTime struct {
+	Value time.Time
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilDateTime was set.
+func (o OptNilDateTime) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilDateTime) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilDateTime) SetTo(v time.Time) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilDateTime) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilDateTime) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v time.Time
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilDateTime) Get() (v time.Time, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptNilString returns new OptNilString with value set to v.
+func NewOptNilString(v string) OptNilString {
+	return OptNilString{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptNilString is optional nullable string.
+type OptNilString struct {
+	Value string
+	Set   bool
+	Null  bool
+}
+
+// IsSet returns true if OptNilString was set.
+func (o OptNilString) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptNilString) Reset() {
+	var v string
+	o.Value = v
+	o.Set = false
+	o.Null = false
+}
+
+// SetTo sets value to v.
+func (o *OptNilString) SetTo(v string) {
+	o.Set = true
+	o.Null = false
+	o.Value = v
+}
+
+// IsNull returns true if value is Null.
+func (o OptNilString) IsNull() bool { return o.Null }
+
+// SetToNull sets value to null.
+func (o *OptNilString) SetToNull() {
+	o.Set = true
+	o.Null = true
+	var v string
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptNilString) Get() (v string, ok bool) {
+	if o.Null {
+		return v, false
+	}
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptNilString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
 }
 
 // NewOptString returns new OptString with value set to v.
@@ -128,6 +484,157 @@ func (s *ResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/SourceData
+type SourceData struct {
+	// The unique identifier of the source.
+	ID int64 `json:"id"`
+	// The type of the data source. A valid type is the service_name of a source type returned from the
+	// /source_types endpoint, where the source type is marked as creatable_via_api.
+	Type string `json:"type"`
+	// The name assigned to this source, typically a combination of type and location.
+	Name string `json:"name"`
+	// An optional label that can be assigned to the source for better categorization or identification.
+	Label             NilString `json:"label"`
+	ConnectionDetails jx.Raw    `json:"connection_details"`
+	// The timestamp when the source was created.
+	CreatedAt time.Time `json:"created_at"`
+	// Indicates if the last connection test to this source was successful.
+	LastTestSucceeded OptNilBool `json:"last_test_succeeded"`
+	// Timestamp of when the last connection test was conducted on this source.
+	LastTestedAt OptNilDateTime `json:"last_tested_at"`
+}
+
+// GetID returns the value of ID.
+func (s *SourceData) GetID() int64 {
+	return s.ID
+}
+
+// GetType returns the value of Type.
+func (s *SourceData) GetType() string {
+	return s.Type
+}
+
+// GetName returns the value of Name.
+func (s *SourceData) GetName() string {
+	return s.Name
+}
+
+// GetLabel returns the value of Label.
+func (s *SourceData) GetLabel() NilString {
+	return s.Label
+}
+
+// GetConnectionDetails returns the value of ConnectionDetails.
+func (s *SourceData) GetConnectionDetails() jx.Raw {
+	return s.ConnectionDetails
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *SourceData) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetLastTestSucceeded returns the value of LastTestSucceeded.
+func (s *SourceData) GetLastTestSucceeded() OptNilBool {
+	return s.LastTestSucceeded
+}
+
+// GetLastTestedAt returns the value of LastTestedAt.
+func (s *SourceData) GetLastTestedAt() OptNilDateTime {
+	return s.LastTestedAt
+}
+
+// SetID sets the value of ID.
+func (s *SourceData) SetID(val int64) {
+	s.ID = val
+}
+
+// SetType sets the value of Type.
+func (s *SourceData) SetType(val string) {
+	s.Type = val
+}
+
+// SetName sets the value of Name.
+func (s *SourceData) SetName(val string) {
+	s.Name = val
+}
+
+// SetLabel sets the value of Label.
+func (s *SourceData) SetLabel(val NilString) {
+	s.Label = val
+}
+
+// SetConnectionDetails sets the value of ConnectionDetails.
+func (s *SourceData) SetConnectionDetails(val jx.Raw) {
+	s.ConnectionDetails = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *SourceData) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetLastTestSucceeded sets the value of LastTestSucceeded.
+func (s *SourceData) SetLastTestSucceeded(val OptNilBool) {
+	s.LastTestSucceeded = val
+}
+
+// SetLastTestedAt sets the value of LastTestedAt.
+func (s *SourceData) SetLastTestedAt(val OptNilDateTime) {
+	s.LastTestedAt = val
+}
+
+type SourceResponse struct {
+	Status ResponseStatus `json:"status"`
+	Data   SourceData     `json:"data"`
+}
+
+// GetStatus returns the value of Status.
+func (s *SourceResponse) GetStatus() ResponseStatus {
+	return s.Status
+}
+
+// GetData returns the value of Data.
+func (s *SourceResponse) GetData() SourceData {
+	return s.Data
+}
+
+// SetStatus sets the value of Status.
+func (s *SourceResponse) SetStatus(val ResponseStatus) {
+	s.Status = val
+}
+
+// SetData sets the value of Data.
+func (s *SourceResponse) SetData(val SourceData) {
+	s.Data = val
+}
+
+// SourceResponseStatusCode wraps SourceResponse with StatusCode.
+type SourceResponseStatusCode struct {
+	StatusCode int
+	Response   SourceResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *SourceResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *SourceResponseStatusCode) GetResponse() SourceResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *SourceResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *SourceResponseStatusCode) SetResponse(val SourceResponse) {
+	s.Response = val
+}
+
 type StatusResponse struct {
 	Status  StatusResponseStatus `json:"status"`
 	Message OptString            `json:"message"`
@@ -243,6 +750,48 @@ func (s *StatusResponseStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *StatusResponseStatusCode) SetResponse(val StatusResponse) {
 	s.Response = val
+}
+
+// Ref: #/components/schemas/UpdateSourceBody
+type UpdateSourceBody struct {
+	Connection UpdateSourceBodyConnection `json:"connection"`
+}
+
+// GetConnection returns the value of Connection.
+func (s *UpdateSourceBody) GetConnection() UpdateSourceBodyConnection {
+	return s.Connection
+}
+
+// SetConnection sets the value of Connection.
+func (s *UpdateSourceBody) SetConnection(val UpdateSourceBodyConnection) {
+	s.Connection = val
+}
+
+type UpdateSourceBodyConnection struct {
+	// An optional label that can be assigned to the source for better categorization or identification.
+	Label OptNilString `json:"label"`
+	// Credentials that should be associated with this source (e.g. hostname, port).
+	Credentials jx.Raw `json:"credentials"`
+}
+
+// GetLabel returns the value of Label.
+func (s *UpdateSourceBodyConnection) GetLabel() OptNilString {
+	return s.Label
+}
+
+// GetCredentials returns the value of Credentials.
+func (s *UpdateSourceBodyConnection) GetCredentials() jx.Raw {
+	return s.Credentials
+}
+
+// SetLabel sets the value of Label.
+func (s *UpdateSourceBodyConnection) SetLabel(val OptNilString) {
+	s.Label = val
+}
+
+// SetCredentials sets the value of Credentials.
+func (s *UpdateSourceBodyConnection) SetCredentials(val jx.Raw) {
+	s.Credentials = val
 }
 
 type WorkspaceApiKey struct {

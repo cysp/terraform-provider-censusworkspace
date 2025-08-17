@@ -42,3 +42,33 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: test
+
+  testaccmocked:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        terraform:
+          - "1.11.*"
+          - "1.12.*"
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-go@v5.5.0
+        with:
+          go-version-file: "go.mod"
+          cache: true
+      - uses: hashicorp/setup-terraform@v3.1.2
+        with:
+          terraform_version: ${{ matrix.terraform }}
+          terraform_wrapper: false
+      - run: go mod download
+      - run: go test -v -coverprofile=coverage.txt -covermode=atomic -coverpkg=./... ./internal/provider/
+        env:
+          TF_ACC: "1"
+          TF_ACC_MOCKED: "1"
+        timeout-minutes: 10
+      - uses: codecov/codecov-action@v5.4.3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: testaccmocked-${{ matrix.terraform }}
