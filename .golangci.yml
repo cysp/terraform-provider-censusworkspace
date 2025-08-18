@@ -12,6 +12,10 @@ linters:
     cyclop:
       max-complexity: 20
       package-average: 0
+    tagliatelle:
+      case:
+        rules:
+          json: snake
     varnamelen:
       ignore-names:
         - i
