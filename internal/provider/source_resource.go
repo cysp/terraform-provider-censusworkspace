@@ -99,7 +99,7 @@ func (r *sourceResource) Create(ctx context.Context, req resource.CreateRequest,
 		"err":      getSourceErr,
 	})
 
-	model, modelDiags := NewSourceResourceModelFromResponse(ctx, getSourceResponse.Response.Data)
+	model, modelDiags := NewSourceModelFromResponse(ctx, getSourceResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
 	model.Credentials = plan.Credentials
@@ -148,7 +148,7 @@ func (r *sourceResource) Read(ctx context.Context, req resource.ReadRequest, res
 		return
 	}
 
-	model, modelDiags := NewSourceResourceModelFromResponse(ctx, getSourceResponse.Response.Data)
+	model, modelDiags := NewSourceModelFromResponse(ctx, getSourceResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
 	model.Credentials = state.Credentials
@@ -196,7 +196,7 @@ func (r *sourceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		return
 	}
 
-	model, modelDiags := NewSourceResourceModelFromResponse(ctx, updateSourceResponse.Response.Data)
+	model, modelDiags := NewSourceModelFromResponse(ctx, updateSourceResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
 	model.Credentials = state.Credentials
