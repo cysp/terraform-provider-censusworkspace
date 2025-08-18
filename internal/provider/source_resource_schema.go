@@ -42,6 +42,14 @@ func SourceResourceSchema(_ context.Context) schema.Schema {
 			"label": schema.StringAttribute{
 				Required: true,
 			},
+			"sync_engine": schema.StringAttribute{
+				Optional: true,
+				Computed: true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"credentials": schema.StringAttribute{
 				CustomType: jsontypes.NormalizedType{},
 				Optional:   true,

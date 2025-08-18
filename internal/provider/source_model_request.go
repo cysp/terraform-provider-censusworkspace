@@ -14,6 +14,11 @@ func (m *SourceModel) ToCreateSourceData(_ context.Context) (cm.CreateSourceBody
 		},
 	}
 
+	syncEngine := m.SyncEngine.ValueString()
+	if syncEngine != "" {
+		body.Connection.SyncEngine.SetTo(syncEngine)
+	}
+
 	label := m.Label.ValueString()
 	if label != "" {
 		body.Connection.Label.SetTo(label)
