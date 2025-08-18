@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func NewSourceResourceModelFromResponse(_ context.Context, response cm.SourceData) (SourceModel, diag.Diagnostics) {
+func NewSourceModelFromResponse(_ context.Context, response cm.SourceData) (SourceModel, diag.Diagnostics) {
 	model := SourceModel{
 		ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
 		Type:      types.StringValue(response.Type),
