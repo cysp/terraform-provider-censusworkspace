@@ -7,14 +7,19 @@ import (
 )
 
 type SourceModel struct {
-	ID                types.String         `tfsdk:"id"`
-	Name              types.String         `tfsdk:"name"`
-	Type              types.String         `tfsdk:"type"`
-	SyncEngine        types.String         `tfsdk:"sync_engine"`
-	Label             types.String         `tfsdk:"label"`
+	sourceModelCommon
+
 	Credentials       jsontypes.Normalized `tfsdk:"credentials"`
 	ConnectionDetails jsontypes.Normalized `tfsdk:"connection_details"`
-	CreatedAt         timetypes.RFC3339    `tfsdk:"created_at"`
-	LastTestedAt      timetypes.RFC3339    `tfsdk:"last_tested_at"`
-	LastTestSucceeded types.Bool           `tfsdk:"last_test_succeeded"`
+}
+
+type sourceModelCommon struct {
+	ID                types.String      `tfsdk:"id"`
+	Name              types.String      `tfsdk:"name"`
+	Type              types.String      `tfsdk:"type"`
+	SyncEngine        types.String      `tfsdk:"sync_engine"`
+	Label             types.String      `tfsdk:"label"`
+	CreatedAt         timetypes.RFC3339 `tfsdk:"created_at"`
+	LastTestedAt      timetypes.RFC3339 `tfsdk:"last_tested_at"`
+	LastTestSucceeded types.Bool        `tfsdk:"last_test_succeeded"`
 }

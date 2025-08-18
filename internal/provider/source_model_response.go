@@ -13,11 +13,13 @@ import (
 
 func NewSourceModelFromResponse(_ context.Context, response cm.SourceData) (SourceModel, diag.Diagnostics) {
 	model := SourceModel{
-		ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
-		Name:      types.StringValue(response.Name),
-		Type:      types.StringValue(response.Type),
-		Label:     types.StringPointerValue(response.Label.ValueStringPointer()),
-		CreatedAt: timetypes.NewRFC3339TimeValue(response.CreatedAt),
+		sourceModelCommon: sourceModelCommon{
+			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
+			Type:      types.StringValue(response.Type),
+			Name:      types.StringValue(response.Name),
+			Label:     types.StringPointerValue(response.Label.ValueStringPointer()),
+			CreatedAt: timetypes.NewRFC3339TimeValue(response.CreatedAt),
+		},
 	}
 
 	if syncEngine, syncEngineOk := response.SyncEngine.Get(); syncEngineOk {
