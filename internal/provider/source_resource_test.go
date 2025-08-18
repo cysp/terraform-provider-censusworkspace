@@ -168,3 +168,75 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 		},
 	})
 }
+
+//nolint:paralleltest
+func TestAccSourceResourceSyncEngineAppearing(t *testing.T) {
+	server, err := cmt.NewCensusManagementServer()
+	require.NoError(t, err)
+
+	testSourceID := int64(12345)
+	testSourceIDString := strconv.FormatInt(testSourceID, 10)
+
+	configVariables := config.Variables{
+		"source_id": config.StringVariable(testSourceIDString),
+	}
+
+	testSource := cm.SourceData{
+		ID:    testSourceID,
+		Name:  "Test Source",
+		Type:  "big_query",
+		Label: cm.NewNilString("Test Source"),
+	}
+
+	server.Handler().Sources[testSourceIDString] = &testSource
+
+	ProviderMockedResourceTest(t, server, resource.TestCase{
+		Steps: []resource.TestStep{
+			{
+				ConfigDirectory:    config.TestNameDirectory(),
+				ConfigVariables:    configVariables,
+				ResourceName:       "censusworkspace_source.test",
+				ImportState:        true,
+				ImportStateId:      testSourceIDString,
+				ImportStatePersist: true,
+			},
+			{
+				ConfigDirectory: config.TestNameDirectory(),
+				ConfigVariables: configVariables,
+				ResourceName:    "censusworkspace_source.test",
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_source.test", plancheck.ResourceActionNoop),
+					},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckNoResourceAttr("censusworkspace_source.test", "sync_engine"),
+				),
+			},
+			{
+				ConfigDirectory: config.TestNameDirectory(),
+				ConfigVariables: configVariables,
+				PreConfig: func() {
+					testSource.SyncEngine.SetTo("basic")
+				},
+				ResourceName: "censusworkspace_source.test",
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("censusworkspace_source.test", "sync_engine", "basic"),
+				),
+			},
+			{
+				ConfigDirectory: config.TestNameDirectory(),
+				ConfigVariables: configVariables,
+				ResourceName:    "censusworkspace_source.test",
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_source.test", plancheck.ResourceActionNoop),
+					},
+				},
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("censusworkspace_source.test", "sync_engine", "basic"),
+				),
+			},
+		},
+	})
+}

@@ -102,6 +102,10 @@ func (r *sourceResource) Create(ctx context.Context, req resource.CreateRequest,
 	model, modelDiags := NewSourceModelFromResponse(ctx, getSourceResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
+	if model.SyncEngine.IsNull() && !plan.SyncEngine.IsUnknown() {
+		model.SyncEngine = plan.SyncEngine
+	}
+
 	model.Credentials = plan.Credentials
 
 	if resp.Diagnostics.HasError() {
@@ -151,6 +155,10 @@ func (r *sourceResource) Read(ctx context.Context, req resource.ReadRequest, res
 	model, modelDiags := NewSourceModelFromResponse(ctx, getSourceResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
+	if model.SyncEngine.IsNull() && !state.SyncEngine.IsUnknown() {
+		model.SyncEngine = state.SyncEngine
+	}
+
 	model.Credentials = state.Credentials
 
 	if resp.Diagnostics.HasError() {
@@ -198,6 +206,10 @@ func (r *sourceResource) Update(ctx context.Context, req resource.UpdateRequest,
 
 	model, modelDiags := NewSourceModelFromResponse(ctx, updateSourceResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
+
+	if model.SyncEngine.IsNull() && !state.SyncEngine.IsUnknown() {
+		model.SyncEngine = state.SyncEngine
+	}
 
 	model.Credentials = state.Credentials
 

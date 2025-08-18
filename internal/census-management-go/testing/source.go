@@ -19,6 +19,7 @@ func UpdateSourceWithCreateSourceBody(source *cm.SourceData, body cm.CreateSourc
 
 	source.Name = connection.Type
 	source.Type = connection.Type
+	source.SyncEngine.SetTo(connection.SyncEngine.Or("basic"))
 
 	if label, labelOk := connection.Label.Get(); labelOk {
 		source.Label.SetTo(label)

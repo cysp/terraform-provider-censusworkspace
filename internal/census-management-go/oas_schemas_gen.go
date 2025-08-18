@@ -33,6 +33,8 @@ type CreateSourceBodyConnection struct {
 	// The type of the data source. A valid type is the service_name of a source type returned from the
 	// /source_types endpoint, where the source type is marked as creatable_via_api.
 	Type string `json:"type"`
+	// The sync engine type for this source. Can only be set during creation and cannot be modified after.
+	SyncEngine OptString `json:"sync_engine"`
 	// An optional label that can be assigned to the source for better categorization or identification.
 	Label OptNilString `json:"label"`
 	// Credentials that should be associated with this source (e.g. hostname, port).
@@ -42,6 +44,11 @@ type CreateSourceBodyConnection struct {
 // GetType returns the value of Type.
 func (s *CreateSourceBodyConnection) GetType() string {
 	return s.Type
+}
+
+// GetSyncEngine returns the value of SyncEngine.
+func (s *CreateSourceBodyConnection) GetSyncEngine() OptString {
+	return s.SyncEngine
 }
 
 // GetLabel returns the value of Label.
@@ -57,6 +64,11 @@ func (s *CreateSourceBodyConnection) GetCredentials() jx.Raw {
 // SetType sets the value of Type.
 func (s *CreateSourceBodyConnection) SetType(val string) {
 	s.Type = val
+}
+
+// SetSyncEngine sets the value of SyncEngine.
+func (s *CreateSourceBodyConnection) SetSyncEngine(val OptString) {
+	s.SyncEngine = val
 }
 
 // SetLabel sets the value of Label.
@@ -488,11 +500,13 @@ func (s *ResponseStatus) UnmarshalText(data []byte) error {
 type SourceData struct {
 	// The unique identifier of the source.
 	ID int64 `json:"id"`
+	// The name assigned to this source, typically a combination of type and location.
+	Name string `json:"name"`
 	// The type of the data source. A valid type is the service_name of a source type returned from the
 	// /source_types endpoint, where the source type is marked as creatable_via_api.
 	Type string `json:"type"`
-	// The name assigned to this source, typically a combination of type and location.
-	Name string `json:"name"`
+	// The sync engine type for this source.
+	SyncEngine OptString `json:"sync_engine"`
 	// An optional label that can be assigned to the source for better categorization or identification.
 	Label             NilString `json:"label"`
 	ConnectionDetails jx.Raw    `json:"connection_details"`
@@ -509,14 +523,19 @@ func (s *SourceData) GetID() int64 {
 	return s.ID
 }
 
+// GetName returns the value of Name.
+func (s *SourceData) GetName() string {
+	return s.Name
+}
+
 // GetType returns the value of Type.
 func (s *SourceData) GetType() string {
 	return s.Type
 }
 
-// GetName returns the value of Name.
-func (s *SourceData) GetName() string {
-	return s.Name
+// GetSyncEngine returns the value of SyncEngine.
+func (s *SourceData) GetSyncEngine() OptString {
+	return s.SyncEngine
 }
 
 // GetLabel returns the value of Label.
@@ -549,14 +568,19 @@ func (s *SourceData) SetID(val int64) {
 	s.ID = val
 }
 
+// SetName sets the value of Name.
+func (s *SourceData) SetName(val string) {
+	s.Name = val
+}
+
 // SetType sets the value of Type.
 func (s *SourceData) SetType(val string) {
 	s.Type = val
 }
 
-// SetName sets the value of Name.
-func (s *SourceData) SetName(val string) {
-	s.Name = val
+// SetSyncEngine sets the value of SyncEngine.
+func (s *SourceData) SetSyncEngine(val OptString) {
+	s.SyncEngine = val
 }
 
 // SetLabel sets the value of Label.

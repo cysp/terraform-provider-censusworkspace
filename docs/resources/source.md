@@ -36,6 +36,7 @@ resource "censusworkspace_source" "test" {
 ### Optional
 
 - `credentials` (String)
+- `sync_engine` (String)
 
 ### Read-Only
 

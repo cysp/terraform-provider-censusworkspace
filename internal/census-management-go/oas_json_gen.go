@@ -122,6 +122,12 @@ func (s *CreateSourceBodyConnection) encodeFields(e *jx.Encoder) {
 		e.Str(s.Type)
 	}
 	{
+		if s.SyncEngine.Set {
+			e.FieldStart("sync_engine")
+			s.SyncEngine.Encode(e)
+		}
+	}
+	{
 		if s.Label.Set {
 			e.FieldStart("label")
 			s.Label.Encode(e)
@@ -135,10 +141,11 @@ func (s *CreateSourceBodyConnection) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfCreateSourceBodyConnection = [3]string{
+var jsonFieldsNameOfCreateSourceBodyConnection = [4]string{
 	0: "type",
-	1: "label",
-	2: "credentials",
+	1: "sync_engine",
+	2: "label",
+	3: "credentials",
 }
 
 // Decode decodes CreateSourceBodyConnection from json.
@@ -161,6 +168,16 @@ func (s *CreateSourceBodyConnection) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"type\"")
+			}
+		case "sync_engine":
+			if err := func() error {
+				s.SyncEngine.Reset()
+				if err := s.SyncEngine.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sync_engine\"")
 			}
 		case "label":
 			if err := func() error {
@@ -740,12 +757,18 @@ func (s *SourceData) encodeFields(e *jx.Encoder) {
 		e.Int64(s.ID)
 	}
 	{
+		e.FieldStart("name")
+		e.Str(s.Name)
+	}
+	{
 		e.FieldStart("type")
 		e.Str(s.Type)
 	}
 	{
-		e.FieldStart("name")
-		e.Str(s.Name)
+		if s.SyncEngine.Set {
+			e.FieldStart("sync_engine")
+			s.SyncEngine.Encode(e)
+		}
 	}
 	{
 		e.FieldStart("label")
@@ -775,15 +798,16 @@ func (s *SourceData) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfSourceData = [8]string{
+var jsonFieldsNameOfSourceData = [9]string{
 	0: "id",
-	1: "type",
-	2: "name",
-	3: "label",
-	4: "connection_details",
-	5: "created_at",
-	6: "last_test_succeeded",
-	7: "last_tested_at",
+	1: "name",
+	2: "type",
+	3: "sync_engine",
+	4: "label",
+	5: "connection_details",
+	6: "created_at",
+	7: "last_test_succeeded",
+	8: "last_tested_at",
 }
 
 // Decode decodes SourceData from json.
@@ -791,7 +815,7 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode SourceData to nil")
 	}
-	var requiredBitSet [1]uint8
+	var requiredBitSet [2]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -807,20 +831,8 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"id\"")
 			}
-		case "type":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Str()
-				s.Type = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"type\"")
-			}
 		case "name":
-			requiredBitSet[0] |= 1 << 2
+			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Str()
 				s.Name = string(v)
@@ -831,8 +843,30 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"name\"")
 			}
+		case "type":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := d.Str()
+				s.Type = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"type\"")
+			}
+		case "sync_engine":
+			if err := func() error {
+				s.SyncEngine.Reset()
+				if err := s.SyncEngine.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sync_engine\"")
+			}
 		case "label":
-			requiredBitSet[0] |= 1 << 3
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
 				if err := s.Label.Decode(d); err != nil {
 					return err
@@ -853,7 +887,7 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"connection_details\"")
 			}
 		case "created_at":
-			requiredBitSet[0] |= 1 << 5
+			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.CreatedAt = v
@@ -893,8 +927,9 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00101111,
+	for i, mask := range [2]uint8{
+		0b01010111,
+		0b00000000,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.

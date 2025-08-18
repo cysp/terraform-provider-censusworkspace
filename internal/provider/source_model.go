@@ -8,8 +8,9 @@ import (
 
 type SourceModel struct {
 	ID                types.String         `tfsdk:"id"`
-	Type              types.String         `tfsdk:"type"`
 	Name              types.String         `tfsdk:"name"`
+	Type              types.String         `tfsdk:"type"`
+	SyncEngine        types.String         `tfsdk:"sync_engine"`
 	Label             types.String         `tfsdk:"label"`
 	Credentials       jsontypes.Normalized `tfsdk:"credentials"`
 	ConnectionDetails jsontypes.Normalized `tfsdk:"connection_details"`

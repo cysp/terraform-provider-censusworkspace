@@ -31,6 +31,9 @@ components:
             type:
               type: string
               description: The type of the data source. A valid type is the service_name of a source type returned from the /source_types endpoint, where the source type is marked as creatable_via_api.
+            sync_engine:
+              type: string
+              description: The sync engine type for this source. Can only be set during creation and cannot be modified after.
             label:
               type: string
               description: An optional label that can be assigned to the source for better categorization or identification.
@@ -62,12 +65,15 @@ components:
           type: integer
           format: int64
           description: The unique identifier of the source.
-        type:
-          type: string
-          description: The type of the data source. A valid type is the service_name of a source type returned from the /source_types endpoint, where the source type is marked as creatable_via_api.
         name:
           type: string
           description: The name assigned to this source, typically a combination of type and location.
+        type:
+          type: string
+          description: The type of the data source. A valid type is the service_name of a source type returned from the /source_types endpoint, where the source type is marked as creatable_via_api.
+        sync_engine:
+          type: string
+          description: The sync engine type for this source.
         label:
           type: string
           description: An optional label that can be assigned to the source for better categorization or identification.
