@@ -19,6 +19,7 @@ func NewCensusManagementSecurityHandler() *SecurityHandler {
 	}
 }
 
-func (h *SecurityHandler) HandleWorkspaceApiKey(ctx context.Context, operationName cm.OperationName, t cm.WorkspaceApiKey) (context.Context, error) {
+//nolint:revive
+func (h *SecurityHandler) HandleWorkspaceApiKey(ctx context.Context, _ cm.OperationName, _ cm.WorkspaceApiKey) (context.Context, error) {
 	return ctx, nil
 }

@@ -8,7 +8,7 @@ import (
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
-func (h *Handler) NewError(ctx context.Context, err error) *cm.StatusResponseStatusCode {
+func (h *Handler) NewError(_ context.Context, err error) *cm.StatusResponseStatusCode {
 	var sce statusCodeError
 	if errors.As(err, &sce) {
 		return &cm.StatusResponseStatusCode{

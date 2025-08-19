@@ -57,6 +57,6 @@ func ProviderOptionsWithHTTPTestServer(testserver *httptest.Server) []provider.O
 	return []provider.Option{
 		provider.WithBaseURL(testserver.URL),
 		provider.WithHTTPClient(testserver.Client()),
-		provider.WithWorkspaceApiKey("12345"),
+		provider.WithWorkspaceAPIKey("12345"),
 	}
 }

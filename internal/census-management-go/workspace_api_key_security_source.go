@@ -4,18 +4,19 @@ import (
 	"context"
 )
 
-type WorkspaceApiKeySecuritySource struct {
+type WorkspaceAPIKeySecuritySource struct {
 	token string
 }
 
-var _ SecuritySource = (*WorkspaceApiKeySecuritySource)(nil)
+var _ SecuritySource = (*WorkspaceAPIKeySecuritySource)(nil)
 
-func NewWorkspaceApiKeySecuritySource(token string) WorkspaceApiKeySecuritySource {
-	return WorkspaceApiKeySecuritySource{
+func NewWorkspaceAPIKeySecuritySource(token string) WorkspaceAPIKeySecuritySource {
+	return WorkspaceAPIKeySecuritySource{
 		token: token,
 	}
 }
 
-func (c WorkspaceApiKeySecuritySource) WorkspaceApiKey(_ context.Context, _ string, _ *Client) (WorkspaceApiKey, error) {
+//nolint:revive
+func (c WorkspaceAPIKeySecuritySource) WorkspaceApiKey(_ context.Context, _ string, _ *Client) (WorkspaceApiKey, error) {
 	return WorkspaceApiKey{Token: c.token}, nil
 }

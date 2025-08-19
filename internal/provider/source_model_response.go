@@ -2,7 +2,7 @@ package provider
 
 import (
 	"context"
-	"fmt"
+	"strconv"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
@@ -13,7 +13,7 @@ import (
 
 func NewSourceResourceModelFromResponse(_ context.Context, response cm.SourceData) (SourceModel, diag.Diagnostics) {
 	model := SourceModel{
-		ID:        types.StringValue(fmt.Sprintf("%d", response.ID)),
+		ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
 		Type:      types.StringValue(response.Type),
 		Name:      types.StringValue(response.Name),
 		Label:     types.StringPointerValue(response.Label.ValueStringPointer()),

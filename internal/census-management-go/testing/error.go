@@ -5,9 +5,7 @@ import (
 	"net/http"
 )
 
-var (
-	errNotFound = newStatusCodeError(http.StatusNotFound, "not found")
-)
+var errNotFound = newStatusCodeError(http.StatusNotFound)
 
 type statusCodeError struct {
 	StatusCode int
@@ -15,7 +13,7 @@ type statusCodeError struct {
 
 var _ error = (*statusCodeError)(nil)
 
-func newStatusCodeError(statusCode int, message string) statusCodeError {
+func newStatusCodeError(statusCode int) statusCodeError {
 	return statusCodeError{
 		StatusCode: statusCode,
 	}

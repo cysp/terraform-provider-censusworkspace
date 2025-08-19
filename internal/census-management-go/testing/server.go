@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
+	"github.com/go-faster/errors"
 )
 
 type Server struct {
@@ -22,7 +23,7 @@ func NewCensusManagementServer() (*Server, error) {
 
 	server, err := cm.NewServer(handler, securityHandler)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "failed to create server")
 	}
 
 	return &Server{
