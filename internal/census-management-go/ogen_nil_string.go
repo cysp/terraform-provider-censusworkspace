@@ -1,5 +1,5 @@
 package censusmanagement
 
-func (o NilString) ValueStringPointer() (v *string) {
+func (o NilString) ValueStringPointer() *string {
 	return getValuePointer(o)
 }

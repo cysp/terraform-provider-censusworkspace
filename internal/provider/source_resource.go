@@ -3,8 +3,8 @@ package provider
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
+	"strconv"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -74,11 +74,12 @@ func (r *sourceResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	if createSourceResponse == nil {
 		resp.Diagnostics.AddError("Failed to create source", createSourceErr.Error())
+
 		return
 	}
 
 	sourceID := createSourceResponse.Response.Data.ID
-	sourceIDString := fmt.Sprintf("%d", sourceID)
+	sourceIDString := strconv.FormatInt(sourceID, 10)
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), sourceIDString)...)
 
@@ -137,11 +138,13 @@ func (r *sourceResource) Read(ctx context.Context, req resource.ReadRequest, res
 			if srsc.StatusCode == http.StatusNotFound {
 				resp.Diagnostics.AddWarning("Failed to read source", srsc.Error())
 				resp.State.RemoveResource(ctx)
+
 				return
 			}
 		}
 
 		resp.Diagnostics.AddError("Failed to read source", getSourceErr.Error())
+
 		return
 	}
 
@@ -189,6 +192,7 @@ func (r *sourceResource) Update(ctx context.Context, req resource.UpdateRequest,
 
 	if updateSourceResponse == nil {
 		resp.Diagnostics.AddError("Failed to update source", updateSourceErr.Error())
+
 		return
 	}
 
@@ -226,6 +230,7 @@ func (r *sourceResource) Delete(ctx context.Context, req resource.DeleteRequest,
 		if srsc.StatusCode == http.StatusNotFound {
 			resp.Diagnostics.AddWarning("Source not found", srsc.Error())
 			resp.State.RemoveResource(ctx)
+
 			return
 		}
 	}
@@ -242,6 +247,7 @@ func (r *sourceResource) Delete(ctx context.Context, req resource.DeleteRequest,
 		}
 
 		resp.Diagnostics.AddError("Failed to delete source", detail)
+
 		return
 	}
 }

@@ -4,9 +4,9 @@ import (
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
-func NewSourceFromCreateSourceBody(ID int64, body cm.CreateSourceBody) cm.SourceData {
+func NewSourceFromCreateSourceBody(id int64, body cm.CreateSourceBody) cm.SourceData {
 	source := cm.SourceData{
-		ID: ID,
+		ID: id,
 	}
 
 	UpdateSourceWithCreateSourceBody(&source, body)

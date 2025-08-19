@@ -1,26 +1,26 @@
-package testing
+package testing_test
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
+	cmt "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/testing"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
 func TestCensusManagementServerGetApiV1(t *testing.T) {
 	t.Parallel()
 
-	server, serverErr := NewCensusManagementServer()
+	server, serverErr := cmt.NewCensusManagementServer()
 	require.NoError(t, serverErr, "failed to create server")
 
 	ts := httptest.NewServer(server)
 	defer ts.Close()
 
-	client, clientErr := cm.NewClient(ts.URL, cm.NewWorkspaceApiKeySecuritySource("test-api-key"))
+	client, clientErr := cm.NewClient(ts.URL, cm.NewWorkspaceAPIKeySecuritySource("test-api-key"))
 	require.NoError(t, clientErr, "failed to create client")
 
 	response, responseErr := client.GetApiV1(t.Context())

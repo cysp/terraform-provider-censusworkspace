@@ -4,7 +4,7 @@ type valueGetter[T any] interface {
 	Get() (T, bool)
 }
 
-func getValuePointer[T any](o valueGetter[T]) (v *T) {
+func getValuePointer[T any](o valueGetter[T]) *T {
 	value, ok := o.Get()
 
 	if !ok {

@@ -42,12 +42,13 @@ type Provider struct {
 
 	baseURL         string
 	httpClient      *http.Client
-	workspaceApiKey string
+	workspaceAPIKey string
 }
 
+//nolint:revive
 type ProviderModel struct {
 	BaseURL         types.String `tfsdk:"base_url"`
-	WorkspaceApiKey types.String `tfsdk:"workspace_api_key"`
+	WorkspaceAPIKey types.String `tfsdk:"workspace_api_key"`
 }
 
 var _ provider.Provider = (*Provider)(nil)
@@ -66,9 +67,9 @@ func WithHTTPClient(httpClient *http.Client) Option {
 	}
 }
 
-func WithWorkspaceApiKey(apiKey string) Option {
+func WithWorkspaceAPIKey(apiKey string) Option {
 	return func(p *Provider) {
-		p.workspaceApiKey = apiKey
+		p.workspaceAPIKey = apiKey
 	}
 }
 
@@ -113,20 +114,20 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 		baseURL = cm.DefaultBaseURL
 	}
 
-	var workspaceApiKey string
-	if !data.WorkspaceApiKey.IsNull() {
-		workspaceApiKey = data.WorkspaceApiKey.ValueString()
+	var workspaceAPIKey string
+	if !data.WorkspaceAPIKey.IsNull() {
+		workspaceAPIKey = data.WorkspaceAPIKey.ValueString()
 	} else {
-		if workspaceApiKeyFromEnv, found := os.LookupEnv("CENSUS_WORKSPACE_API_KEY"); found {
-			workspaceApiKey = workspaceApiKeyFromEnv
+		if workspaceAPIKeyFromEnv, found := os.LookupEnv("CENSUS_WORKSPACE_API_KEY"); found {
+			workspaceAPIKey = workspaceAPIKeyFromEnv
 		}
 	}
 
-	if workspaceApiKey == "" {
-		workspaceApiKey = p.workspaceApiKey
+	if workspaceAPIKey == "" {
+		workspaceAPIKey = p.workspaceAPIKey
 	}
 
-	if workspaceApiKey == "" {
+	if workspaceAPIKey == "" {
 		resp.Diagnostics.AddAttributeError(path.Root("workspace_api_key"), "Failed to configure client", "No API Key provided")
 	}
 
@@ -145,8 +146,8 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 
 	censusManagementClient, err := cm.NewClient(
 		baseURL,
-		cm.NewWorkspaceApiKeySecuritySource(workspaceApiKey),
-		cm.WithClient(NewHttpClientWithUserAgent(retryableClient.StandardClient(), "terraform-provider-censusworkspace/"+p.version)),
+		cm.NewWorkspaceAPIKeySecuritySource(workspaceAPIKey),
+		cm.WithClient(NewHTTPClientWithUserAgent(retryableClient.StandardClient(), "terraform-provider-censusworkspace/"+p.version)),
 	)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to create Census client: %s", err.Error())

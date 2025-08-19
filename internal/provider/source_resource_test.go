@@ -1,8 +1,8 @@
 package provider_test
 
 import (
-	"fmt"
 	"regexp"
+	"strconv"
 	"testing"
 	"time"
 
@@ -21,15 +21,15 @@ func TestAccSourceResourceImport(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
 	require.NoError(t, err)
 
-	testSourceId := int64(12345)
-	testSourceIdString := fmt.Sprintf("%d", testSourceId)
+	testSourceID := int64(12345)
+	testSourceIDString := strconv.FormatInt(testSourceID, 10)
 
 	configVariables := config.Variables{
-		"source_id": config.StringVariable(testSourceIdString),
+		"source_id": config.StringVariable(testSourceIDString),
 	}
 
-	server.Handler().Sources[testSourceIdString] = &cm.SourceData{
-		ID:   testSourceId,
+	server.Handler().Sources[testSourceIDString] = &cm.SourceData{
+		ID:   testSourceID,
 		Name: "Test Source",
 	}
 
@@ -40,7 +40,7 @@ func TestAccSourceResourceImport(t *testing.T) {
 				ConfigVariables: configVariables,
 				ResourceName:    "censusworkspace_source.test",
 				ImportState:     true,
-				ImportStateId:   testSourceIdString,
+				ImportStateId:   testSourceIDString,
 			},
 		},
 	})
