@@ -14,7 +14,8 @@ description: |-
 
 ```terraform
 resource "censusworkspace_source" "test" {
-  type = "big_query"
+  type        = "big_query"
+  sync_engine = "advanced"
 
   label = "BigQuery - project-id"
 
