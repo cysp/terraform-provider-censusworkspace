@@ -15,6 +15,71 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
+// DeleteDestinationParams is parameters of deleteDestination operation.
+type DeleteDestinationParams struct {
+	DestinationID string
+}
+
+func unpackDeleteDestinationParams(packed middleware.Parameters) (params DeleteDestinationParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "destination_id",
+			In:   "path",
+		}
+		params.DestinationID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeDeleteDestinationParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteDestinationParams, _ error) {
+	// Decode path: destination_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "destination_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DestinationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "destination_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // DeleteSourceParams is parameters of deleteSource operation.
 type DeleteSourceParams struct {
 	SourceID string
@@ -80,6 +145,71 @@ func decodeDeleteSourceParams(args [1]string, argsEscaped bool, r *http.Request)
 	return params, nil
 }
 
+// GetDestinationParams is parameters of getDestination operation.
+type GetDestinationParams struct {
+	DestinationID string
+}
+
+func unpackGetDestinationParams(packed middleware.Parameters) (params GetDestinationParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "destination_id",
+			In:   "path",
+		}
+		params.DestinationID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeGetDestinationParams(args [1]string, argsEscaped bool, r *http.Request) (params GetDestinationParams, _ error) {
+	// Decode path: destination_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "destination_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DestinationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "destination_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetSourceParams is parameters of getSource operation.
 type GetSourceParams struct {
 	SourceID string
@@ -138,6 +268,71 @@ func decodeGetSourceParams(args [1]string, argsEscaped bool, r *http.Request) (p
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "source_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateDestinationParams is parameters of updateDestination operation.
+type UpdateDestinationParams struct {
+	DestinationID string
+}
+
+func unpackUpdateDestinationParams(packed middleware.Parameters) (params UpdateDestinationParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "destination_id",
+			In:   "path",
+		}
+		params.DestinationID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeUpdateDestinationParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateDestinationParams, _ error) {
+	// Decode path: destination_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "destination_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DestinationID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "destination_id",
 			In:   "path",
 			Err:  err,
 		}

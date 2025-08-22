@@ -8,12 +8,24 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// CreateDestination implements createDestination operation.
+	//
+	// Create Destination.
+	//
+	// POST /api/v1/destinations
+	CreateDestination(ctx context.Context, req *CreateDestinationBody) (*IdResponseStatusCode, error)
 	// CreateSource implements createSource operation.
 	//
 	// Create Source.
 	//
 	// POST /api/v1/sources
 	CreateSource(ctx context.Context, req *CreateSourceBody) (*IdResponseStatusCode, error)
+	// DeleteDestination implements deleteDestination operation.
+	//
+	// Delete destination.
+	//
+	// DELETE /api/v1/destinations/{destination_id}
+	DeleteDestination(ctx context.Context, params DeleteDestinationParams) (*StatusResponseStatusCode, error)
 	// DeleteSource implements deleteSource operation.
 	//
 	// Delete source.
@@ -24,12 +36,24 @@ type Handler interface {
 	//
 	// GET /api/v1
 	GetApiV1(ctx context.Context) (GetApiV1Res, error)
+	// GetDestination implements getDestination operation.
+	//
+	// Fetch destination.
+	//
+	// GET /api/v1/destinations/{destination_id}
+	GetDestination(ctx context.Context, params GetDestinationParams) (*DestinationResponseStatusCode, error)
 	// GetSource implements getSource operation.
 	//
 	// Fetch source.
 	//
 	// GET /api/v1/sources/{source_id}
 	GetSource(ctx context.Context, params GetSourceParams) (*SourceResponseStatusCode, error)
+	// UpdateDestination implements updateDestination operation.
+	//
+	// Update destination.
+	//
+	// PATCH /api/v1/destinations/{destination_id}
+	UpdateDestination(ctx context.Context, req *UpdateDestinationBody, params UpdateDestinationParams) (*DestinationResponseStatusCode, error)
 	// UpdateSource implements updateSource operation.
 	//
 	// Update source.

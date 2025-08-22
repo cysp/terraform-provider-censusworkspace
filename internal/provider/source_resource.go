@@ -216,6 +216,7 @@ func (r *sourceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
+//nolint:dupl
 func (r *sourceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state SourceModel
 
