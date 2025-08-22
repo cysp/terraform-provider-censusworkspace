@@ -14,6 +14,63 @@ func (s *StatusResponseStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
+// Ref: #/components/schemas/CreateDestinationBody
+type CreateDestinationBody struct {
+	ServiceConnection CreateDestinationBodyServiceConnection `json:"service_connection"`
+}
+
+// GetServiceConnection returns the value of ServiceConnection.
+func (s *CreateDestinationBody) GetServiceConnection() CreateDestinationBodyServiceConnection {
+	return s.ServiceConnection
+}
+
+// SetServiceConnection sets the value of ServiceConnection.
+func (s *CreateDestinationBody) SetServiceConnection(val CreateDestinationBodyServiceConnection) {
+	s.ServiceConnection = val
+}
+
+type CreateDestinationBodyServiceConnection struct {
+	// The type of connection to be used for this destination. A valid type is the service_name of a
+	// connector returned from the /connectors endpoint, where the connector is marked as
+	// creatable_via_api.
+	Type string `json:"type"`
+	// The name of this destination.
+	Name string `json:"name"`
+	// The credentials needed to create each type of connection. These can be found in the GET
+	// /connectors API for most destinations.
+	Credentials jx.Raw `json:"credentials"`
+}
+
+// GetType returns the value of Type.
+func (s *CreateDestinationBodyServiceConnection) GetType() string {
+	return s.Type
+}
+
+// GetName returns the value of Name.
+func (s *CreateDestinationBodyServiceConnection) GetName() string {
+	return s.Name
+}
+
+// GetCredentials returns the value of Credentials.
+func (s *CreateDestinationBodyServiceConnection) GetCredentials() jx.Raw {
+	return s.Credentials
+}
+
+// SetType sets the value of Type.
+func (s *CreateDestinationBodyServiceConnection) SetType(val string) {
+	s.Type = val
+}
+
+// SetName sets the value of Name.
+func (s *CreateDestinationBodyServiceConnection) SetName(val string) {
+	s.Name = val
+}
+
+// SetCredentials sets the value of Credentials.
+func (s *CreateDestinationBodyServiceConnection) SetCredentials(val jx.Raw) {
+	s.Credentials = val
+}
+
 // Ref: #/components/schemas/CreateSourceBody
 type CreateSourceBody struct {
 	Connection CreateSourceBodyConnection `json:"connection"`
@@ -79,6 +136,146 @@ func (s *CreateSourceBodyConnection) SetLabel(val OptNilString) {
 // SetCredentials sets the value of Credentials.
 func (s *CreateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
+}
+
+// Ref: #/components/schemas/DestinationData
+type DestinationData struct {
+	// The id of this destination.
+	ID int64 `json:"id"`
+	// The name of this destination.
+	Name string `json:"name"`
+	// The type of connection to be used for this destination. A valid type is the service_name of a
+	// connector returned from the /connectors endpoint, where the connector is marked as
+	// creatable_via_api.
+	Type              string `json:"type"`
+	ConnectionDetails jx.Raw `json:"connection_details"`
+	// The timestamp when the source was created.
+	CreatedAt time.Time `json:"created_at"`
+	// Indicates if the last connection test to this source was successful.
+	LastTestSucceeded OptNilBool `json:"last_test_succeeded"`
+	// Timestamp of when the last connection test was conducted on this source.
+	LastTestedAt OptNilDateTime `json:"last_tested_at"`
+}
+
+// GetID returns the value of ID.
+func (s *DestinationData) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *DestinationData) GetName() string {
+	return s.Name
+}
+
+// GetType returns the value of Type.
+func (s *DestinationData) GetType() string {
+	return s.Type
+}
+
+// GetConnectionDetails returns the value of ConnectionDetails.
+func (s *DestinationData) GetConnectionDetails() jx.Raw {
+	return s.ConnectionDetails
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *DestinationData) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetLastTestSucceeded returns the value of LastTestSucceeded.
+func (s *DestinationData) GetLastTestSucceeded() OptNilBool {
+	return s.LastTestSucceeded
+}
+
+// GetLastTestedAt returns the value of LastTestedAt.
+func (s *DestinationData) GetLastTestedAt() OptNilDateTime {
+	return s.LastTestedAt
+}
+
+// SetID sets the value of ID.
+func (s *DestinationData) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *DestinationData) SetName(val string) {
+	s.Name = val
+}
+
+// SetType sets the value of Type.
+func (s *DestinationData) SetType(val string) {
+	s.Type = val
+}
+
+// SetConnectionDetails sets the value of ConnectionDetails.
+func (s *DestinationData) SetConnectionDetails(val jx.Raw) {
+	s.ConnectionDetails = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *DestinationData) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetLastTestSucceeded sets the value of LastTestSucceeded.
+func (s *DestinationData) SetLastTestSucceeded(val OptNilBool) {
+	s.LastTestSucceeded = val
+}
+
+// SetLastTestedAt sets the value of LastTestedAt.
+func (s *DestinationData) SetLastTestedAt(val OptNilDateTime) {
+	s.LastTestedAt = val
+}
+
+type DestinationResponse struct {
+	Status ResponseStatus  `json:"status"`
+	Data   DestinationData `json:"data"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DestinationResponse) GetStatus() ResponseStatus {
+	return s.Status
+}
+
+// GetData returns the value of Data.
+func (s *DestinationResponse) GetData() DestinationData {
+	return s.Data
+}
+
+// SetStatus sets the value of Status.
+func (s *DestinationResponse) SetStatus(val ResponseStatus) {
+	s.Status = val
+}
+
+// SetData sets the value of Data.
+func (s *DestinationResponse) SetData(val DestinationData) {
+	s.Data = val
+}
+
+// DestinationResponseStatusCode wraps DestinationResponse with StatusCode.
+type DestinationResponseStatusCode struct {
+	StatusCode int
+	Response   DestinationResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DestinationResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DestinationResponseStatusCode) GetResponse() DestinationResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DestinationResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DestinationResponseStatusCode) SetResponse(val DestinationResponse) {
+	s.Response = val
 }
 
 type IdResponse struct {
@@ -774,6 +971,49 @@ func (s *StatusResponseStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *StatusResponseStatusCode) SetResponse(val StatusResponse) {
 	s.Response = val
+}
+
+// Ref: #/components/schemas/UpdateDestinationBody
+type UpdateDestinationBody struct {
+	ServiceConnection UpdateDestinationBodyServiceConnection `json:"service_connection"`
+}
+
+// GetServiceConnection returns the value of ServiceConnection.
+func (s *UpdateDestinationBody) GetServiceConnection() UpdateDestinationBodyServiceConnection {
+	return s.ServiceConnection
+}
+
+// SetServiceConnection sets the value of ServiceConnection.
+func (s *UpdateDestinationBody) SetServiceConnection(val UpdateDestinationBodyServiceConnection) {
+	s.ServiceConnection = val
+}
+
+type UpdateDestinationBodyServiceConnection struct {
+	// The name of this destination.
+	Name OptString `json:"name"`
+	// The credentials needed to create each type of connection. These can be found in the GET
+	// /connectors API for most destinations.
+	Credentials jx.Raw `json:"credentials"`
+}
+
+// GetName returns the value of Name.
+func (s *UpdateDestinationBodyServiceConnection) GetName() OptString {
+	return s.Name
+}
+
+// GetCredentials returns the value of Credentials.
+func (s *UpdateDestinationBodyServiceConnection) GetCredentials() jx.Raw {
+	return s.Credentials
+}
+
+// SetName sets the value of Name.
+func (s *UpdateDestinationBodyServiceConnection) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetCredentials sets the value of Credentials.
+func (s *UpdateDestinationBodyServiceConnection) SetCredentials(val jx.Raw) {
+	s.Credentials = val
 }
 
 // Ref: #/components/schemas/UpdateSourceBody

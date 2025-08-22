@@ -22,12 +22,24 @@ func trimTrailingSlashes(u *url.URL) {
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
+	// CreateDestination invokes createDestination operation.
+	//
+	// Create Destination.
+	//
+	// POST /api/v1/destinations
+	CreateDestination(ctx context.Context, request *CreateDestinationBody) (*IdResponseStatusCode, error)
 	// CreateSource invokes createSource operation.
 	//
 	// Create Source.
 	//
 	// POST /api/v1/sources
 	CreateSource(ctx context.Context, request *CreateSourceBody) (*IdResponseStatusCode, error)
+	// DeleteDestination invokes deleteDestination operation.
+	//
+	// Delete destination.
+	//
+	// DELETE /api/v1/destinations/{destination_id}
+	DeleteDestination(ctx context.Context, params DeleteDestinationParams) (*StatusResponseStatusCode, error)
 	// DeleteSource invokes deleteSource operation.
 	//
 	// Delete source.
@@ -38,12 +50,24 @@ type Invoker interface {
 	//
 	// GET /api/v1
 	GetApiV1(ctx context.Context) (GetApiV1Res, error)
+	// GetDestination invokes getDestination operation.
+	//
+	// Fetch destination.
+	//
+	// GET /api/v1/destinations/{destination_id}
+	GetDestination(ctx context.Context, params GetDestinationParams) (*DestinationResponseStatusCode, error)
 	// GetSource invokes getSource operation.
 	//
 	// Fetch source.
 	//
 	// GET /api/v1/sources/{source_id}
 	GetSource(ctx context.Context, params GetSourceParams) (*SourceResponseStatusCode, error)
+	// UpdateDestination invokes updateDestination operation.
+	//
+	// Update destination.
+	//
+	// PATCH /api/v1/destinations/{destination_id}
+	UpdateDestination(ctx context.Context, request *UpdateDestinationBody, params UpdateDestinationParams) (*DestinationResponseStatusCode, error)
 	// UpdateSource invokes updateSource operation.
 	//
 	// Update source.
@@ -99,6 +123,78 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 		return c.serverURL
 	}
 	return u
+}
+
+// CreateDestination invokes createDestination operation.
+//
+// Create Destination.
+//
+// POST /api/v1/destinations
+func (c *Client) CreateDestination(ctx context.Context, request *CreateDestinationBody) (*IdResponseStatusCode, error) {
+	res, err := c.sendCreateDestination(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreateDestination(ctx context.Context, request *CreateDestinationBody) (res *IdResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/destinations"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateDestinationRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, CreateDestinationOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCreateDestinationResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
 }
 
 // CreateSource invokes createSource operation.
@@ -166,6 +262,93 @@ func (c *Client) sendCreateSource(ctx context.Context, request *CreateSourceBody
 	defer resp.Body.Close()
 
 	result, err := decodeCreateSourceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteDestination invokes deleteDestination operation.
+//
+// Delete destination.
+//
+// DELETE /api/v1/destinations/{destination_id}
+func (c *Client) DeleteDestination(ctx context.Context, params DeleteDestinationParams) (*StatusResponseStatusCode, error) {
+	res, err := c.sendDeleteDestination(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteDestination(ctx context.Context, params DeleteDestinationParams) (res *StatusResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/destinations/"
+	{
+		// Encode "destination_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "destination_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DestinationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, DeleteDestinationOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteDestinationResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -327,6 +510,93 @@ func (c *Client) sendGetApiV1(ctx context.Context) (res GetApiV1Res, err error) 
 	return result, nil
 }
 
+// GetDestination invokes getDestination operation.
+//
+// Fetch destination.
+//
+// GET /api/v1/destinations/{destination_id}
+func (c *Client) GetDestination(ctx context.Context, params GetDestinationParams) (*DestinationResponseStatusCode, error) {
+	res, err := c.sendGetDestination(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetDestination(ctx context.Context, params GetDestinationParams) (res *DestinationResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/destinations/"
+	{
+		// Encode "destination_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "destination_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DestinationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, GetDestinationOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetDestinationResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetSource invokes getSource operation.
 //
 // Fetch source.
@@ -407,6 +677,96 @@ func (c *Client) sendGetSource(ctx context.Context, params GetSourceParams) (res
 	defer resp.Body.Close()
 
 	result, err := decodeGetSourceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateDestination invokes updateDestination operation.
+//
+// Update destination.
+//
+// PATCH /api/v1/destinations/{destination_id}
+func (c *Client) UpdateDestination(ctx context.Context, request *UpdateDestinationBody, params UpdateDestinationParams) (*DestinationResponseStatusCode, error) {
+	res, err := c.sendUpdateDestination(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateDestination(ctx context.Context, request *UpdateDestinationBody, params UpdateDestinationParams) (res *DestinationResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/destinations/"
+	{
+		// Encode "destination_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "destination_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DestinationID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateDestinationRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, UpdateDestinationOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeUpdateDestinationResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

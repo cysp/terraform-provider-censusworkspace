@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
 
-func SourceResourceIdentitySchema(_ context.Context) identityschema.Schema {
+func DestinationResourceIdentitySchema(_ context.Context) identityschema.Schema {
 	return identityschema.Schema{
 		Attributes: map[string]identityschema.Attribute{
 			"id": identityschema.Int64Attribute{
@@ -21,7 +21,7 @@ func SourceResourceIdentitySchema(_ context.Context) identityschema.Schema {
 	}
 }
 
-func SourceResourceSchema(_ context.Context) schema.Schema {
+func DestinationResourceSchema(_ context.Context) schema.Schema {
 	return schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
@@ -35,34 +35,21 @@ func SourceResourceSchema(_ context.Context) schema.Schema {
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-				MarkdownDescription: "The type of the data source. A valid type is the `service_name` of a source type returned from the `/source_types` endpoint, where the source type is marked as `creatable_via_api`.",
+				MarkdownDescription: "The type of connection to be used for this destination. A valid type is the `service_name` of a connector returned from the `/connectors` endpoint, where the connector is marked as `creatable_via_api`.",
 			},
 			"name": schema.StringAttribute{
-				Computed:            true,
-				MarkdownDescription: "The name assigned to this source, typically a combination of type and location.",
-			},
-			"label": schema.StringAttribute{
 				Required:            true,
-				MarkdownDescription: "An optional label that can be assigned to the source for better categorization or identification.",
-			},
-			"sync_engine": schema.StringAttribute{
-				Optional: true,
-				Computed: true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-					stringplanmodifier.UseStateForUnknown(),
-				},
-				MarkdownDescription: "The sync engine type for this source. Can only be set during creation and cannot be modified after.",
+				MarkdownDescription: "The name of this destination.",
 			},
 			"credentials": schema.StringAttribute{
 				CustomType:          jsontypes.NormalizedType{},
 				Optional:            true,
-				MarkdownDescription: "Credentials that should be associated with this source (e.g. hostname, port)",
+				MarkdownDescription: "The credentials needed to create each type of connection. These can be found in the `GET /connectors` API for most destinations.",
 			},
 			"connection_details": schema.StringAttribute{
 				CustomType:          jsontypes.NormalizedType{},
 				Computed:            true,
-				MarkdownDescription: "Detailed configuration and information for connecting to this source.",
+				MarkdownDescription: "Connection details associated with this destination.",
 			},
 			"created_at": schema.StringAttribute{
 				CustomType:          timetypes.RFC3339Type{},
@@ -72,11 +59,11 @@ func SourceResourceSchema(_ context.Context) schema.Schema {
 			"last_tested_at": schema.StringAttribute{
 				CustomType:          timetypes.RFC3339Type{},
 				Computed:            true,
-				MarkdownDescription: "Timestamp of when the last connection test was conducted on this source.",
+				MarkdownDescription: "Timestamp of when the last connection test was conducted on this destination.",
 			},
 			"last_test_succeeded": schema.BoolAttribute{
 				Computed:            true,
-				MarkdownDescription: "Indicates if the last connection test to this source was successful.",
+				MarkdownDescription: "Indicates if the last connection test to this destination was successful.",
 			},
 		},
 	}

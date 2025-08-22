@@ -34,11 +34,15 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 }
 
 var operationRolesWorkspaceApiKey = map[string][]string{
-	CreateSourceOperation: []string{},
-	DeleteSourceOperation: []string{},
-	GetApiV1Operation:     []string{},
-	GetSourceOperation:    []string{},
-	UpdateSourceOperation: []string{},
+	CreateDestinationOperation: []string{},
+	CreateSourceOperation:      []string{},
+	DeleteDestinationOperation: []string{},
+	DeleteSourceOperation:      []string{},
+	GetApiV1Operation:          []string{},
+	GetDestinationOperation:    []string{},
+	GetSourceOperation:         []string{},
+	UpdateDestinationOperation: []string{},
+	UpdateSourceOperation:      []string{},
 }
 
 func (s *Server) securityWorkspaceApiKey(ctx context.Context, operationName OperationName, req *http.Request) (context.Context, bool, error) {
