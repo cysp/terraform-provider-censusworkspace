@@ -48,7 +48,7 @@ type Invoker interface {
 	//
 	// Update source.
 	//
-	// PUT /api/v1/sources/{source_id}
+	// PATCH /api/v1/sources/{source_id}
 	UpdateSource(ctx context.Context, request *UpdateSourceBody, params UpdateSourceParams) (*SourceResponseStatusCode, error)
 }
 
@@ -418,7 +418,7 @@ func (c *Client) sendGetSource(ctx context.Context, params GetSourceParams) (res
 //
 // Update source.
 //
-// PUT /api/v1/sources/{source_id}
+// PATCH /api/v1/sources/{source_id}
 func (c *Client) UpdateSource(ctx context.Context, request *UpdateSourceBody, params UpdateSourceParams) (*SourceResponseStatusCode, error) {
 	res, err := c.sendUpdateSource(ctx, request, params)
 	return res, err
@@ -449,7 +449,7 @@ func (c *Client) sendUpdateSource(ctx context.Context, request *UpdateSourceBody
 	}
 	uri.AddPathParts(u, pathParts[:]...)
 
-	r, err := ht.NewRequest(ctx, "PUT", u)
+	r, err := ht.NewRequest(ctx, "PATCH", u)
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}

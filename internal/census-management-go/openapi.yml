@@ -188,7 +188,7 @@ paths:
           $ref: "#/components/responses/sourceResponse"
         default:
           $ref: "#/components/responses/statusResponse"
-    put:
+    patch:
       operationId: updateSource
       summary: Update source
       requestBody:

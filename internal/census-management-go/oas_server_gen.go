@@ -34,7 +34,7 @@ type Handler interface {
 	//
 	// Update source.
 	//
-	// PUT /api/v1/sources/{source_id}
+	// PATCH /api/v1/sources/{source_id}
 	UpdateSource(ctx context.Context, req *UpdateSourceBody, params UpdateSourceParams) (*SourceResponseStatusCode, error)
 	// NewError creates *StatusResponseStatusCode from error returned by handler.
 	//
