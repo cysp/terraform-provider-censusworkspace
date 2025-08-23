@@ -564,7 +564,7 @@ func (s *Server) handleGetSourceRequest(args [1]string, argsEscaped bool, w http
 //
 // Update source.
 //
-// PUT /api/v1/sources/{source_id}
+// PATCH /api/v1/sources/{source_id}
 func (s *Server) handleUpdateSourceRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter

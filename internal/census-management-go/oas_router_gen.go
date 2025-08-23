@@ -115,12 +115,12 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							s.handleGetSourceRequest([1]string{
 								args[0],
 							}, elemIsEscaped, w, r)
-						case "PUT":
+						case "PATCH":
 							s.handleUpdateSourceRequest([1]string{
 								args[0],
 							}, elemIsEscaped, w, r)
 						default:
-							s.notAllowed(w, r, "DELETE,GET,PUT")
+							s.notAllowed(w, r, "DELETE,GET,PATCH")
 						}
 
 						return
@@ -292,7 +292,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.args = args
 							r.count = 1
 							return r, true
-						case "PUT":
+						case "PATCH":
 							r.name = UpdateSourceOperation
 							r.summary = "Update source"
 							r.operationID = "updateSource"
