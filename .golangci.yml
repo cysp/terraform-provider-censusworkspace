@@ -15,6 +15,7 @@ linters:
     varnamelen:
       ignore-names:
         - i
+        - id
         - k
         - r
         - v
