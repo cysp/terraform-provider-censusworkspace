@@ -6,13 +6,17 @@ package censusmanagement
 type OperationName = string
 
 const (
+	CreateDatasetOperation     OperationName = "CreateDataset"
 	CreateDestinationOperation OperationName = "CreateDestination"
 	CreateSourceOperation      OperationName = "CreateSource"
+	DeleteDatasetOperation     OperationName = "DeleteDataset"
 	DeleteDestinationOperation OperationName = "DeleteDestination"
 	DeleteSourceOperation      OperationName = "DeleteSource"
 	GetApiV1Operation          OperationName = "GetApiV1"
+	GetDatasetOperation        OperationName = "GetDataset"
 	GetDestinationOperation    OperationName = "GetDestination"
 	GetSourceOperation         OperationName = "GetSource"
+	UpdateDatasetOperation     OperationName = "UpdateDataset"
 	UpdateDestinationOperation OperationName = "UpdateDestination"
 	UpdateSourceOperation      OperationName = "UpdateSource"
 )
