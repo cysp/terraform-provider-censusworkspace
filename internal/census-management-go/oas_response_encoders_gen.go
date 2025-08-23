@@ -11,6 +11,35 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
+func encodeCreateDatasetResponse(response *IdResponseStatusCode, w http.ResponseWriter) error {
+	if err := func() error {
+		if err := response.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "validate")
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	code := response.StatusCode
+	if code == 0 {
+		// Set default status code.
+		code = http.StatusOK
+	}
+	w.WriteHeader(code)
+
+	e := new(jx.Encoder)
+	response.Response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	if code >= http.StatusInternalServerError {
+		return errors.Wrapf(ht.ErrInternalServerErrorResponse, "code: %d, message: %s", code, http.StatusText(code))
+	}
+	return nil
+}
+
 func encodeCreateDestinationResponse(response *IdResponseStatusCode, w http.ResponseWriter) error {
 	if err := func() error {
 		if err := response.Validate(); err != nil {
@@ -41,6 +70,35 @@ func encodeCreateDestinationResponse(response *IdResponseStatusCode, w http.Resp
 }
 
 func encodeCreateSourceResponse(response *IdResponseStatusCode, w http.ResponseWriter) error {
+	if err := func() error {
+		if err := response.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "validate")
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	code := response.StatusCode
+	if code == 0 {
+		// Set default status code.
+		code = http.StatusOK
+	}
+	w.WriteHeader(code)
+
+	e := new(jx.Encoder)
+	response.Response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	if code >= http.StatusInternalServerError {
+		return errors.Wrapf(ht.ErrInternalServerErrorResponse, "code: %d, message: %s", code, http.StatusText(code))
+	}
+	return nil
+}
+
+func encodeDeleteDatasetResponse(response *StatusResponseStatusCode, w http.ResponseWriter) error {
 	if err := func() error {
 		if err := response.Validate(); err != nil {
 			return err
@@ -134,6 +192,35 @@ func encodeGetApiV1Response(response GetApiV1Res, w http.ResponseWriter) error {
 	}
 }
 
+func encodeGetDatasetResponse(response *DatasetResponseStatusCode, w http.ResponseWriter) error {
+	if err := func() error {
+		if err := response.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "validate")
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	code := response.StatusCode
+	if code == 0 {
+		// Set default status code.
+		code = http.StatusOK
+	}
+	w.WriteHeader(code)
+
+	e := new(jx.Encoder)
+	response.Response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	if code >= http.StatusInternalServerError {
+		return errors.Wrapf(ht.ErrInternalServerErrorResponse, "code: %d, message: %s", code, http.StatusText(code))
+	}
+	return nil
+}
+
 func encodeGetDestinationResponse(response *DestinationResponseStatusCode, w http.ResponseWriter) error {
 	if err := func() error {
 		if err := response.Validate(); err != nil {
@@ -164,6 +251,35 @@ func encodeGetDestinationResponse(response *DestinationResponseStatusCode, w htt
 }
 
 func encodeGetSourceResponse(response *SourceResponseStatusCode, w http.ResponseWriter) error {
+	if err := func() error {
+		if err := response.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return errors.Wrap(err, "validate")
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	code := response.StatusCode
+	if code == 0 {
+		// Set default status code.
+		code = http.StatusOK
+	}
+	w.WriteHeader(code)
+
+	e := new(jx.Encoder)
+	response.Response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	if code >= http.StatusInternalServerError {
+		return errors.Wrapf(ht.ErrInternalServerErrorResponse, "code: %d, message: %s", code, http.StatusText(code))
+	}
+	return nil
+}
+
+func encodeUpdateDatasetResponse(response *DatasetResponseStatusCode, w http.ResponseWriter) error {
 	if err := func() error {
 		if err := response.Validate(); err != nil {
 			return err

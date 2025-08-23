@@ -14,6 +14,47 @@ func (s *StatusResponseStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
+// Ref: #/components/schemas/CreateDatasetBody
+// CreateDatasetBody represents sum type.
+type CreateDatasetBody struct {
+	Type                 CreateDatasetBodyType // switch on this field
+	CreateSQLDatasetBody CreateSQLDatasetBody
+}
+
+// CreateDatasetBodyType is oneOf type of CreateDatasetBody.
+type CreateDatasetBodyType string
+
+// Possible values for CreateDatasetBodyType.
+const (
+	CreateSQLDatasetBodyCreateDatasetBody CreateDatasetBodyType = "CreateSQLDatasetBody"
+)
+
+// IsCreateSQLDatasetBody reports whether CreateDatasetBody is CreateSQLDatasetBody.
+func (s CreateDatasetBody) IsCreateSQLDatasetBody() bool {
+	return s.Type == CreateSQLDatasetBodyCreateDatasetBody
+}
+
+// SetCreateSQLDatasetBody sets CreateDatasetBody to CreateSQLDatasetBody.
+func (s *CreateDatasetBody) SetCreateSQLDatasetBody(v CreateSQLDatasetBody) {
+	s.Type = CreateSQLDatasetBodyCreateDatasetBody
+	s.CreateSQLDatasetBody = v
+}
+
+// GetCreateSQLDatasetBody returns CreateSQLDatasetBody and true boolean if CreateDatasetBody is CreateSQLDatasetBody.
+func (s CreateDatasetBody) GetCreateSQLDatasetBody() (v CreateSQLDatasetBody, ok bool) {
+	if !s.IsCreateSQLDatasetBody() {
+		return v, false
+	}
+	return s.CreateSQLDatasetBody, true
+}
+
+// NewCreateSQLDatasetBodyCreateDatasetBody returns new CreateDatasetBody from CreateSQLDatasetBody.
+func NewCreateSQLDatasetBodyCreateDatasetBody(v CreateSQLDatasetBody) CreateDatasetBody {
+	var s CreateDatasetBody
+	s.SetCreateSQLDatasetBody(v)
+	return s
+}
+
 // Ref: #/components/schemas/CreateDestinationBody
 type CreateDestinationBody struct {
 	ServiceConnection CreateDestinationBodyServiceConnection `json:"service_connection"`
@@ -69,6 +110,105 @@ func (s *CreateDestinationBodyServiceConnection) SetName(val string) {
 // SetCredentials sets the value of Credentials.
 func (s *CreateDestinationBodyServiceConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
+}
+
+// Ref: #/components/schemas/CreateSQLDatasetBody
+type CreateSQLDatasetBody struct {
+	// The name of the dataset.
+	Name string `json:"name"`
+	// Type of dataset.
+	Type CreateSQLDatasetBodyType `json:"type"`
+	// ID of the source connection to run the query against.
+	SourceID int64 `json:"source_id"`
+	// SQL query that defines the dataset.
+	Query string `json:"query"`
+	// Optional description of the dataset.
+	Description OptString `json:"description"`
+}
+
+// GetName returns the value of Name.
+func (s *CreateSQLDatasetBody) GetName() string {
+	return s.Name
+}
+
+// GetType returns the value of Type.
+func (s *CreateSQLDatasetBody) GetType() CreateSQLDatasetBodyType {
+	return s.Type
+}
+
+// GetSourceID returns the value of SourceID.
+func (s *CreateSQLDatasetBody) GetSourceID() int64 {
+	return s.SourceID
+}
+
+// GetQuery returns the value of Query.
+func (s *CreateSQLDatasetBody) GetQuery() string {
+	return s.Query
+}
+
+// GetDescription returns the value of Description.
+func (s *CreateSQLDatasetBody) GetDescription() OptString {
+	return s.Description
+}
+
+// SetName sets the value of Name.
+func (s *CreateSQLDatasetBody) SetName(val string) {
+	s.Name = val
+}
+
+// SetType sets the value of Type.
+func (s *CreateSQLDatasetBody) SetType(val CreateSQLDatasetBodyType) {
+	s.Type = val
+}
+
+// SetSourceID sets the value of SourceID.
+func (s *CreateSQLDatasetBody) SetSourceID(val int64) {
+	s.SourceID = val
+}
+
+// SetQuery sets the value of Query.
+func (s *CreateSQLDatasetBody) SetQuery(val string) {
+	s.Query = val
+}
+
+// SetDescription sets the value of Description.
+func (s *CreateSQLDatasetBody) SetDescription(val OptString) {
+	s.Description = val
+}
+
+// Type of dataset.
+type CreateSQLDatasetBodyType string
+
+const (
+	CreateSQLDatasetBodyTypeSQL CreateSQLDatasetBodyType = "sql"
+)
+
+// AllValues returns all CreateSQLDatasetBodyType values.
+func (CreateSQLDatasetBodyType) AllValues() []CreateSQLDatasetBodyType {
+	return []CreateSQLDatasetBodyType{
+		CreateSQLDatasetBodyTypeSQL,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s CreateSQLDatasetBodyType) MarshalText() ([]byte, error) {
+	switch s {
+	case CreateSQLDatasetBodyTypeSQL:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *CreateSQLDatasetBodyType) UnmarshalText(data []byte) error {
+	switch CreateSQLDatasetBodyType(data) {
+	case CreateSQLDatasetBodyTypeSQL:
+		*s = CreateSQLDatasetBodyTypeSQL
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
 }
 
 // Ref: #/components/schemas/CreateSourceBody
@@ -136,6 +276,96 @@ func (s *CreateSourceBodyConnection) SetLabel(val OptNilString) {
 // SetCredentials sets the value of Credentials.
 func (s *CreateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
+}
+
+// Ref: #/components/schemas/DatasetData
+// DatasetData represents sum type.
+type DatasetData struct {
+	Type           DatasetDataType // switch on this field
+	SQLDatasetData SQLDatasetData
+}
+
+// DatasetDataType is oneOf type of DatasetData.
+type DatasetDataType string
+
+// Possible values for DatasetDataType.
+const (
+	SQLDatasetDataDatasetData DatasetDataType = "SQLDatasetData"
+)
+
+// IsSQLDatasetData reports whether DatasetData is SQLDatasetData.
+func (s DatasetData) IsSQLDatasetData() bool { return s.Type == SQLDatasetDataDatasetData }
+
+// SetSQLDatasetData sets DatasetData to SQLDatasetData.
+func (s *DatasetData) SetSQLDatasetData(v SQLDatasetData) {
+	s.Type = SQLDatasetDataDatasetData
+	s.SQLDatasetData = v
+}
+
+// GetSQLDatasetData returns SQLDatasetData and true boolean if DatasetData is SQLDatasetData.
+func (s DatasetData) GetSQLDatasetData() (v SQLDatasetData, ok bool) {
+	if !s.IsSQLDatasetData() {
+		return v, false
+	}
+	return s.SQLDatasetData, true
+}
+
+// NewSQLDatasetDataDatasetData returns new DatasetData from SQLDatasetData.
+func NewSQLDatasetDataDatasetData(v SQLDatasetData) DatasetData {
+	var s DatasetData
+	s.SetSQLDatasetData(v)
+	return s
+}
+
+type DatasetResponse struct {
+	Status ResponseStatus `json:"status"`
+	Data   DatasetData    `json:"data"`
+}
+
+// GetStatus returns the value of Status.
+func (s *DatasetResponse) GetStatus() ResponseStatus {
+	return s.Status
+}
+
+// GetData returns the value of Data.
+func (s *DatasetResponse) GetData() DatasetData {
+	return s.Data
+}
+
+// SetStatus sets the value of Status.
+func (s *DatasetResponse) SetStatus(val ResponseStatus) {
+	s.Status = val
+}
+
+// SetData sets the value of Data.
+func (s *DatasetResponse) SetData(val DatasetData) {
+	s.Data = val
+}
+
+// DatasetResponseStatusCode wraps DatasetResponse with StatusCode.
+type DatasetResponseStatusCode struct {
+	StatusCode int
+	Response   DatasetResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *DatasetResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *DatasetResponseStatusCode) GetResponse() DatasetResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *DatasetResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *DatasetResponseStatusCode) SetResponse(val DatasetResponse) {
+	s.Response = val
 }
 
 // Ref: #/components/schemas/DestinationData
@@ -693,6 +923,141 @@ func (s *ResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
+// Ref: #/components/schemas/SQLDatasetData
+type SQLDatasetData struct {
+	// Unique identifier for the dataset.
+	ID int64 `json:"id"`
+	// The name of the dataset.
+	Name string `json:"name"`
+	// Type of dataset.
+	Type SQLDatasetDataType `json:"type"`
+	// ID of the source connection to run the query against.
+	SourceID int64 `json:"source_id"`
+	// SQL query that defines the dataset.
+	Query string `json:"query"`
+	// Optional description of the dataset.
+	Description OptString `json:"description"`
+	// Timestamp when the dataset was created.
+	CreatedAt time.Time `json:"created_at"`
+	// Timestamp when the dataset was last updated.
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// GetID returns the value of ID.
+func (s *SQLDatasetData) GetID() int64 {
+	return s.ID
+}
+
+// GetName returns the value of Name.
+func (s *SQLDatasetData) GetName() string {
+	return s.Name
+}
+
+// GetType returns the value of Type.
+func (s *SQLDatasetData) GetType() SQLDatasetDataType {
+	return s.Type
+}
+
+// GetSourceID returns the value of SourceID.
+func (s *SQLDatasetData) GetSourceID() int64 {
+	return s.SourceID
+}
+
+// GetQuery returns the value of Query.
+func (s *SQLDatasetData) GetQuery() string {
+	return s.Query
+}
+
+// GetDescription returns the value of Description.
+func (s *SQLDatasetData) GetDescription() OptString {
+	return s.Description
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *SQLDatasetData) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *SQLDatasetData) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
+}
+
+// SetID sets the value of ID.
+func (s *SQLDatasetData) SetID(val int64) {
+	s.ID = val
+}
+
+// SetName sets the value of Name.
+func (s *SQLDatasetData) SetName(val string) {
+	s.Name = val
+}
+
+// SetType sets the value of Type.
+func (s *SQLDatasetData) SetType(val SQLDatasetDataType) {
+	s.Type = val
+}
+
+// SetSourceID sets the value of SourceID.
+func (s *SQLDatasetData) SetSourceID(val int64) {
+	s.SourceID = val
+}
+
+// SetQuery sets the value of Query.
+func (s *SQLDatasetData) SetQuery(val string) {
+	s.Query = val
+}
+
+// SetDescription sets the value of Description.
+func (s *SQLDatasetData) SetDescription(val OptString) {
+	s.Description = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *SQLDatasetData) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *SQLDatasetData) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
+}
+
+// Type of dataset.
+type SQLDatasetDataType string
+
+const (
+	SQLDatasetDataTypeSQL SQLDatasetDataType = "sql"
+)
+
+// AllValues returns all SQLDatasetDataType values.
+func (SQLDatasetDataType) AllValues() []SQLDatasetDataType {
+	return []SQLDatasetDataType{
+		SQLDatasetDataTypeSQL,
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (s SQLDatasetDataType) MarshalText() ([]byte, error) {
+	switch s {
+	case SQLDatasetDataTypeSQL:
+		return []byte(s), nil
+	default:
+		return nil, errors.Errorf("invalid value: %q", s)
+	}
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (s *SQLDatasetDataType) UnmarshalText(data []byte) error {
+	switch SQLDatasetDataType(data) {
+	case SQLDatasetDataTypeSQL:
+		*s = SQLDatasetDataTypeSQL
+		return nil
+	default:
+		return errors.Errorf("invalid value: %q", data)
+	}
+}
+
 // Ref: #/components/schemas/SourceData
 type SourceData struct {
 	// The unique identifier of the source.
@@ -973,6 +1338,47 @@ func (s *StatusResponseStatusCode) SetResponse(val StatusResponse) {
 	s.Response = val
 }
 
+// Ref: #/components/schemas/UpdateDatasetBody
+// UpdateDatasetBody represents sum type.
+type UpdateDatasetBody struct {
+	Type                 UpdateDatasetBodyType // switch on this field
+	UpdateSQLDatasetBody UpdateSQLDatasetBody
+}
+
+// UpdateDatasetBodyType is oneOf type of UpdateDatasetBody.
+type UpdateDatasetBodyType string
+
+// Possible values for UpdateDatasetBodyType.
+const (
+	UpdateSQLDatasetBodyUpdateDatasetBody UpdateDatasetBodyType = "UpdateSQLDatasetBody"
+)
+
+// IsUpdateSQLDatasetBody reports whether UpdateDatasetBody is UpdateSQLDatasetBody.
+func (s UpdateDatasetBody) IsUpdateSQLDatasetBody() bool {
+	return s.Type == UpdateSQLDatasetBodyUpdateDatasetBody
+}
+
+// SetUpdateSQLDatasetBody sets UpdateDatasetBody to UpdateSQLDatasetBody.
+func (s *UpdateDatasetBody) SetUpdateSQLDatasetBody(v UpdateSQLDatasetBody) {
+	s.Type = UpdateSQLDatasetBodyUpdateDatasetBody
+	s.UpdateSQLDatasetBody = v
+}
+
+// GetUpdateSQLDatasetBody returns UpdateSQLDatasetBody and true boolean if UpdateDatasetBody is UpdateSQLDatasetBody.
+func (s UpdateDatasetBody) GetUpdateSQLDatasetBody() (v UpdateSQLDatasetBody, ok bool) {
+	if !s.IsUpdateSQLDatasetBody() {
+		return v, false
+	}
+	return s.UpdateSQLDatasetBody, true
+}
+
+// NewUpdateSQLDatasetBodyUpdateDatasetBody returns new UpdateDatasetBody from UpdateSQLDatasetBody.
+func NewUpdateSQLDatasetBodyUpdateDatasetBody(v UpdateSQLDatasetBody) UpdateDatasetBody {
+	var s UpdateDatasetBody
+	s.SetUpdateSQLDatasetBody(v)
+	return s
+}
+
 // Ref: #/components/schemas/UpdateDestinationBody
 type UpdateDestinationBody struct {
 	ServiceConnection UpdateDestinationBodyServiceConnection `json:"service_connection"`
@@ -1014,6 +1420,46 @@ func (s *UpdateDestinationBodyServiceConnection) SetName(val OptString) {
 // SetCredentials sets the value of Credentials.
 func (s *UpdateDestinationBodyServiceConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
+}
+
+// Ref: #/components/schemas/UpdateSQLDatasetBody
+type UpdateSQLDatasetBody struct {
+	// The name of the dataset.
+	Name OptString `json:"name"`
+	// SQL query that defines the dataset.
+	Query OptString `json:"query"`
+	// Optional description of the dataset.
+	Description OptString `json:"description"`
+}
+
+// GetName returns the value of Name.
+func (s *UpdateSQLDatasetBody) GetName() OptString {
+	return s.Name
+}
+
+// GetQuery returns the value of Query.
+func (s *UpdateSQLDatasetBody) GetQuery() OptString {
+	return s.Query
+}
+
+// GetDescription returns the value of Description.
+func (s *UpdateSQLDatasetBody) GetDescription() OptString {
+	return s.Description
+}
+
+// SetName sets the value of Name.
+func (s *UpdateSQLDatasetBody) SetName(val OptString) {
+	s.Name = val
+}
+
+// SetQuery sets the value of Query.
+func (s *UpdateSQLDatasetBody) SetQuery(val OptString) {
+	s.Query = val
+}
+
+// SetDescription sets the value of Description.
+func (s *UpdateSQLDatasetBody) SetDescription(val OptString) {
+	s.Description = val
 }
 
 // Ref: #/components/schemas/UpdateSourceBody

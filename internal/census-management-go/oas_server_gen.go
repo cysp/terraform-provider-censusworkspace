@@ -8,6 +8,12 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
+	// CreateDataset implements createDataset operation.
+	//
+	// Create dataset.
+	//
+	// POST /api/v1/datasets
+	CreateDataset(ctx context.Context, req CreateDatasetBody) (*IdResponseStatusCode, error)
 	// CreateDestination implements createDestination operation.
 	//
 	// Create Destination.
@@ -20,6 +26,12 @@ type Handler interface {
 	//
 	// POST /api/v1/sources
 	CreateSource(ctx context.Context, req *CreateSourceBody) (*IdResponseStatusCode, error)
+	// DeleteDataset implements deleteDataset operation.
+	//
+	// Delete dataset.
+	//
+	// DELETE /api/v1/datasets/{dataset_id}
+	DeleteDataset(ctx context.Context, params DeleteDatasetParams) (*StatusResponseStatusCode, error)
 	// DeleteDestination implements deleteDestination operation.
 	//
 	// Delete destination.
@@ -36,6 +48,12 @@ type Handler interface {
 	//
 	// GET /api/v1
 	GetApiV1(ctx context.Context) (GetApiV1Res, error)
+	// GetDataset implements getDataset operation.
+	//
+	// Fetch dataset.
+	//
+	// GET /api/v1/datasets/{dataset_id}
+	GetDataset(ctx context.Context, params GetDatasetParams) (*DatasetResponseStatusCode, error)
 	// GetDestination implements getDestination operation.
 	//
 	// Fetch destination.
@@ -48,6 +66,12 @@ type Handler interface {
 	//
 	// GET /api/v1/sources/{source_id}
 	GetSource(ctx context.Context, params GetSourceParams) (*SourceResponseStatusCode, error)
+	// UpdateDataset implements updateDataset operation.
+	//
+	// Update dataset.
+	//
+	// PATCH /api/v1/datasets/{dataset_id}
+	UpdateDataset(ctx context.Context, req UpdateDatasetBody, params UpdateDatasetParams) (*DatasetResponseStatusCode, error)
 	// UpdateDestination implements updateDestination operation.
 	//
 	// Update destination.

@@ -80,62 +80,136 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					break
 				}
 				switch elem[0] {
-				case 'd': // Prefix: "destinations"
+				case 'd': // Prefix: "d"
 
-					if l := len("destinations"); len(elem) >= l && elem[0:l] == "destinations" {
+					if l := len("d"); len(elem) >= l && elem[0:l] == "d" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						switch r.Method {
-						case "POST":
-							s.handleCreateDestinationRequest([0]string{}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, "POST")
-						}
-
-						return
+						break
 					}
 					switch elem[0] {
-					case '/': // Prefix: "/"
+					case 'a': // Prefix: "atasets"
 
-						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						if l := len("atasets"); len(elem) >= l && elem[0:l] == "atasets" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "destination_id"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
-							break
-						}
-						args[0] = elem
-						elem = ""
-
 						if len(elem) == 0 {
-							// Leaf node.
 							switch r.Method {
-							case "DELETE":
-								s.handleDeleteDestinationRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							case "GET":
-								s.handleGetDestinationRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							case "PATCH":
-								s.handleUpdateDestinationRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
+							case "POST":
+								s.handleCreateDatasetRequest([0]string{}, elemIsEscaped, w, r)
 							default:
-								s.notAllowed(w, r, "DELETE,GET,PATCH")
+								s.notAllowed(w, r, "POST")
 							}
 
 							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "dataset_id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "DELETE":
+									s.handleDeleteDatasetRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleGetDatasetRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "PATCH":
+									s.handleUpdateDatasetRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "DELETE,GET,PATCH")
+								}
+
+								return
+							}
+
+						}
+
+					case 'e': // Prefix: "estinations"
+
+						if l := len("estinations"); len(elem) >= l && elem[0:l] == "estinations" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "POST":
+								s.handleCreateDestinationRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "destination_id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "DELETE":
+									s.handleDeleteDestinationRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleGetDestinationRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "PATCH":
+									s.handleUpdateDestinationRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "DELETE,GET,PATCH")
+								}
+
+								return
+							}
+
 						}
 
 					}
@@ -319,76 +393,164 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					break
 				}
 				switch elem[0] {
-				case 'd': // Prefix: "destinations"
+				case 'd': // Prefix: "d"
 
-					if l := len("destinations"); len(elem) >= l && elem[0:l] == "destinations" {
+					if l := len("d"); len(elem) >= l && elem[0:l] == "d" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						switch method {
-						case "POST":
-							r.name = CreateDestinationOperation
-							r.summary = "Create Destination"
-							r.operationID = "createDestination"
-							r.pathPattern = "/api/v1/destinations"
-							r.args = args
-							r.count = 0
-							return r, true
-						default:
-							return
-						}
+						break
 					}
 					switch elem[0] {
-					case '/': // Prefix: "/"
+					case 'a': // Prefix: "atasets"
 
-						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						if l := len("atasets"); len(elem) >= l && elem[0:l] == "atasets" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "destination_id"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
-							break
-						}
-						args[0] = elem
-						elem = ""
-
 						if len(elem) == 0 {
-							// Leaf node.
 							switch method {
-							case "DELETE":
-								r.name = DeleteDestinationOperation
-								r.summary = "Delete destination"
-								r.operationID = "deleteDestination"
-								r.pathPattern = "/api/v1/destinations/{destination_id}"
+							case "POST":
+								r.name = CreateDatasetOperation
+								r.summary = "Create dataset"
+								r.operationID = "createDataset"
+								r.pathPattern = "/api/v1/datasets"
 								r.args = args
-								r.count = 1
-								return r, true
-							case "GET":
-								r.name = GetDestinationOperation
-								r.summary = "Fetch destination"
-								r.operationID = "getDestination"
-								r.pathPattern = "/api/v1/destinations/{destination_id}"
-								r.args = args
-								r.count = 1
-								return r, true
-							case "PATCH":
-								r.name = UpdateDestinationOperation
-								r.summary = "Update destination"
-								r.operationID = "updateDestination"
-								r.pathPattern = "/api/v1/destinations/{destination_id}"
-								r.args = args
-								r.count = 1
+								r.count = 0
 								return r, true
 							default:
 								return
 							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "dataset_id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "DELETE":
+									r.name = DeleteDatasetOperation
+									r.summary = "Delete dataset"
+									r.operationID = "deleteDataset"
+									r.pathPattern = "/api/v1/datasets/{dataset_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "GET":
+									r.name = GetDatasetOperation
+									r.summary = "Fetch dataset"
+									r.operationID = "getDataset"
+									r.pathPattern = "/api/v1/datasets/{dataset_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "PATCH":
+									r.name = UpdateDatasetOperation
+									r.summary = "Update dataset"
+									r.operationID = "updateDataset"
+									r.pathPattern = "/api/v1/datasets/{dataset_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					case 'e': // Prefix: "estinations"
+
+						if l := len("estinations"); len(elem) >= l && elem[0:l] == "estinations" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "POST":
+								r.name = CreateDestinationOperation
+								r.summary = "Create Destination"
+								r.operationID = "createDestination"
+								r.pathPattern = "/api/v1/destinations"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "destination_id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "DELETE":
+									r.name = DeleteDestinationOperation
+									r.summary = "Delete destination"
+									r.operationID = "deleteDestination"
+									r.pathPattern = "/api/v1/destinations/{destination_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "GET":
+									r.name = GetDestinationOperation
+									r.summary = "Fetch destination"
+									r.operationID = "getDestination"
+									r.pathPattern = "/api/v1/destinations/{destination_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "PATCH":
+									r.name = UpdateDestinationOperation
+									r.summary = "Update destination"
+									r.operationID = "updateDestination"
+									r.pathPattern = "/api/v1/destinations/{destination_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
 						}
 
 					}
