@@ -34,13 +34,17 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 }
 
 var operationRolesWorkspaceApiKey = map[string][]string{
+	CreateDatasetOperation:     []string{},
 	CreateDestinationOperation: []string{},
 	CreateSourceOperation:      []string{},
+	DeleteDatasetOperation:     []string{},
 	DeleteDestinationOperation: []string{},
 	DeleteSourceOperation:      []string{},
 	GetApiV1Operation:          []string{},
+	GetDatasetOperation:        []string{},
 	GetDestinationOperation:    []string{},
 	GetSourceOperation:         []string{},
+	UpdateDatasetOperation:     []string{},
 	UpdateDestinationOperation: []string{},
 	UpdateSourceOperation:      []string{},
 }

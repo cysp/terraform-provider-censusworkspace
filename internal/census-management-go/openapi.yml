@@ -6,6 +6,12 @@ servers:
   - url: https://app.getcensus.com
 components:
   parameters:
+    dataset_id:
+      in: path
+      name: dataset_id
+      required: true
+      schema:
+        type: string
     source_id:
       in: path
       name: source_id
@@ -104,6 +110,94 @@ components:
         - name
         - label
         - created_at
+    CreateDatasetBody:
+      oneOf:
+        - $ref: "#/components/schemas/CreateSQLDatasetBody"
+    CreateSQLDatasetBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the dataset
+        type:
+          type: string
+          description: Type of dataset
+          enum:
+            - sql
+        source_id:
+          type: integer
+          format: int64
+          description: ID of the source connection to run the query against
+        query:
+          type: string
+          description: SQL query that defines the dataset
+        description:
+          type: string
+          description: Optional description of the dataset
+      required:
+        - name
+        - type
+        - source_id
+        - query
+    UpdateDatasetBody:
+      oneOf:
+        - $ref: "#/components/schemas/UpdateSQLDatasetBody"
+    UpdateSQLDatasetBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the dataset
+        query:
+          type: string
+          description: SQL query that defines the dataset
+        description:
+          type: string
+          description: Optional description of the dataset
+    DatasetData:
+      oneOf:
+        - $ref: "#/components/schemas/SQLDatasetData"
+    SQLDatasetData:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the dataset
+        name:
+          type: string
+          description: The name of the dataset
+        type:
+          type: string
+          enum:
+            - sql
+          description: Type of dataset
+        source_id:
+          type: integer
+          format: int64
+          description: ID of the source connection to run the query against
+        query:
+          type: string
+          description: SQL query that defines the dataset
+        description:
+          type: string
+          description: Optional description of the dataset
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the dataset was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the dataset was last updated
+      required:
+        - id
+        - name
+        - type
+        - source_id
+        - query
+        - created_at
+        - updated_at
     CreateDestinationBody:
       type: object
       properties:
@@ -223,6 +317,20 @@ components:
             required:
               - status
               - data
+    datasetResponse:
+      description: A dataset
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: "#/components/schemas/ResponseStatus"
+              data:
+                $ref: "#/components/schemas/DatasetData"
+            required:
+              - status
+              - data
     destinationResponse:
       description: A destination
       content:
@@ -289,6 +397,54 @@ paths:
     delete:
       operationId: deleteSource
       summary: Delete source
+      responses:
+        2XX:
+          $ref: "#/components/responses/statusResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+  /api/v1/datasets:
+    post:
+      operationId: createDataset
+      summary: Create dataset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDatasetBody"
+      responses:
+        2XX:
+          $ref: "#/components/responses/idResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+  /api/v1/datasets/{dataset_id}:
+    parameters:
+      - $ref: "#/components/parameters/dataset_id"
+    get:
+      operationId: getDataset
+      summary: Fetch dataset
+      responses:
+        2XX:
+          $ref: "#/components/responses/datasetResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+    patch:
+      operationId: updateDataset
+      summary: Update dataset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDatasetBody"
+      responses:
+        2XX:
+          $ref: "#/components/responses/datasetResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+    delete:
+      operationId: deleteDataset
+      summary: Delete dataset
       responses:
         2XX:
           $ref: "#/components/responses/statusResponse"

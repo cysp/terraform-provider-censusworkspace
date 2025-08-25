@@ -22,6 +22,12 @@ func trimTrailingSlashes(u *url.URL) {
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
+	// CreateDataset invokes createDataset operation.
+	//
+	// Create dataset.
+	//
+	// POST /api/v1/datasets
+	CreateDataset(ctx context.Context, request CreateDatasetBody) (*IdResponseStatusCode, error)
 	// CreateDestination invokes createDestination operation.
 	//
 	// Create Destination.
@@ -34,6 +40,12 @@ type Invoker interface {
 	//
 	// POST /api/v1/sources
 	CreateSource(ctx context.Context, request *CreateSourceBody) (*IdResponseStatusCode, error)
+	// DeleteDataset invokes deleteDataset operation.
+	//
+	// Delete dataset.
+	//
+	// DELETE /api/v1/datasets/{dataset_id}
+	DeleteDataset(ctx context.Context, params DeleteDatasetParams) (*StatusResponseStatusCode, error)
 	// DeleteDestination invokes deleteDestination operation.
 	//
 	// Delete destination.
@@ -50,6 +62,12 @@ type Invoker interface {
 	//
 	// GET /api/v1
 	GetApiV1(ctx context.Context) (GetApiV1Res, error)
+	// GetDataset invokes getDataset operation.
+	//
+	// Fetch dataset.
+	//
+	// GET /api/v1/datasets/{dataset_id}
+	GetDataset(ctx context.Context, params GetDatasetParams) (*DatasetResponseStatusCode, error)
 	// GetDestination invokes getDestination operation.
 	//
 	// Fetch destination.
@@ -62,6 +80,12 @@ type Invoker interface {
 	//
 	// GET /api/v1/sources/{source_id}
 	GetSource(ctx context.Context, params GetSourceParams) (*SourceResponseStatusCode, error)
+	// UpdateDataset invokes updateDataset operation.
+	//
+	// Update dataset.
+	//
+	// PATCH /api/v1/datasets/{dataset_id}
+	UpdateDataset(ctx context.Context, request UpdateDatasetBody, params UpdateDatasetParams) (*DatasetResponseStatusCode, error)
 	// UpdateDestination invokes updateDestination operation.
 	//
 	// Update destination.
@@ -123,6 +147,87 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 		return c.serverURL
 	}
 	return u
+}
+
+// CreateDataset invokes createDataset operation.
+//
+// Create dataset.
+//
+// POST /api/v1/datasets
+func (c *Client) CreateDataset(ctx context.Context, request CreateDatasetBody) (*IdResponseStatusCode, error) {
+	res, err := c.sendCreateDataset(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreateDataset(ctx context.Context, request CreateDatasetBody) (res *IdResponseStatusCode, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/datasets"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateDatasetRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, CreateDatasetOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCreateDatasetResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
 }
 
 // CreateDestination invokes createDestination operation.
@@ -262,6 +367,93 @@ func (c *Client) sendCreateSource(ctx context.Context, request *CreateSourceBody
 	defer resp.Body.Close()
 
 	result, err := decodeCreateSourceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteDataset invokes deleteDataset operation.
+//
+// Delete dataset.
+//
+// DELETE /api/v1/datasets/{dataset_id}
+func (c *Client) DeleteDataset(ctx context.Context, params DeleteDatasetParams) (*StatusResponseStatusCode, error) {
+	res, err := c.sendDeleteDataset(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteDataset(ctx context.Context, params DeleteDatasetParams) (res *StatusResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/datasets/"
+	{
+		// Encode "dataset_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "dataset_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DatasetID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, DeleteDatasetOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteDatasetResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -510,6 +702,93 @@ func (c *Client) sendGetApiV1(ctx context.Context) (res GetApiV1Res, err error) 
 	return result, nil
 }
 
+// GetDataset invokes getDataset operation.
+//
+// Fetch dataset.
+//
+// GET /api/v1/datasets/{dataset_id}
+func (c *Client) GetDataset(ctx context.Context, params GetDatasetParams) (*DatasetResponseStatusCode, error) {
+	res, err := c.sendGetDataset(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetDataset(ctx context.Context, params GetDatasetParams) (res *DatasetResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/datasets/"
+	{
+		// Encode "dataset_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "dataset_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DatasetID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, GetDatasetOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetDatasetResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // GetDestination invokes getDestination operation.
 //
 // Fetch destination.
@@ -677,6 +956,96 @@ func (c *Client) sendGetSource(ctx context.Context, params GetSourceParams) (res
 	defer resp.Body.Close()
 
 	result, err := decodeGetSourceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateDataset invokes updateDataset operation.
+//
+// Update dataset.
+//
+// PATCH /api/v1/datasets/{dataset_id}
+func (c *Client) UpdateDataset(ctx context.Context, request UpdateDatasetBody, params UpdateDatasetParams) (*DatasetResponseStatusCode, error) {
+	res, err := c.sendUpdateDataset(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateDataset(ctx context.Context, request UpdateDatasetBody, params UpdateDatasetParams) (res *DatasetResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/datasets/"
+	{
+		// Encode "dataset_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "dataset_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.DatasetID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateDatasetRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, UpdateDatasetOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeUpdateDatasetResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
