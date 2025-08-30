@@ -13,10 +13,12 @@ import (
 
 func NewDestinationModelFromResponse(_ context.Context, response cm.DestinationData) (DestinationModel, diag.Diagnostics) {
 	model := DestinationModel{
-		ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
-		Name:      types.StringValue(response.Name),
-		Type:      types.StringValue(response.Type),
-		CreatedAt: timetypes.NewRFC3339TimeValue(response.CreatedAt),
+		destinationModelBase: destinationModelBase{
+			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
+			Name:      types.StringValue(response.Name),
+			CreatedAt: timetypes.NewRFC3339TimeValue(response.CreatedAt),
+		},
+		Type: types.StringValue(response.Type),
 	}
 
 	if response.ConnectionDetails != nil {
