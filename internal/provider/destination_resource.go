@@ -48,6 +48,7 @@ func (r *destinationResource) ImportState(ctx context.Context, req resource.Impo
 	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("id"), req, resp)
 }
 
+//nolint:dupl
 func (r *destinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan DestinationModel
 
