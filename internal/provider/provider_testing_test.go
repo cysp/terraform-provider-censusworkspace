@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cysp/terraform-provider-censusworkspace/internal/provider"
+	. "github.com/cysp/terraform-provider-censusworkspace/internal/provider"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
@@ -49,14 +49,14 @@ func providerMockableResourceTest(t *testing.T, server http.Handler, alwaysMock 
 	}
 }
 
-func ProviderOptionsWithHTTPTestServer(testserver *httptest.Server) []provider.Option {
+func ProviderOptionsWithHTTPTestServer(testserver *httptest.Server) []Option {
 	if testserver == nil {
 		return nil
 	}
 
-	return []provider.Option{
-		provider.WithBaseURL(testserver.URL),
-		provider.WithHTTPClient(testserver.Client()),
-		provider.WithWorkspaceAPIKey("12345"),
+	return []Option{
+		WithBaseURL(testserver.URL),
+		WithHTTPClient(testserver.Client()),
+		WithWorkspaceAPIKey("12345"),
 	}
 }
