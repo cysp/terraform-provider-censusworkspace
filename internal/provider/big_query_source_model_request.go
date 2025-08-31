@@ -23,7 +23,7 @@ func (m *BigQuerySourceModel) ToCreateSourceData(_ context.Context) (cm.CreateSo
 	}
 
 	enc := jx.Encoder{}
-	EncodeBigQuerySourceCredentials(&enc, m.Credentials.Value())
+	m.Credentials.Value().Encode(&enc)
 
 	body.Connection.Credentials = enc.Bytes()
 
@@ -41,24 +41,24 @@ func (m *BigQuerySourceModel) ToUpdateSourceData(_ context.Context) (cm.UpdateSo
 	}
 
 	enc := jx.Encoder{}
-	EncodeBigQuerySourceCredentials(&enc, m.Credentials.Value())
+	m.Credentials.Value().Encode(&enc)
 
 	body.Connection.Credentials = enc.Bytes()
 
 	return body, nil
 }
 
-func EncodeBigQuerySourceCredentials(enc *jx.Encoder, credentials BigQuerySourceCredentials) {
+func (c BigQuerySourceCredentials) Encode(enc *jx.Encoder) {
 	enc.Obj(func(enc *jx.Encoder) {
 		enc.Field("project_id", func(e *jx.Encoder) {
-			e.Str(credentials.ProjectID.ValueString())
+			e.Str(c.ProjectID.ValueString())
 		})
 
 		enc.Field("location", func(e *jx.Encoder) {
-			e.Str(credentials.Location.ValueString())
+			e.Str(c.Location.ValueString())
 		})
 
-		serviceAccountKey := credentials.ServiceAccountKey.ValueString()
+		serviceAccountKey := c.ServiceAccountKey.ValueString()
 		if serviceAccountKey != "" {
 			enc.Field("service_account_key", func(e *jx.Encoder) {
 				e.Str(serviceAccountKey)
