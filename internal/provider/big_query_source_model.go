@@ -15,6 +15,7 @@ type BigQuerySourceModel struct {
 	ConnectionDetails TypedObject[BigQuerySourceConnectionDetails] `tfsdk:"connection_details"`
 }
 
+//nolint:recvcheck
 type BigQuerySourceCredentials struct {
 	ProjectID         types.String `tfsdk:"project_id"`
 	Location          types.String `tfsdk:"location"`

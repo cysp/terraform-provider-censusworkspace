@@ -169,7 +169,10 @@ func (r *bigQuerySourceResource) Create(ctx context.Context, req resource.Create
 		model.SyncEngine = plan.SyncEngine
 	}
 
-	model.Credentials = plan.Credentials
+	credentials := plan.Credentials.Value()
+	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
+
+	model.Credentials = NewTypedObject(credentials)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -222,7 +225,10 @@ func (r *bigQuerySourceResource) Read(ctx context.Context, req resource.ReadRequ
 		model.SyncEngine = state.SyncEngine
 	}
 
-	model.Credentials = state.Credentials
+	credentials := state.Credentials.Value()
+	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
+
+	model.Credentials = NewTypedObject(credentials)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -274,7 +280,10 @@ func (r *bigQuerySourceResource) Update(ctx context.Context, req resource.Update
 		model.SyncEngine = state.SyncEngine
 	}
 
-	model.Credentials = plan.Credentials
+	credentials := plan.Credentials.Value()
+	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
+
+	model.Credentials = NewTypedObject(credentials)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
