@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 )
 
 func CustomAPIDestinationResourceIdentitySchema(_ context.Context) identityschema.Schema {
@@ -66,6 +67,8 @@ func CustomAPIDestinationCredentialsCustomHeaderResourceSchemaAttributes(_ conte
 		},
 		"is_secret": schema.BoolAttribute{
 			Optional: true,
+			Computed: true,
+			Default:  booldefault.StaticBool(false),
 		},
 	}
 }
