@@ -1,3 +1,4 @@
+//nolint:dupl
 package provider
 
 import (
@@ -14,43 +15,43 @@ import (
 )
 
 var (
-	_ resource.Resource                = (*customAPIDestinationResource)(nil)
-	_ resource.ResourceWithConfigure   = (*customAPIDestinationResource)(nil)
-	_ resource.ResourceWithIdentity    = (*customAPIDestinationResource)(nil)
-	_ resource.ResourceWithImportState = (*customAPIDestinationResource)(nil)
-	_ resource.ResourceWithMoveState   = (*customAPIDestinationResource)(nil)
+	_ resource.Resource                = (*bigQueryDestinationResource)(nil)
+	_ resource.ResourceWithConfigure   = (*bigQueryDestinationResource)(nil)
+	_ resource.ResourceWithIdentity    = (*bigQueryDestinationResource)(nil)
+	_ resource.ResourceWithImportState = (*bigQueryDestinationResource)(nil)
+	_ resource.ResourceWithMoveState   = (*bigQueryDestinationResource)(nil)
 )
 
 //nolint:ireturn
-func NewCustomAPIDestinationResource() resource.Resource {
-	return &customAPIDestinationResource{}
+func NewBigQueryDestinationResource() resource.Resource {
+	return &bigQueryDestinationResource{}
 }
 
-type customAPIDestinationResource struct {
+type bigQueryDestinationResource struct {
 	providerData ProviderData
 }
 
-func (r *customAPIDestinationResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_custom_api_destination"
+func (r *bigQueryDestinationResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_big_query_destination"
 }
 
-func (r *customAPIDestinationResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = CustomAPIDestinationResourceSchema(ctx)
+func (r *bigQueryDestinationResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = BigQueryDestinationResourceSchema(ctx)
 }
 
-func (r *customAPIDestinationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *bigQueryDestinationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	resp.Diagnostics.Append(SetProviderDataFromResourceConfigureRequest(req, &r.providerData)...)
 }
 
-func (r *customAPIDestinationResource) IdentitySchema(ctx context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
-	resp.IdentitySchema = CustomAPIDestinationResourceIdentitySchema(ctx)
+func (r *bigQueryDestinationResource) IdentitySchema(ctx context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = BigQueryDestinationResourceIdentitySchema(ctx)
 }
 
-func (r *customAPIDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *bigQueryDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("id"), req, resp)
 }
 
-func (r *customAPIDestinationResource) MoveState(ctx context.Context) []resource.StateMover {
+func (r *bigQueryDestinationResource) MoveState(ctx context.Context) []resource.StateMover {
 	schema := DestinationResourceSchema(ctx)
 
 	return []resource.StateMover{
@@ -61,79 +62,49 @@ func (r *customAPIDestinationResource) MoveState(ctx context.Context) []resource
 					destinationModel := DestinationModel{}
 					resp.Diagnostics.Append(req.SourceState.Get(ctx, &destinationModel)...)
 
-					if destinationModel.Type.ValueString() != CustomAPIDestinationType {
+					if destinationModel.Type.ValueString() != BigQueryDestinationType {
 						return
 					}
 
-					type destinationCredentialsCustomHeaderModel struct {
-						Value    *string `json:"value"`
-						IsSecret *bool   `json:"is_secret"`
-					}
-
 					type destinationCredentialsModel struct {
-						APIVersion    *int64                                             `json:"api_version"`
-						WebhookURL    *string                                            `json:"webhook_url"`
-						CustomHeaders map[string]destinationCredentialsCustomHeaderModel `json:"custom_headers"`
+						ProjectID         *string `json:"project_id"`
+						Location          *string `json:"location"`
+						ServiceAccountKey *string `json:"service_account_key"`
 					}
 
 					destinationCredentials := destinationCredentialsModel{}
 					resp.Diagnostics.Append(destinationModel.Credentials.Unmarshal(&destinationCredentials)...)
 
-					customAPIDestinationCredentials := CustomAPIDestinationCredentials{
-						APIVersion: types.Int64PointerValue(destinationCredentials.APIVersion),
-						WebhookURL: types.StringPointerValue(destinationCredentials.WebhookURL),
-					}
-
-					if destinationCredentials.CustomHeaders != nil {
-						customAPIDestinationCredentialsCustomHeaders := make(map[string]TypedObject[CustomAPIDestinationCustomHeader], 0)
-						for key, value := range destinationCredentials.CustomHeaders {
-							customAPIDestinationCredentialsCustomHeaders[key] = NewTypedObject(CustomAPIDestinationCustomHeader{
-								Value:    types.StringPointerValue(value.Value),
-								IsSecret: types.BoolPointerValue(value.IsSecret),
-							})
-						}
-
-						customAPIDestinationCredentials.CustomHeaders = NewTypedMap(customAPIDestinationCredentialsCustomHeaders)
-					}
-
-					type destinationConnectionDetailsCustomHeaderModel struct {
-						Value    *string `json:"value"`
-						IsSecret *bool   `json:"is_secret"`
+					bigQueryDestinationCredentials := BigQueryDestinationCredentials{
+						ProjectID:         types.StringPointerValue(destinationCredentials.ProjectID),
+						Location:          types.StringPointerValue(destinationCredentials.Location),
+						ServiceAccountKey: types.StringPointerValue(destinationCredentials.ServiceAccountKey),
 					}
 
 					type destinationConnectionDetailsModel struct {
-						APIVersion    *int64                                                   `json:"api_version"`
-						WebhookURL    *string                                                  `json:"webhook_url"`
-						CustomHeaders map[string]destinationConnectionDetailsCustomHeaderModel `json:"custom_headers"`
+						ProjectID           *string `json:"project_id"`
+						Location            *string `json:"location"`
+						ServiceAccountKey   *string `json:"service_account_key"`
+						ServiceAccountEmail *string `json:"service_account_email"`
 					}
 
 					destinationConnectionDetails := destinationConnectionDetailsModel{}
 					resp.Diagnostics.Append(destinationModel.ConnectionDetails.Unmarshal(&destinationConnectionDetails)...)
 
-					customAPIDestinationConnectionDetails := CustomAPIDestinationConnectionDetails{
-						APIVersion: types.Int64PointerValue(destinationConnectionDetails.APIVersion),
-						WebhookURL: types.StringPointerValue(destinationConnectionDetails.WebhookURL),
+					bigQueryDestinationConnectionDetails := BigQueryDestinationConnectionDetails{
+						ProjectID:           types.StringPointerValue(destinationConnectionDetails.ProjectID),
+						Location:            types.StringPointerValue(destinationConnectionDetails.Location),
+						ServiceAccountKey:   types.StringPointerValue(destinationCredentials.ServiceAccountKey),
+						ServiceAccountEmail: types.StringPointerValue(destinationConnectionDetails.ServiceAccountEmail),
 					}
 
-					if destinationConnectionDetails.CustomHeaders != nil {
-						customAPIDestinationConnectionDetailsCustomHeaders := make(map[string]TypedObject[CustomAPIDestinationCustomHeader], 0)
-						for key, value := range destinationConnectionDetails.CustomHeaders {
-							customAPIDestinationConnectionDetailsCustomHeaders[key] = NewTypedObject(CustomAPIDestinationCustomHeader{
-								Value:    types.StringPointerValue(value.Value),
-								IsSecret: types.BoolPointerValue(value.IsSecret),
-							})
-						}
-
-						customAPIDestinationConnectionDetails.CustomHeaders = NewTypedMap(customAPIDestinationConnectionDetailsCustomHeaders)
-					}
-
-					customAPIDestinationModel := CustomAPIDestinationModel{
+					bigQueryDestinationModel := BigQueryDestinationModel{
 						destinationModelBase: destinationModel.destinationModelBase,
-						Credentials:          NewTypedObject(customAPIDestinationCredentials),
-						ConnectionDetails:    NewTypedObject(customAPIDestinationConnectionDetails),
+						Credentials:          NewTypedObject(bigQueryDestinationCredentials),
+						ConnectionDetails:    NewTypedObject(bigQueryDestinationConnectionDetails),
 					}
 
-					resp.Diagnostics.Append(resp.TargetState.Set(ctx, &customAPIDestinationModel)...)
+					resp.Diagnostics.Append(resp.TargetState.Set(ctx, &bigQueryDestinationModel)...)
 
 					return
 				}
@@ -143,8 +114,8 @@ func (r *customAPIDestinationResource) MoveState(ctx context.Context) []resource
 }
 
 //nolint:dupl
-func (r *customAPIDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan CustomAPIDestinationModel
+func (r *bigQueryDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan BigQueryDestinationModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 
@@ -194,7 +165,7 @@ func (r *customAPIDestinationResource) Create(ctx context.Context, req resource.
 		"err":      getDestinationErr,
 	})
 
-	model, modelDiags := NewCustomAPIDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
+	model, modelDiags := NewBigQueryDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
 	credentials := plan.Credentials.Value()
@@ -209,8 +180,8 @@ func (r *customAPIDestinationResource) Create(ctx context.Context, req resource.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
-func (r *customAPIDestinationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state CustomAPIDestinationModel
+func (r *bigQueryDestinationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state BigQueryDestinationModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
@@ -246,7 +217,7 @@ func (r *customAPIDestinationResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	model, modelDiags := NewCustomAPIDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
+	model, modelDiags := NewBigQueryDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
 	credentials := state.Credentials.Value()
@@ -261,8 +232,8 @@ func (r *customAPIDestinationResource) Read(ctx context.Context, req resource.Re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
-func (r *customAPIDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var state, plan CustomAPIDestinationModel
+func (r *bigQueryDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var state, plan BigQueryDestinationModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
@@ -297,7 +268,7 @@ func (r *customAPIDestinationResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	model, modelDiags := NewCustomAPIDestinationModelFromResponse(ctx, updateDestinationResponse.Response.Data)
+	model, modelDiags := NewBigQueryDestinationModelFromResponse(ctx, updateDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
 	credentials := plan.Credentials.Value()
@@ -309,8 +280,8 @@ func (r *customAPIDestinationResource) Update(ctx context.Context, req resource.
 }
 
 //nolint:dupl
-func (r *customAPIDestinationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state CustomAPIDestinationModel
+func (r *bigQueryDestinationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state BigQueryDestinationModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 

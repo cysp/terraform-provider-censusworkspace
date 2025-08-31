@@ -92,6 +92,7 @@ func TestAccCustomAPIDestinationResourceCreateUpdateDelete(t *testing.T) {
 					},
 				},
 			},
+			//nolint:dupl
 			{
 				PreConfig: func() {
 					destination := server.Handler().Destinations["1"]
@@ -153,7 +154,7 @@ func TestAccCustomAPIDestinationResourceCreateUpdateDelete(t *testing.T) {
 	})
 }
 
-//nolint:paralleltest
+//nolint:dupl,paralleltest
 func TestAccCustomAPIDestinationResourceMovedFromDestination(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
 	require.NoError(t, err)
