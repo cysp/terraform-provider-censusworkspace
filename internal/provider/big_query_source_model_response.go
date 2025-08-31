@@ -25,6 +25,10 @@ func NewBigQuerySourceModelFromResponse(ctx context.Context, response cm.SourceD
 		},
 	}
 
+	if syncEngine, syncEngineOk := response.SyncEngine.Get(); syncEngineOk {
+		model.SyncEngine = types.StringValue(syncEngine)
+	}
+
 	if response.ConnectionDetails != nil {
 		path := path.AtName("connection_details")
 
