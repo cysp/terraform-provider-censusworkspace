@@ -12,12 +12,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func NewCustomAPIDestinationModelFromResponse(ctx context.Context, response cm.DestinationData) (CustomAPIDestinationModel, diag.Diagnostics) {
+func NewBigQueryDestinationModelFromResponse(ctx context.Context, response cm.DestinationData) (BigQueryDestinationModel, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
 	path := path.Empty()
 
-	model := CustomAPIDestinationModel{
+	model := BigQueryDestinationModel{
 		destinationModelBase: destinationModelBase{
 			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
 			Name:      types.StringValue(response.Name),
@@ -28,7 +28,7 @@ func NewCustomAPIDestinationModelFromResponse(ctx context.Context, response cm.D
 	if response.ConnectionDetails != nil {
 		path := path.AtName("connection_details")
 
-		connectionDetails, connectionDetailsDiags := NewCustomAPIDestinationConnectionDetailsFromResponse(ctx, path, response.ConnectionDetails)
+		connectionDetails, connectionDetailsDiags := NewBigQueryDestinationConnectionDetailsFromResponse(ctx, path, response.ConnectionDetails)
 		diags.Append(connectionDetailsDiags...)
 
 		model.ConnectionDetails = connectionDetails
