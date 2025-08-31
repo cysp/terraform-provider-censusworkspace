@@ -15,6 +15,7 @@ type CustomAPIDestinationModel struct {
 	ConnectionDetails TypedObject[CustomAPIDestinationConnectionDetails] `tfsdk:"connection_details"`
 }
 
+//nolint:recvcheck
 type CustomAPIDestinationCredentials struct {
 	APIVersion    types.Int64                                             `tfsdk:"api_version"`
 	WebhookURL    types.String                                            `tfsdk:"webhook_url"`

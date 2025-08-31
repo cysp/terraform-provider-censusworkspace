@@ -142,7 +142,6 @@ func (r *customAPIDestinationResource) MoveState(ctx context.Context) []resource
 	}
 }
 
-//nolint:dupl
 func (r *customAPIDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan CustomAPIDestinationModel
 
@@ -197,7 +196,10 @@ func (r *customAPIDestinationResource) Create(ctx context.Context, req resource.
 	model, modelDiags := NewCustomAPIDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
-	model.Credentials = plan.Credentials
+	credentials := plan.Credentials.Value()
+	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
+
+	model.Credentials = NewTypedObject(credentials)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -246,7 +248,10 @@ func (r *customAPIDestinationResource) Read(ctx context.Context, req resource.Re
 	model, modelDiags := NewCustomAPIDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
-	model.Credentials = state.Credentials
+	credentials := state.Credentials.Value()
+	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
+
+	model.Credentials = NewTypedObject(credentials)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -294,7 +299,10 @@ func (r *customAPIDestinationResource) Update(ctx context.Context, req resource.
 	model, modelDiags := NewCustomAPIDestinationModelFromResponse(ctx, updateDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
-	model.Credentials = plan.Credentials
+	credentials := plan.Credentials.Value()
+	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
+
+	model.Credentials = NewTypedObject(credentials)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
