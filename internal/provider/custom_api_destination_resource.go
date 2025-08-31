@@ -57,7 +57,7 @@ func (r *customAPIDestinationResource) MoveState(ctx context.Context) []resource
 		{
 			SourceSchema: &schema,
 			StateMover: func(_ context.Context, req resource.MoveStateRequest, resp *resource.MoveStateResponse) {
-				if req.SourceTypeName == "censusworkspace_destination" && req.SourceSchemaVersion == 0 {
+				if req.SourceTypeName == DestinationResourceTypeName && req.SourceSchemaVersion == 0 {
 					destinationModel := DestinationModel{}
 					resp.Diagnostics.Append(req.SourceState.Get(ctx, &destinationModel)...)
 
