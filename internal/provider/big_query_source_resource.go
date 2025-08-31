@@ -274,7 +274,7 @@ func (r *bigQuerySourceResource) Update(ctx context.Context, req resource.Update
 		model.SyncEngine = state.SyncEngine
 	}
 
-	model.Credentials = state.Credentials
+	model.Credentials = plan.Credentials
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }

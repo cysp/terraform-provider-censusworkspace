@@ -212,7 +212,7 @@ func (r *sourceResource) Update(ctx context.Context, req resource.UpdateRequest,
 		model.SyncEngine = state.SyncEngine
 	}
 
-	model.Credentials = state.Credentials
+	model.Credentials = plan.Credentials
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }

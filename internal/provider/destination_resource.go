@@ -199,7 +199,7 @@ func (r *destinationResource) Update(ctx context.Context, req resource.UpdateReq
 	model, modelDiags := NewDestinationModelFromResponse(ctx, updateDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
-	model.Credentials = state.Credentials
+	model.Credentials = plan.Credentials
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
