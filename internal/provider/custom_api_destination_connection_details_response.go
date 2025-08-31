@@ -1,64 +1,86 @@
 package provider
 
 import (
+	"context"
+
 	"github.com/go-faster/jx"
-	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 )
+
+func NewCustomAPIDestinationConnectionDetailsFromResponse(_ context.Context, path path.Path, data []byte) (TypedObject[CustomAPIDestinationConnectionDetails], diag.Diagnostics) {
+	if data == nil {
+		return NewTypedObjectNull[CustomAPIDestinationConnectionDetails](), nil
+	}
+
+	diags := diag.Diagnostics{}
+
+	var connectionDetails CustomAPIDestinationConnectionDetails
+
+	dec := jx.DecodeBytes(data)
+
+	err := connectionDetails.Decode(dec)
+	if err != nil {
+		diags.AddAttributeError(path, "Error decoding value", err.Error())
+	}
+
+	return NewTypedObject(connectionDetails), diags
+}
 
 func (cd *CustomAPIDestinationConnectionDetails) Decode(dec *jx.Decoder) error {
 	//nolint:wrapcheck
 	return dec.Obj(func(dec *jx.Decoder, key string) error {
 		switch key {
 		case "api_version":
-			value, err := dec.Int64()
-			if err != nil {
-				//nolint:wrapcheck
-				return err
-			}
-
-			cd.APIVersion = types.Int64Value(value)
+			return JxDecodeInt64Value(dec, &cd.APIVersion)
 
 		case "webhook_url":
-			value, err := dec.Str()
-			if err != nil {
-				//nolint:wrapcheck
-				return err
-			}
-
-			cd.WebhookURL = types.StringValue(value)
+			return JxDecodeStringValue(dec, &cd.WebhookURL)
 
 		case "custom_headers":
-			if dec.Next() == jx.Null {
-				return dec.Skip()
-			}
-
-			customHeaders := make(map[string]TypedObject[CustomAPIDestinationCustomHeader], 0)
-
-			customHeadersDecodeError := dec.Obj(func(d *jx.Decoder, key string) error {
-				customHeader := CustomAPIDestinationCustomHeader{}
-
-				customHeaderDecodeErr := customHeader.Decode(d)
-				if customHeaderDecodeErr != nil {
-					return customHeaderDecodeErr
-				}
-
-				customHeaders[key] = NewTypedObject(customHeader)
-
-				return nil
-			})
-			if customHeadersDecodeError != nil {
-				//nolint:wrapcheck
-				return customHeadersDecodeError
-			}
-
-			cd.CustomHeaders = NewTypedMap(customHeaders)
+			return DecodeConnectionDetailsCustomHeadersMap(dec, &cd.CustomHeaders)
 
 		default:
 			return dec.Skip()
 		}
+	})
+}
+
+func DecodeConnectionDetailsCustomHeadersMap(dec *jx.Decoder, value *TypedMap[TypedObject[CustomAPIDestinationCustomHeader]]) error {
+	if dec.Next() == jx.Null {
+		err := dec.Null()
+		if err != nil {
+			//nolint:wrapcheck
+			return err
+		}
+
+		*value = NewTypedMapNull[TypedObject[CustomAPIDestinationCustomHeader]]()
+
+		return nil
+	}
+
+	customHeaders := make(map[string]TypedObject[CustomAPIDestinationCustomHeader], 0)
+
+	customHeadersDecodeErr := dec.Obj(func(d *jx.Decoder, key string) error {
+		customHeader := CustomAPIDestinationCustomHeader{}
+
+		customHeaderDecodeErr := customHeader.Decode(d)
+		if customHeaderDecodeErr != nil {
+			return customHeaderDecodeErr
+		}
+
+		customHeaders[key] = NewTypedObject(customHeader)
 
 		return nil
 	})
+	if customHeadersDecodeErr != nil {
+		//nolint:wrapcheck
+		return customHeadersDecodeErr
+	}
+
+	*value = NewTypedMap(customHeaders)
+
+	return nil
 }
 
 func (ch *CustomAPIDestinationCustomHeader) Decode(dec *jx.Decoder) error {
@@ -66,36 +88,10 @@ func (ch *CustomAPIDestinationCustomHeader) Decode(dec *jx.Decoder) error {
 	return dec.Obj(func(dec *jx.Decoder, key string) error {
 		switch key {
 		case "value":
-			if dec.Next() == jx.Null {
-				err := dec.Null()
-				if err != nil {
-					//nolint:wrapcheck
-					return err
-				}
-
-				ch.Value = types.StringNull()
-			} else {
-				value, err := dec.Str()
-				if err != nil {
-					//nolint:wrapcheck
-					return err
-				}
-
-				ch.Value = types.StringValue(value)
-			}
-
-			return nil
+			return JxDecodeStringValue(dec, &ch.Value)
 
 		case "is_secret":
-			value, err := dec.Bool()
-			if err != nil {
-				//nolint:wrapcheck
-				return err
-			}
-
-			ch.IsSecret = types.BoolValue(value)
-
-			return nil
+			return JxDecodeBoolValue(dec, &ch.IsSecret)
 
 		default:
 			return dec.Skip()

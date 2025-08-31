@@ -5,15 +5,16 @@ import (
 	"strconv"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
-	"github.com/go-faster/jx"
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func NewCustomAPIDestinationModelFromResponse(_ context.Context, response cm.DestinationData) (CustomAPIDestinationModel, diag.Diagnostics) {
+func NewCustomAPIDestinationModelFromResponse(ctx context.Context, response cm.DestinationData) (CustomAPIDestinationModel, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
+
+	path := path.Empty()
 
 	model := CustomAPIDestinationModel{
 		destinationModelBase: destinationModelBase{
@@ -24,16 +25,12 @@ func NewCustomAPIDestinationModelFromResponse(_ context.Context, response cm.Des
 	}
 
 	if response.ConnectionDetails != nil {
-		dec := jx.DecodeBytes(response.ConnectionDetails)
+		path := path.AtName("connection_details")
 
-		connectionDetailsModel := CustomAPIDestinationConnectionDetails{}
+		connectionDetails, connectionDetailsDiags := NewCustomAPIDestinationConnectionDetailsFromResponse(ctx, path, response.ConnectionDetails)
+		diags.Append(connectionDetailsDiags...)
 
-		connectionDetailsDecodeErr := connectionDetailsModel.Decode(dec)
-		if connectionDetailsDecodeErr != nil {
-			diags.AddAttributeError(path.Root("connection_details"), "Failed to decode value", connectionDetailsDecodeErr.Error())
-		}
-
-		model.ConnectionDetails = NewTypedObject(connectionDetailsModel)
+		model.ConnectionDetails = connectionDetails
 	}
 
 	if lastTestedAt, lastTestedAtOk := response.LastTestedAt.Get(); lastTestedAtOk {
