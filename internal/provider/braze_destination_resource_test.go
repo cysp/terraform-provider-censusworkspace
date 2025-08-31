@@ -17,7 +17,7 @@ import (
 )
 
 //nolint:paralleltest
-func TestAccBigQueryDestinationResourceImport(t *testing.T) {
+func TestAccBrazeDestinationResourceImport(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
 	require.NoError(t, err)
 
@@ -31,7 +31,7 @@ func TestAccBigQueryDestinationResourceImport(t *testing.T) {
 	server.Handler().Destinations[testDestinationIDString] = &cm.DestinationData{
 		ID:   testDestinationID,
 		Name: "Test Destination",
-		Type: "big_query",
+		Type: "braze",
 	}
 
 	ProviderMockedResourceTest(t, server, resource.TestCase{
@@ -39,7 +39,7 @@ func TestAccBigQueryDestinationResourceImport(t *testing.T) {
 			{
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: configVariables,
-				ResourceName:    "censusworkspace_big_query_destination.test",
+				ResourceName:    "censusworkspace_braze_destination.test",
 				ImportState:     true,
 				ImportStateId:   testDestinationIDString,
 			},
@@ -48,7 +48,7 @@ func TestAccBigQueryDestinationResourceImport(t *testing.T) {
 }
 
 //nolint:paralleltest
-func TestAccBigQueryDestinationResourceImportNotFound(t *testing.T) {
+func TestAccBrazeDestinationResourceImportNotFound(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
 	require.NoError(t, err)
 
@@ -56,7 +56,7 @@ func TestAccBigQueryDestinationResourceImportNotFound(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				ConfigDirectory: config.TestNameDirectory(),
-				ResourceName:    "censusworkspace_big_query_destination.test",
+				ResourceName:    "censusworkspace_braze_destination.test",
 				ImportState:     true,
 				ImportStateId:   "99999",
 				ExpectError:     regexp.MustCompile(`Cannot import non-existent remote object`),
@@ -66,7 +66,7 @@ func TestAccBigQueryDestinationResourceImportNotFound(t *testing.T) {
 }
 
 //nolint:dupl,paralleltest
-func TestAccBigQueryDestinationResourceCreateUpdateDelete(t *testing.T) {
+func TestAccBrazeDestinationResourceCreateUpdateDelete(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
 	require.NoError(t, err)
 
@@ -75,20 +75,20 @@ func TestAccBigQueryDestinationResourceCreateUpdateDelete(t *testing.T) {
 			{
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
-					"destination_type": config.StringVariable("big_query"),
+					"destination_type": config.StringVariable("braze"),
 					"destination_name": config.StringVariable("Test Destination"),
 					"destination_credentials": config.ObjectVariable(map[string]config.Variable{
-						"project_id": config.StringVariable("project-id"),
-						"location":   config.StringVariable("location"),
+						"instance_url": config.StringVariable("instance-url"),
+						"api_key":      config.StringVariable("api-key"),
 					}),
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
-						plancheck.ExpectResourceAction("censusworkspace_big_query_destination.test", plancheck.ResourceActionCreate),
-						plancheck.ExpectUnknownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("id")),
+						plancheck.ExpectResourceAction("censusworkspace_braze_destination.test", plancheck.ResourceActionCreate),
+						plancheck.ExpectUnknownValue("censusworkspace_braze_destination.test", tfjsonpath.New("id")),
 					},
 					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},
@@ -103,43 +103,43 @@ func TestAccBigQueryDestinationResourceCreateUpdateDelete(t *testing.T) {
 				},
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
-					"destination_type": config.StringVariable("big_query"),
+					"destination_type": config.StringVariable("braze"),
 					"destination_name": config.StringVariable("Test Destination"),
 					"destination_credentials": config.ObjectVariable(map[string]config.Variable{
-						"project_id": config.StringVariable("project-id"),
-						"location":   config.StringVariable("location"),
+						"instance_url": config.StringVariable("instance-url"),
+						"api_key":      config.StringVariable("api-key"),
 					}),
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectEmptyPlan(),
-						plancheck.ExpectResourceAction("censusworkspace_big_query_destination.test", plancheck.ResourceActionNoop),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("id"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("name"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
+						plancheck.ExpectResourceAction("censusworkspace_braze_destination.test", plancheck.ResourceActionNoop),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("id"), knownvalue.NotNull()),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("name"), knownvalue.NotNull()),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
 					},
 					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Bool(false)),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Bool(false)),
 					},
 				},
 			},
 			{
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
-					"destination_type": config.StringVariable("big_query"),
+					"destination_type": config.StringVariable("braze"),
 					"destination_name": config.StringVariable("Test Destination (updated)"),
 					"destination_credentials": config.ObjectVariable(map[string]config.Variable{
-						"project_id":          config.StringVariable("project-id"),
-						"location":            config.StringVariable("location"),
-						"service_account_key": config.StringVariable("service-account-key"),
+						"instance_url": config.StringVariable("instance-url"),
+						"api_key":      config.StringVariable("api-key"),
+						"client_key":   config.StringVariable("client-key"),
 					}),
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
-						plancheck.ExpectResourceAction("censusworkspace_big_query_destination.test", plancheck.ResourceActionUpdate),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("id"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Destination (updated)")),
-						plancheck.ExpectUnknownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("connection_details")),
+						plancheck.ExpectResourceAction("censusworkspace_braze_destination.test", plancheck.ResourceActionUpdate),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("id"), knownvalue.NotNull()),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Destination (updated)")),
+						plancheck.ExpectUnknownValue("censusworkspace_braze_destination.test", tfjsonpath.New("connection_details")),
 					},
 				},
 			},
@@ -147,20 +147,19 @@ func TestAccBigQueryDestinationResourceCreateUpdateDelete(t *testing.T) {
 	})
 }
 
-//nolint:dupl,paralleltest
-func TestAccBigQueryDestinationResourceMovedFromDestination(t *testing.T) {
+//nolint:paralleltest
+func TestAccBrazeDestinationResourceMovedFromDestination(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
 	require.NoError(t, err)
 
 	configVariables := config.Variables{
 		"destination_name": config.StringVariable("Test Destination"),
 		"destination_credentials": config.ObjectVariable(map[string]config.Variable{
-			"project_id": config.StringVariable("project-id"),
-			"location":   config.StringVariable("location"),
+			"instance_url": config.StringVariable("instance-url"),
+			"api_key":      config.StringVariable("api-key"),
 		}),
 	}
 
-	//nolint:dupl
 	ProviderMockedResourceTest(t, server, resource.TestCase{
 		Steps: []resource.TestStep{
 			{
@@ -186,16 +185,15 @@ func TestAccBigQueryDestinationResourceMovedFromDestination(t *testing.T) {
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectEmptyPlan(),
-						plancheck.ExpectResourceAction("censusworkspace_big_query_destination.test", plancheck.ResourceActionNoop),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("id"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Destination")),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("credentials").AtMapKey("project_id"), knownvalue.StringExact("project-id")),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("credentials").AtMapKey("location"), knownvalue.StringExact("location")),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("credentials").AtMapKey("service_account_key"), knownvalue.Null()),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
+						plancheck.ExpectResourceAction("censusworkspace_braze_destination.test", plancheck.ResourceActionNoop),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("id"), knownvalue.NotNull()),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Destination")),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("credentials").AtMapKey("instance_url"), knownvalue.StringExact("instance-url")),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("credentials").AtMapKey("api_key"), knownvalue.StringExact("api-key")),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
 					},
 					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},

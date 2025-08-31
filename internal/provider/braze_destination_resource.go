@@ -15,43 +15,43 @@ import (
 )
 
 var (
-	_ resource.Resource                = (*bigQueryDestinationResource)(nil)
-	_ resource.ResourceWithConfigure   = (*bigQueryDestinationResource)(nil)
-	_ resource.ResourceWithIdentity    = (*bigQueryDestinationResource)(nil)
-	_ resource.ResourceWithImportState = (*bigQueryDestinationResource)(nil)
-	_ resource.ResourceWithMoveState   = (*bigQueryDestinationResource)(nil)
+	_ resource.Resource                = (*brazeDestinationResource)(nil)
+	_ resource.ResourceWithConfigure   = (*brazeDestinationResource)(nil)
+	_ resource.ResourceWithIdentity    = (*brazeDestinationResource)(nil)
+	_ resource.ResourceWithImportState = (*brazeDestinationResource)(nil)
+	_ resource.ResourceWithMoveState   = (*brazeDestinationResource)(nil)
 )
 
 //nolint:ireturn
-func NewBigQueryDestinationResource() resource.Resource {
-	return &bigQueryDestinationResource{}
+func NewBrazeDestinationResource() resource.Resource {
+	return &brazeDestinationResource{}
 }
 
-type bigQueryDestinationResource struct {
+type brazeDestinationResource struct {
 	providerData ProviderData
 }
 
-func (r *bigQueryDestinationResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_big_query_destination"
+func (r *brazeDestinationResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_braze_destination"
 }
 
-func (r *bigQueryDestinationResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = BigQueryDestinationResourceSchema(ctx)
+func (r *brazeDestinationResource) Schema(ctx context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+	resp.Schema = BrazeDestinationResourceSchema(ctx)
 }
 
-func (r *bigQueryDestinationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *brazeDestinationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	resp.Diagnostics.Append(SetProviderDataFromResourceConfigureRequest(req, &r.providerData)...)
 }
 
-func (r *bigQueryDestinationResource) IdentitySchema(ctx context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
-	resp.IdentitySchema = BigQueryDestinationResourceIdentitySchema(ctx)
+func (r *brazeDestinationResource) IdentitySchema(ctx context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
+	resp.IdentitySchema = BrazeDestinationResourceIdentitySchema(ctx)
 }
 
-func (r *bigQueryDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *brazeDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("id"), req, resp)
 }
 
-func (r *bigQueryDestinationResource) MoveState(ctx context.Context) []resource.StateMover {
+func (r *brazeDestinationResource) MoveState(ctx context.Context) []resource.StateMover {
 	schema := DestinationResourceSchema(ctx)
 
 	return []resource.StateMover{
@@ -62,49 +62,43 @@ func (r *bigQueryDestinationResource) MoveState(ctx context.Context) []resource.
 					destinationModel := DestinationModel{}
 					resp.Diagnostics.Append(req.SourceState.Get(ctx, &destinationModel)...)
 
-					if destinationModel.Type.ValueString() != BigQueryDestinationType {
+					if destinationModel.Type.ValueString() != BrazeDestinationType {
 						return
 					}
 
 					type destinationCredentialsModel struct {
-						ProjectID         *string `json:"project_id"`
-						Location          *string `json:"location"`
-						ServiceAccountKey *string `json:"service_account_key"`
+						InstanceURL *string `json:"instance_url"`
+						APIKey      *string `json:"api_key"`
+						ClientKey   *string `json:"client_key"`
 					}
 
 					destinationCredentials := destinationCredentialsModel{}
 					resp.Diagnostics.Append(destinationModel.Credentials.Unmarshal(&destinationCredentials)...)
 
-					bigQueryDestinationCredentials := BigQueryDestinationCredentials{
-						ProjectID:         types.StringPointerValue(destinationCredentials.ProjectID),
-						Location:          types.StringPointerValue(destinationCredentials.Location),
-						ServiceAccountKey: types.StringPointerValue(destinationCredentials.ServiceAccountKey),
+					brazeDestinationCredentials := BrazeDestinationCredentials{
+						InstanceURL: types.StringPointerValue(destinationCredentials.InstanceURL),
+						APIKey:      types.StringPointerValue(destinationCredentials.APIKey),
+						ClientKey:   types.StringPointerValue(destinationCredentials.ClientKey),
 					}
 
 					type destinationConnectionDetailsModel struct {
-						ProjectID           *string `json:"project_id"`
-						Location            *string `json:"location"`
-						ServiceAccountKey   *string `json:"service_account_key"`
-						ServiceAccountEmail *string `json:"service_account_email"`
+						InstanceURL *string `json:"instance_url"`
 					}
 
 					destinationConnectionDetails := destinationConnectionDetailsModel{}
 					resp.Diagnostics.Append(destinationModel.ConnectionDetails.Unmarshal(&destinationConnectionDetails)...)
 
-					bigQueryDestinationConnectionDetails := BigQueryDestinationConnectionDetails{
-						ProjectID:           types.StringPointerValue(destinationConnectionDetails.ProjectID),
-						Location:            types.StringPointerValue(destinationConnectionDetails.Location),
-						ServiceAccountKey:   types.StringPointerValue(destinationCredentials.ServiceAccountKey),
-						ServiceAccountEmail: types.StringPointerValue(destinationConnectionDetails.ServiceAccountEmail),
+					brazeDestinationConnectionDetails := BrazeDestinationConnectionDetails{
+						InstanceURL: types.StringPointerValue(destinationConnectionDetails.InstanceURL),
 					}
 
-					bigQueryDestinationModel := BigQueryDestinationModel{
+					brazeDestinationModel := BrazeDestinationModel{
 						destinationModelBase: destinationModel.destinationModelBase,
-						Credentials:          NewTypedObject(bigQueryDestinationCredentials),
-						ConnectionDetails:    NewTypedObject(bigQueryDestinationConnectionDetails),
+						Credentials:          NewTypedObject(brazeDestinationCredentials),
+						ConnectionDetails:    NewTypedObject(brazeDestinationConnectionDetails),
 					}
 
-					resp.Diagnostics.Append(resp.TargetState.Set(ctx, &bigQueryDestinationModel)...)
+					resp.Diagnostics.Append(resp.TargetState.Set(ctx, &brazeDestinationModel)...)
 
 					return
 				}
@@ -114,8 +108,8 @@ func (r *bigQueryDestinationResource) MoveState(ctx context.Context) []resource.
 }
 
 //nolint:dupl
-func (r *bigQueryDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan BigQueryDestinationModel
+func (r *brazeDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan BrazeDestinationModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 
@@ -165,7 +159,7 @@ func (r *bigQueryDestinationResource) Create(ctx context.Context, req resource.C
 		"err":      getDestinationErr,
 	})
 
-	model, modelDiags := NewBigQueryDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
+	model, modelDiags := NewBrazeDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
 	credentials := plan.Credentials.Value()
@@ -180,8 +174,8 @@ func (r *bigQueryDestinationResource) Create(ctx context.Context, req resource.C
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
-func (r *bigQueryDestinationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state BigQueryDestinationModel
+func (r *brazeDestinationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state BrazeDestinationModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 
@@ -217,7 +211,7 @@ func (r *bigQueryDestinationResource) Read(ctx context.Context, req resource.Rea
 		return
 	}
 
-	model, modelDiags := NewBigQueryDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
+	model, modelDiags := NewBrazeDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
 	credentials := state.Credentials.Value()
@@ -232,8 +226,8 @@ func (r *bigQueryDestinationResource) Read(ctx context.Context, req resource.Rea
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
-func (r *bigQueryDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var state, plan BigQueryDestinationModel
+func (r *brazeDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var state, plan BrazeDestinationModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
@@ -268,7 +262,7 @@ func (r *bigQueryDestinationResource) Update(ctx context.Context, req resource.U
 		return
 	}
 
-	model, modelDiags := NewBigQueryDestinationModelFromResponse(ctx, updateDestinationResponse.Response.Data)
+	model, modelDiags := NewBrazeDestinationModelFromResponse(ctx, updateDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
 	credentials := plan.Credentials.Value()
@@ -280,8 +274,8 @@ func (r *bigQueryDestinationResource) Update(ctx context.Context, req resource.U
 }
 
 //nolint:dupl
-func (r *bigQueryDestinationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state BigQueryDestinationModel
+func (r *brazeDestinationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state BrazeDestinationModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 

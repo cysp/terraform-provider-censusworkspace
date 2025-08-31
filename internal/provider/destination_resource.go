@@ -20,6 +20,10 @@ var (
 	_ resource.ResourceWithImportState = (*destinationResource)(nil)
 )
 
+const (
+	DestinationResourceTypeName = "censusworkspace_destination"
+)
+
 //nolint:ireturn
 func NewDestinationResource() resource.Resource {
 	return &destinationResource{}
