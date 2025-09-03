@@ -123,7 +123,7 @@ type CreateSQLDatasetBody struct {
 	// SQL query that defines the dataset.
 	Query string `json:"query"`
 	// Optional description of the dataset.
-	Description OptString `json:"description"`
+	Description OptNilString `json:"description"`
 }
 
 // GetName returns the value of Name.
@@ -147,7 +147,7 @@ func (s *CreateSQLDatasetBody) GetQuery() string {
 }
 
 // GetDescription returns the value of Description.
-func (s *CreateSQLDatasetBody) GetDescription() OptString {
+func (s *CreateSQLDatasetBody) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -172,7 +172,7 @@ func (s *CreateSQLDatasetBody) SetQuery(val string) {
 }
 
 // SetDescription sets the value of Description.
-func (s *CreateSQLDatasetBody) SetDescription(val OptString) {
+func (s *CreateSQLDatasetBody) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -936,7 +936,7 @@ type SQLDatasetData struct {
 	// SQL query that defines the dataset.
 	Query string `json:"query"`
 	// Optional description of the dataset.
-	Description OptString `json:"description"`
+	Description OptNilString `json:"description"`
 	// Timestamp when the dataset was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Timestamp when the dataset was last updated.
@@ -969,7 +969,7 @@ func (s *SQLDatasetData) GetQuery() string {
 }
 
 // GetDescription returns the value of Description.
-func (s *SQLDatasetData) GetDescription() OptString {
+func (s *SQLDatasetData) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -1009,7 +1009,7 @@ func (s *SQLDatasetData) SetQuery(val string) {
 }
 
 // SetDescription sets the value of Description.
-func (s *SQLDatasetData) SetDescription(val OptString) {
+func (s *SQLDatasetData) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
@@ -1429,7 +1429,7 @@ type UpdateSQLDatasetBody struct {
 	// SQL query that defines the dataset.
 	Query OptString `json:"query"`
 	// Optional description of the dataset.
-	Description OptString `json:"description"`
+	Description OptNilString `json:"description"`
 }
 
 // GetName returns the value of Name.
@@ -1443,7 +1443,7 @@ func (s *UpdateSQLDatasetBody) GetQuery() OptString {
 }
 
 // GetDescription returns the value of Description.
-func (s *UpdateSQLDatasetBody) GetDescription() OptString {
+func (s *UpdateSQLDatasetBody) GetDescription() OptNilString {
 	return s.Description
 }
 
@@ -1458,7 +1458,7 @@ func (s *UpdateSQLDatasetBody) SetQuery(val OptString) {
 }
 
 // SetDescription sets the value of Description.
-func (s *UpdateSQLDatasetBody) SetDescription(val OptString) {
+func (s *UpdateSQLDatasetBody) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
