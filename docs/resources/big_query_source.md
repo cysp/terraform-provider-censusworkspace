@@ -56,7 +56,19 @@ Required:
 
 Optional:
 
-- `service_account_key` (String, Sensitive)
+- `service_account_key` (Attributes) (see [below for nested schema](#nestedatt--credentials--service_account_key))
+
+<a id="nestedatt--credentials--service_account_key"></a>
+### Nested Schema for `credentials.service_account_key`
+
+Required:
+
+- `client_email` (String)
+- `client_id` (String)
+- `private_key` (String, Sensitive)
+- `private_key_id` (String)
+- `project_id` (String)
+
 
 
 <a id="nestedatt--connection_details"></a>

@@ -66,19 +66,38 @@ func (r *bigQuerySourceResource) MoveState(ctx context.Context) []resource.State
 						return
 					}
 
+					type sourceCredentialsServiceAccountKeyModel struct {
+						ProjectID    *string `json:"project_id"`
+						PrivateKeyID *string `json:"private_key_id"`
+						PrivateKey   *string `json:"private_key"`
+						ClientEmail  *string `json:"client_email"`
+						ClientID     *string `json:"client_id"`
+					}
+
 					type sourceCredentialsModel struct {
-						ProjectID         *string `json:"project_id"`
-						Location          *string `json:"location"`
-						ServiceAccountKey *string `json:"service_account_key"`
+						ProjectID         *string                                  `json:"project_id"`
+						Location          *string                                  `json:"location"`
+						ServiceAccountKey *sourceCredentialsServiceAccountKeyModel `json:"service_account_key"`
 					}
 
 					sourceCredentials := sourceCredentialsModel{}
 					resp.Diagnostics.Append(sourceModel.Credentials.Unmarshal(&sourceCredentials)...)
 
 					bigQuerySourceCredentials := BigQuerySourceCredentials{
-						ProjectID:         types.StringPointerValue(sourceCredentials.ProjectID),
-						Location:          types.StringPointerValue(sourceCredentials.Location),
-						ServiceAccountKey: types.StringPointerValue(sourceCredentials.ServiceAccountKey),
+						ProjectID: types.StringPointerValue(sourceCredentials.ProjectID),
+						Location:  types.StringPointerValue(sourceCredentials.Location),
+					}
+
+					if sourceCredentials.ServiceAccountKey != nil {
+						serviceAccountKey := NewTypedObject(BigQuerySourceCredentialsServiceAccountKey{
+							ProjectID:    types.StringPointerValue(sourceCredentials.ServiceAccountKey.ProjectID),
+							PrivateKeyID: types.StringPointerValue(sourceCredentials.ServiceAccountKey.PrivateKeyID),
+							PrivateKey:   types.StringPointerValue(sourceCredentials.ServiceAccountKey.PrivateKey),
+							ClientEmail:  types.StringPointerValue(sourceCredentials.ServiceAccountKey.ClientEmail),
+							ClientID:     types.StringPointerValue(sourceCredentials.ServiceAccountKey.ClientID),
+						})
+
+						bigQuerySourceCredentials.ServiceAccountKey = serviceAccountKey
 					}
 
 					type sourceConnectionDetailsModel struct {

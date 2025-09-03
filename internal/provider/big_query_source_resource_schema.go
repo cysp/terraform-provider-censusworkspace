@@ -40,7 +40,7 @@ func BigQuerySourceCredentialsResourceSchema(ctx context.Context) schema.Attribu
 	}
 }
 
-func BigQuerySourceCredentialsResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
+func BigQuerySourceCredentialsResourceSchemaAttributes(ctx context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"project_id": schema.StringAttribute{
 			Required: true,
@@ -48,9 +48,31 @@ func BigQuerySourceCredentialsResourceSchemaAttributes(_ context.Context) map[st
 		"location": schema.StringAttribute{
 			Required: true,
 		},
-		"service_account_key": schema.StringAttribute{
-			Optional:  true,
+		"service_account_key": schema.SingleNestedAttribute{
+			Optional:   true,
+			Attributes: BigQuerySourceCredentialsServiceAccountKeyResourceSchemaAttributes(ctx),
+			CustomType: NewTypedObjectNull[BigQuerySourceCredentialsServiceAccountKey]().CustomType(ctx),
+		},
+	}
+}
+
+func BigQuerySourceCredentialsServiceAccountKeyResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
+	return map[string]schema.Attribute{
+		"project_id": schema.StringAttribute{
+			Required: true,
+		},
+		"private_key_id": schema.StringAttribute{
+			Required: true,
+		},
+		"private_key": schema.StringAttribute{
 			Sensitive: true,
+			Required:  true,
+		},
+		"client_email": schema.StringAttribute{
+			Required: true,
+		},
+		"client_id": schema.StringAttribute{
+			Required: true,
 		},
 	}
 }
