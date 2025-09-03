@@ -26,6 +26,8 @@ func (m *SQLDatasetModel) ToCreateSQLDatasetBody(_ context.Context) cm.CreateSQL
 	description := m.Description.ValueString()
 	if description != "" {
 		body.Description.SetTo(description)
+	} else {
+		body.Description.SetToNull()
 	}
 
 	return body
@@ -48,6 +50,8 @@ func (m *SQLDatasetModel) ToUpdateSQLDatasetBody(_ context.Context) cm.UpdateSQL
 	description := m.Description.ValueString()
 	if description != "" {
 		body.Description.SetTo(description)
+	} else {
+		body.Description.SetToNull()
 	}
 
 	return body
