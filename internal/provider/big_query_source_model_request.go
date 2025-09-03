@@ -63,11 +63,35 @@ func (c BigQuerySourceCredentials) Encode(enc *jx.Encoder) {
 			e.Str(c.Location.ValueString())
 		})
 
-		serviceAccountKey := c.ServiceAccountKey.ValueString()
-		if serviceAccountKey != "" {
+		serviceAccountKey, serviceAccountKeyOk := c.ServiceAccountKey.GetValue()
+		if serviceAccountKeyOk {
 			enc.Field("service_account_key", func(e *jx.Encoder) {
-				e.Str(serviceAccountKey)
+				serviceAccountKey.Encode(e)
 			})
 		}
+	})
+}
+
+func (c BigQuerySourceCredentialsServiceAccountKey) Encode(enc *jx.Encoder) {
+	enc.Obj(func(enc *jx.Encoder) {
+		enc.Field("project_id", func(e *jx.Encoder) {
+			e.Str(c.ProjectID.ValueString())
+		})
+
+		enc.Field("private_key_id", func(e *jx.Encoder) {
+			e.Str(c.PrivateKeyID.ValueString())
+		})
+
+		enc.Field("private_key", func(e *jx.Encoder) {
+			e.Str(c.PrivateKey.ValueString())
+		})
+
+		enc.Field("client_email", func(e *jx.Encoder) {
+			e.Str(c.ClientEmail.ValueString())
+		})
+
+		enc.Field("client_id", func(e *jx.Encoder) {
+			e.Str(c.ClientID.ValueString())
+		})
 	})
 }
