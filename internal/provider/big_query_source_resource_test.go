@@ -129,6 +129,7 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
 						"service_account_key": config.ObjectVariable(map[string]config.Variable{
+							"type":           config.StringVariable("service_account"),
 							"project_id":     config.StringVariable("project-id"),
 							"private_key_id": config.StringVariable("private-key-id"),
 							"private_key":    config.StringVariable("private-key"),
@@ -216,6 +217,7 @@ func TestAccBigQuerySourceResourceMovedFromSourceWithServiceAccountKey(t *testin
 			"project_id": config.StringVariable("project-id"),
 			"location":   config.StringVariable("US"),
 			"service_account_key": config.ObjectVariable(map[string]config.Variable{
+				"type":           config.StringVariable("service_account"),
 				"project_id":     config.StringVariable("project-id"),
 				"private_key_id": config.StringVariable("private-key-id"),
 				"private_key":    config.StringVariable("private-key"),

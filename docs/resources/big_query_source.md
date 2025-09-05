@@ -68,6 +68,7 @@ Required:
 - `private_key` (String, Sensitive)
 - `private_key_id` (String)
 - `project_id` (String)
+- `type` (String)
 
 
 

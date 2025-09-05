@@ -4,8 +4,10 @@ import (
 	"context"
 	"maps"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 func BigQuerySourceResourceIdentitySchema(_ context.Context) identityschema.Schema {
@@ -58,6 +60,12 @@ func BigQuerySourceCredentialsResourceSchemaAttributes(ctx context.Context) map[
 
 func BigQuerySourceCredentialsServiceAccountKeyResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
+		"type": schema.StringAttribute{
+			Required: true,
+			Validators: []validator.String{
+				stringvalidator.OneOf("service_account"),
+			},
+		},
 		"project_id": schema.StringAttribute{
 			Required: true,
 		},

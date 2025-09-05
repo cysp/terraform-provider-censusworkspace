@@ -74,6 +74,10 @@ func (c BigQuerySourceCredentials) Encode(enc *jx.Encoder) {
 
 func (c BigQuerySourceCredentialsServiceAccountKey) Encode(enc *jx.Encoder) {
 	enc.Obj(func(enc *jx.Encoder) {
+		enc.Field("type", func(e *jx.Encoder) {
+			e.Str(c.Type.ValueString())
+		})
+
 		enc.Field("project_id", func(e *jx.Encoder) {
 			e.Str(c.ProjectID.ValueString())
 		})

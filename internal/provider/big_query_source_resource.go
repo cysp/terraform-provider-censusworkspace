@@ -67,6 +67,7 @@ func (r *bigQuerySourceResource) MoveState(ctx context.Context) []resource.State
 					}
 
 					type sourceCredentialsServiceAccountKeyModel struct {
+						Type         *string `json:"type"`
 						ProjectID    *string `json:"project_id"`
 						PrivateKeyID *string `json:"private_key_id"`
 						PrivateKey   *string `json:"private_key"`
@@ -90,6 +91,7 @@ func (r *bigQuerySourceResource) MoveState(ctx context.Context) []resource.State
 
 					if sourceCredentials.ServiceAccountKey != nil {
 						serviceAccountKey := NewTypedObject(BigQuerySourceCredentialsServiceAccountKey{
+							Type:         types.StringPointerValue(sourceCredentials.ServiceAccountKey.Type),
 							ProjectID:    types.StringPointerValue(sourceCredentials.ServiceAccountKey.ProjectID),
 							PrivateKeyID: types.StringPointerValue(sourceCredentials.ServiceAccountKey.PrivateKeyID),
 							PrivateKey:   types.StringPointerValue(sourceCredentials.ServiceAccountKey.PrivateKey),
