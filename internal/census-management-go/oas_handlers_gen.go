@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/go-faster/errors"
-
 	ht "github.com/ogen-go/ogen/http"
 	"github.com/ogen-go/ogen/middleware"
 	"github.com/ogen-go/ogen/ogenerrors"
@@ -88,7 +87,9 @@ func (s *Server) handleCreateDatasetRequest(args [0]string, argsEscaped bool, w 
 			return
 		}
 	}
-	request, close, err := s.decodeCreateDatasetRequest(r)
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeCreateDatasetRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -112,6 +113,7 @@ func (s *Server) handleCreateDatasetRequest(args [0]string, argsEscaped bool, w 
 			OperationSummary: "Create dataset",
 			OperationID:      "createDataset",
 			Body:             request,
+			RawBody:          rawBody,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
@@ -226,7 +228,9 @@ func (s *Server) handleCreateDestinationRequest(args [0]string, argsEscaped bool
 			return
 		}
 	}
-	request, close, err := s.decodeCreateDestinationRequest(r)
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeCreateDestinationRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -250,6 +254,7 @@ func (s *Server) handleCreateDestinationRequest(args [0]string, argsEscaped bool
 			OperationSummary: "Create Destination",
 			OperationID:      "createDestination",
 			Body:             request,
+			RawBody:          rawBody,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
@@ -364,7 +369,9 @@ func (s *Server) handleCreateSourceRequest(args [0]string, argsEscaped bool, w h
 			return
 		}
 	}
-	request, close, err := s.decodeCreateSourceRequest(r)
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeCreateSourceRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -388,6 +395,7 @@ func (s *Server) handleCreateSourceRequest(args [0]string, argsEscaped bool, w h
 			OperationSummary: "Create Source",
 			OperationID:      "createSource",
 			Body:             request,
+			RawBody:          rawBody,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
@@ -513,6 +521,8 @@ func (s *Server) handleDeleteDatasetRequest(args [1]string, argsEscaped bool, w 
 		return
 	}
 
+	var rawBody []byte
+
 	var response *StatusResponseStatusCode
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
@@ -521,6 +531,7 @@ func (s *Server) handleDeleteDatasetRequest(args [1]string, argsEscaped bool, w 
 			OperationSummary: "Delete dataset",
 			OperationID:      "deleteDataset",
 			Body:             nil,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "dataset_id",
@@ -651,6 +662,8 @@ func (s *Server) handleDeleteDestinationRequest(args [1]string, argsEscaped bool
 		return
 	}
 
+	var rawBody []byte
+
 	var response *StatusResponseStatusCode
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
@@ -659,6 +672,7 @@ func (s *Server) handleDeleteDestinationRequest(args [1]string, argsEscaped bool
 			OperationSummary: "Delete destination",
 			OperationID:      "deleteDestination",
 			Body:             nil,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "destination_id",
@@ -789,6 +803,8 @@ func (s *Server) handleDeleteSourceRequest(args [1]string, argsEscaped bool, w h
 		return
 	}
 
+	var rawBody []byte
+
 	var response *StatusResponseStatusCode
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
@@ -797,6 +813,7 @@ func (s *Server) handleDeleteSourceRequest(args [1]string, argsEscaped bool, w h
 			OperationSummary: "Delete source",
 			OperationID:      "deleteSource",
 			Body:             nil,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "source_id",
@@ -915,6 +932,8 @@ func (s *Server) handleGetApiV1Request(args [0]string, argsEscaped bool, w http.
 		}
 	}
 
+	var rawBody []byte
+
 	var response GetApiV1Res
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
@@ -923,6 +942,7 @@ func (s *Server) handleGetApiV1Request(args [0]string, argsEscaped bool, w http.
 			OperationSummary: "",
 			OperationID:      "getApiV1",
 			Body:             nil,
+			RawBody:          rawBody,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
@@ -1048,6 +1068,8 @@ func (s *Server) handleGetDatasetRequest(args [1]string, argsEscaped bool, w htt
 		return
 	}
 
+	var rawBody []byte
+
 	var response *DatasetResponseStatusCode
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
@@ -1056,6 +1078,7 @@ func (s *Server) handleGetDatasetRequest(args [1]string, argsEscaped bool, w htt
 			OperationSummary: "Fetch dataset",
 			OperationID:      "getDataset",
 			Body:             nil,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "dataset_id",
@@ -1186,6 +1209,8 @@ func (s *Server) handleGetDestinationRequest(args [1]string, argsEscaped bool, w
 		return
 	}
 
+	var rawBody []byte
+
 	var response *DestinationResponseStatusCode
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
@@ -1194,6 +1219,7 @@ func (s *Server) handleGetDestinationRequest(args [1]string, argsEscaped bool, w
 			OperationSummary: "Fetch destination",
 			OperationID:      "getDestination",
 			Body:             nil,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "destination_id",
@@ -1324,6 +1350,8 @@ func (s *Server) handleGetSourceRequest(args [1]string, argsEscaped bool, w http
 		return
 	}
 
+	var rawBody []byte
+
 	var response *SourceResponseStatusCode
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
@@ -1332,6 +1360,7 @@ func (s *Server) handleGetSourceRequest(args [1]string, argsEscaped bool, w http
 			OperationSummary: "Fetch source",
 			OperationID:      "getSource",
 			Body:             nil,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "source_id",
@@ -1461,7 +1490,9 @@ func (s *Server) handleUpdateDatasetRequest(args [1]string, argsEscaped bool, w 
 		s.cfg.ErrorHandler(ctx, w, r, err)
 		return
 	}
-	request, close, err := s.decodeUpdateDatasetRequest(r)
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeUpdateDatasetRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -1485,6 +1516,7 @@ func (s *Server) handleUpdateDatasetRequest(args [1]string, argsEscaped bool, w 
 			OperationSummary: "Update dataset",
 			OperationID:      "updateDataset",
 			Body:             request,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "dataset_id",
@@ -1614,7 +1646,9 @@ func (s *Server) handleUpdateDestinationRequest(args [1]string, argsEscaped bool
 		s.cfg.ErrorHandler(ctx, w, r, err)
 		return
 	}
-	request, close, err := s.decodeUpdateDestinationRequest(r)
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeUpdateDestinationRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -1638,6 +1672,7 @@ func (s *Server) handleUpdateDestinationRequest(args [1]string, argsEscaped bool
 			OperationSummary: "Update destination",
 			OperationID:      "updateDestination",
 			Body:             request,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "destination_id",
@@ -1767,7 +1802,9 @@ func (s *Server) handleUpdateSourceRequest(args [1]string, argsEscaped bool, w h
 		s.cfg.ErrorHandler(ctx, w, r, err)
 		return
 	}
-	request, close, err := s.decodeUpdateSourceRequest(r)
+
+	var rawBody []byte
+	request, rawBody, close, err := s.decodeUpdateSourceRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -1791,6 +1828,7 @@ func (s *Server) handleUpdateSourceRequest(args [1]string, argsEscaped bool, w h
 			OperationSummary: "Update source",
 			OperationID:      "updateSource",
 			Body:             request,
+			RawBody:          rawBody,
 			Params: middleware.Parameters{
 				{
 					Name: "source_id",
