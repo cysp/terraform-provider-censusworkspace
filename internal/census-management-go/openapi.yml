@@ -111,7 +111,7 @@ components:
         - label
         - created_at
     CreateDatasetBody:
-      oneOf:
+      anyOf:
         - $ref: "#/components/schemas/CreateSQLDatasetBody"
     CreateSQLDatasetBody:
       type: object
@@ -141,7 +141,7 @@ components:
         - source_id
         - query
     UpdateDatasetBody:
-      oneOf:
+      anyOf:
         - $ref: "#/components/schemas/UpdateSQLDatasetBody"
     UpdateSQLDatasetBody:
       type: object
@@ -157,7 +157,7 @@ components:
           description: Optional description of the dataset
           nullable: true
     DatasetData:
-      oneOf:
+      anyOf:
         - $ref: "#/components/schemas/SQLDatasetData"
     SQLDatasetData:
       type: object
