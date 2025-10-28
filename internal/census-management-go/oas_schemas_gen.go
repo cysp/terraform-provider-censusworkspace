@@ -853,6 +853,46 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
+type RefreshKeyResponse struct {
+	RefreshKey int64 `json:"refresh_key"`
+}
+
+// GetRefreshKey returns the value of RefreshKey.
+func (s *RefreshKeyResponse) GetRefreshKey() int64 {
+	return s.RefreshKey
+}
+
+// SetRefreshKey sets the value of RefreshKey.
+func (s *RefreshKeyResponse) SetRefreshKey(val int64) {
+	s.RefreshKey = val
+}
+
+// RefreshKeyResponseStatusCode wraps RefreshKeyResponse with StatusCode.
+type RefreshKeyResponseStatusCode struct {
+	StatusCode int
+	Response   RefreshKeyResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *RefreshKeyResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *RefreshKeyResponseStatusCode) GetResponse() RefreshKeyResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *RefreshKeyResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *RefreshKeyResponseStatusCode) SetResponse(val RefreshKeyResponse) {
+	s.Response = val
+}
+
 // Ref: #/components/schemas/ResponseStatus
 type ResponseStatus string
 

@@ -348,6 +348,18 @@ components:
             required:
               - status
               - data
+    refreshKeyResponse:
+      description: A refresh key
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              refresh_key:
+                type: integer
+                format: int64
+            required:
+              - refresh_key
 security:
   - workspaceApiKey: []
 paths:
@@ -451,6 +463,17 @@ paths:
       responses:
         2XX:
           $ref: "#/components/responses/statusResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+  /api/v1/datasets/{dataset_id}/refresh_columns:
+    parameters:
+      - $ref: "#/components/parameters/dataset_id"
+    post:
+      operationId: refreshDatasetColumns
+      summary: Refresh a dataset's columns
+      responses:
+        2XX:
+          $ref: "#/components/responses/refreshKeyResponse"
         default:
           $ref: "#/components/responses/statusResponse"
   /api/v1/destinations:
