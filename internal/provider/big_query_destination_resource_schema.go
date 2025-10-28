@@ -11,7 +11,7 @@ import (
 func BigQueryDestinationResourceIdentitySchema(_ context.Context) identityschema.Schema {
 	return identityschema.Schema{
 		Attributes: map[string]identityschema.Attribute{
-			"id": identityschema.Int64Attribute{
+			"id": identityschema.StringAttribute{
 				RequiredForImport: true,
 			},
 		},

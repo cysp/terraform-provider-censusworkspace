@@ -48,7 +48,7 @@ func (r *brazeDestinationResource) IdentitySchema(ctx context.Context, _ resourc
 }
 
 func (r *brazeDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("id"), req, resp)
+	ImportStatePassthroughMultipartID(ctx, []path.Path{path.Root("id")}, req, resp)
 }
 
 func (r *brazeDestinationResource) MoveState(ctx context.Context) []resource.StateMover {
@@ -171,6 +171,7 @@ func (r *brazeDestinationResource) Create(ctx context.Context, req resource.Crea
 		return
 	}
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
@@ -223,6 +224,7 @@ func (r *brazeDestinationResource) Read(ctx context.Context, req resource.ReadRe
 		return
 	}
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
@@ -270,6 +272,7 @@ func (r *brazeDestinationResource) Update(ctx context.Context, req resource.Upda
 
 	model.Credentials = NewTypedObject(credentials)
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 

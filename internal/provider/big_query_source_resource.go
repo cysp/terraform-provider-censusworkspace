@@ -48,7 +48,7 @@ func (r *bigQuerySourceResource) IdentitySchema(ctx context.Context, _ resource.
 }
 
 func (r *bigQuerySourceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("id"), req, resp)
+	ImportStatePassthroughMultipartID(ctx, []path.Path{path.Root("id")}, req, resp)
 }
 
 func (r *bigQuerySourceResource) MoveState(ctx context.Context) []resource.StateMover {
@@ -199,6 +199,7 @@ func (r *bigQuerySourceResource) Create(ctx context.Context, req resource.Create
 		return
 	}
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
@@ -255,6 +256,7 @@ func (r *bigQuerySourceResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
@@ -306,6 +308,7 @@ func (r *bigQuerySourceResource) Update(ctx context.Context, req resource.Update
 
 	model.Credentials = NewTypedObject(credentials)
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
