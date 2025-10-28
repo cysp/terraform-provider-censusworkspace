@@ -214,62 +214,136 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 					}
 
-				case 's': // Prefix: "sources"
+				case 's': // Prefix: "s"
 
-					if l := len("sources"); len(elem) >= l && elem[0:l] == "sources" {
+					if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						switch r.Method {
-						case "POST":
-							s.handleCreateSourceRequest([0]string{}, elemIsEscaped, w, r)
-						default:
-							s.notAllowed(w, r, "POST")
-						}
-
-						return
+						break
 					}
 					switch elem[0] {
-					case '/': // Prefix: "/"
+					case 'o': // Prefix: "ources"
 
-						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						if l := len("ources"); len(elem) >= l && elem[0:l] == "ources" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "source_id"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
-							break
-						}
-						args[0] = elem
-						elem = ""
-
 						if len(elem) == 0 {
-							// Leaf node.
 							switch r.Method {
-							case "DELETE":
-								s.handleDeleteSourceRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							case "GET":
-								s.handleGetSourceRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
-							case "PATCH":
-								s.handleUpdateSourceRequest([1]string{
-									args[0],
-								}, elemIsEscaped, w, r)
+							case "POST":
+								s.handleCreateSourceRequest([0]string{}, elemIsEscaped, w, r)
 							default:
-								s.notAllowed(w, r, "DELETE,GET,PATCH")
+								s.notAllowed(w, r, "POST")
 							}
 
 							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "source_id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "DELETE":
+									s.handleDeleteSourceRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleGetSourceRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "PATCH":
+									s.handleUpdateSourceRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "DELETE,GET,PATCH")
+								}
+
+								return
+							}
+
+						}
+
+					case 'y': // Prefix: "yncs"
+
+						if l := len("yncs"); len(elem) >= l && elem[0:l] == "yncs" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch r.Method {
+							case "POST":
+								s.handleCreateSyncRequest([0]string{}, elemIsEscaped, w, r)
+							default:
+								s.notAllowed(w, r, "POST")
+							}
+
+							return
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "sync_id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch r.Method {
+								case "DELETE":
+									s.handleDeleteSyncRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "GET":
+									s.handleGetSyncRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								case "PATCH":
+									s.handleUpdateSyncRequest([1]string{
+										args[0],
+									}, elemIsEscaped, w, r)
+								default:
+									s.notAllowed(w, r, "DELETE,GET,PATCH")
+								}
+
+								return
+							}
+
 						}
 
 					}
@@ -555,76 +629,164 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 
 					}
 
-				case 's': // Prefix: "sources"
+				case 's': // Prefix: "s"
 
-					if l := len("sources"); len(elem) >= l && elem[0:l] == "sources" {
+					if l := len("s"); len(elem) >= l && elem[0:l] == "s" {
 						elem = elem[l:]
 					} else {
 						break
 					}
 
 					if len(elem) == 0 {
-						switch method {
-						case "POST":
-							r.name = CreateSourceOperation
-							r.summary = "Create Source"
-							r.operationID = "createSource"
-							r.pathPattern = "/api/v1/sources"
-							r.args = args
-							r.count = 0
-							return r, true
-						default:
-							return
-						}
+						break
 					}
 					switch elem[0] {
-					case '/': // Prefix: "/"
+					case 'o': // Prefix: "ources"
 
-						if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+						if l := len("ources"); len(elem) >= l && elem[0:l] == "ources" {
 							elem = elem[l:]
 						} else {
 							break
 						}
 
-						// Param: "source_id"
-						// Leaf parameter, slashes are prohibited
-						idx := strings.IndexByte(elem, '/')
-						if idx >= 0 {
-							break
-						}
-						args[0] = elem
-						elem = ""
-
 						if len(elem) == 0 {
-							// Leaf node.
 							switch method {
-							case "DELETE":
-								r.name = DeleteSourceOperation
-								r.summary = "Delete source"
-								r.operationID = "deleteSource"
-								r.pathPattern = "/api/v1/sources/{source_id}"
+							case "POST":
+								r.name = CreateSourceOperation
+								r.summary = "Create Source"
+								r.operationID = "createSource"
+								r.pathPattern = "/api/v1/sources"
 								r.args = args
-								r.count = 1
-								return r, true
-							case "GET":
-								r.name = GetSourceOperation
-								r.summary = "Fetch source"
-								r.operationID = "getSource"
-								r.pathPattern = "/api/v1/sources/{source_id}"
-								r.args = args
-								r.count = 1
-								return r, true
-							case "PATCH":
-								r.name = UpdateSourceOperation
-								r.summary = "Update source"
-								r.operationID = "updateSource"
-								r.pathPattern = "/api/v1/sources/{source_id}"
-								r.args = args
-								r.count = 1
+								r.count = 0
 								return r, true
 							default:
 								return
 							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "source_id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "DELETE":
+									r.name = DeleteSourceOperation
+									r.summary = "Delete source"
+									r.operationID = "deleteSource"
+									r.pathPattern = "/api/v1/sources/{source_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "GET":
+									r.name = GetSourceOperation
+									r.summary = "Fetch source"
+									r.operationID = "getSource"
+									r.pathPattern = "/api/v1/sources/{source_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "PATCH":
+									r.name = UpdateSourceOperation
+									r.summary = "Update source"
+									r.operationID = "updateSource"
+									r.pathPattern = "/api/v1/sources/{source_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
+						}
+
+					case 'y': // Prefix: "yncs"
+
+						if l := len("yncs"); len(elem) >= l && elem[0:l] == "yncs" {
+							elem = elem[l:]
+						} else {
+							break
+						}
+
+						if len(elem) == 0 {
+							switch method {
+							case "POST":
+								r.name = CreateSyncOperation
+								r.summary = "Create Sync"
+								r.operationID = "createSync"
+								r.pathPattern = "/api/v1/syncs"
+								r.args = args
+								r.count = 0
+								return r, true
+							default:
+								return
+							}
+						}
+						switch elem[0] {
+						case '/': // Prefix: "/"
+
+							if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
+								elem = elem[l:]
+							} else {
+								break
+							}
+
+							// Param: "sync_id"
+							// Leaf parameter, slashes are prohibited
+							idx := strings.IndexByte(elem, '/')
+							if idx >= 0 {
+								break
+							}
+							args[0] = elem
+							elem = ""
+
+							if len(elem) == 0 {
+								// Leaf node.
+								switch method {
+								case "DELETE":
+									r.name = DeleteSyncOperation
+									r.summary = "Delete sync"
+									r.operationID = "deleteSync"
+									r.pathPattern = "/api/v1/syncs/{sync_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "GET":
+									r.name = GetSyncOperation
+									r.summary = "Fetch sync"
+									r.operationID = "getSync"
+									r.pathPattern = "/api/v1/syncs/{sync_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								case "PATCH":
+									r.name = UpdateSyncOperation
+									r.summary = "Update sync"
+									r.operationID = "updateSync"
+									r.pathPattern = "/api/v1/syncs/{sync_id}"
+									r.args = args
+									r.count = 1
+									return r, true
+								default:
+									return
+								}
+							}
+
 						}
 
 					}

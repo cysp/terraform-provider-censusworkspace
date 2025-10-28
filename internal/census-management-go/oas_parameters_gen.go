@@ -209,6 +209,71 @@ func decodeDeleteSourceParams(args [1]string, argsEscaped bool, r *http.Request)
 	return params, nil
 }
 
+// DeleteSyncParams is parameters of deleteSync operation.
+type DeleteSyncParams struct {
+	SyncID string
+}
+
+func unpackDeleteSyncParams(packed middleware.Parameters) (params DeleteSyncParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "sync_id",
+			In:   "path",
+		}
+		params.SyncID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeDeleteSyncParams(args [1]string, argsEscaped bool, r *http.Request) (params DeleteSyncParams, _ error) {
+	// Decode path: sync_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "sync_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.SyncID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sync_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // GetDatasetParams is parameters of getDataset operation.
 type GetDatasetParams struct {
 	DatasetID string
@@ -404,6 +469,71 @@ func decodeGetSourceParams(args [1]string, argsEscaped bool, r *http.Request) (p
 	return params, nil
 }
 
+// GetSyncParams is parameters of getSync operation.
+type GetSyncParams struct {
+	SyncID string
+}
+
+func unpackGetSyncParams(packed middleware.Parameters) (params GetSyncParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "sync_id",
+			In:   "path",
+		}
+		params.SyncID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeGetSyncParams(args [1]string, argsEscaped bool, r *http.Request) (params GetSyncParams, _ error) {
+	// Decode path: sync_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "sync_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.SyncID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sync_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // UpdateDatasetParams is parameters of updateDataset operation.
 type UpdateDatasetParams struct {
 	DatasetID string
@@ -592,6 +722,71 @@ func decodeUpdateSourceParams(args [1]string, argsEscaped bool, r *http.Request)
 	}(); err != nil {
 		return params, &ogenerrors.DecodeParamError{
 			Name: "source_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
+// UpdateSyncParams is parameters of updateSync operation.
+type UpdateSyncParams struct {
+	SyncID string
+}
+
+func unpackUpdateSyncParams(packed middleware.Parameters) (params UpdateSyncParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "sync_id",
+			In:   "path",
+		}
+		params.SyncID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeUpdateSyncParams(args [1]string, argsEscaped bool, r *http.Request) (params UpdateSyncParams, _ error) {
+	// Decode path: sync_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "sync_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.SyncID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "sync_id",
 			In:   "path",
 			Err:  err,
 		}

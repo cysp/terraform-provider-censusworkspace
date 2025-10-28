@@ -24,6 +24,12 @@ components:
       required: true
       schema:
         type: string
+    sync_id:
+      in: path
+      name: sync_id
+      required: true
+      schema:
+        type: string
   schemas:
     ResponseStatus:
       type: string
@@ -265,6 +271,89 @@ components:
         - name
         - type
         - created_at
+    CreateSyncBody:
+      type: object
+      properties:
+        label:
+          type: string
+          description: A label to give to this sync.
+          nullable: true
+        operation:
+          type: string
+          description: How records are synced to the destination.
+        destination_attributes:
+          type: object
+          properties:
+            connection_id:
+              type: integer
+              format: int64
+              description: The id used to identify the destination connection.
+            object:
+              type: string
+              description: The full name of the destination object.
+          required:
+            - connection_id
+            - object
+      required:
+        - operation
+        - destination_attributes
+    UpdateSyncBody:
+      type: object
+      properties:
+        label:
+          type: string
+          description: A label to give to this sync.
+          nullable: true
+        operation:
+          type: string
+          description: How records are synced to the destination.
+        destination_attributes:
+          type: object
+          properties:
+            connection_id:
+              type: integer
+              format: int64
+              description: The id used to identify the destination connection.
+            object:
+              type: string
+              description: The full name of the destination object.
+          required:
+            - connection_id
+            - object
+      required:
+        - operation
+        - destination_attributes
+    SyncData:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The id of this destination.
+        label:
+          type: string
+          description: A label to give to this sync.
+          nullable: true
+        operation:
+          type: string
+          description: How records are synced to the destination.
+        destination_attributes:
+          type: object
+          properties:
+            connection_id:
+              type: integer
+              format: int64
+              description: The id used to identify the destination connection.
+            object:
+              type: string
+              description: The full name of the destination object.
+          required:
+            - connection_id
+            - object
+      required:
+        - id
+        - operation
+        - destination_attributes
   securitySchemes:
     workspaceApiKey:
       type: http
@@ -345,6 +434,40 @@ components:
                 $ref: "#/components/schemas/ResponseStatus"
               data:
                 $ref: "#/components/schemas/DestinationData"
+            required:
+              - status
+              - data
+    syncIdResponse:
+      description: A sync id
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: "#/components/schemas/ResponseStatus"
+              data:
+                type: object
+                properties:
+                  sync_id:
+                    type: integer
+                    format: int64
+                required:
+                  - sync_id
+            required:
+              - status
+              - data
+    syncResponse:
+      description: A sync
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: "#/components/schemas/ResponseStatus"
+              data:
+                $ref: "#/components/schemas/SyncData"
             required:
               - status
               - data
@@ -496,6 +619,54 @@ paths:
     delete:
       operationId: deleteDestination
       summary: Delete destination
+      responses:
+        2XX:
+          $ref: "#/components/responses/statusResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+  /api/v1/syncs:
+    post:
+      operationId: createSync
+      summary: Create Sync
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSyncBody"
+      responses:
+        2XX:
+          $ref: "#/components/responses/syncIdResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+  /api/v1/syncs/{sync_id}:
+    parameters:
+      - $ref: "#/components/parameters/sync_id"
+    get:
+      operationId: getSync
+      summary: Fetch sync
+      responses:
+        2XX:
+          $ref: "#/components/responses/syncResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+    patch:
+      operationId: updateSync
+      summary: Update sync
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSyncBody"
+      responses:
+        2XX:
+          $ref: "#/components/responses/syncResponse"
+        default:
+          $ref: "#/components/responses/statusResponse"
+    delete:
+      operationId: deleteSync
+      summary: Delete sync
       responses:
         2XX:
           $ref: "#/components/responses/statusResponse"

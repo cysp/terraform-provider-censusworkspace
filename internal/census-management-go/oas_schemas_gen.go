@@ -278,6 +278,72 @@ func (s *CreateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
 }
 
+// Ref: #/components/schemas/CreateSyncBody
+type CreateSyncBody struct {
+	// A label to give to this sync.
+	Label OptNilString `json:"label"`
+	// How records are synced to the destination.
+	Operation             string                              `json:"operation"`
+	DestinationAttributes CreateSyncBodyDestinationAttributes `json:"destination_attributes"`
+}
+
+// GetLabel returns the value of Label.
+func (s *CreateSyncBody) GetLabel() OptNilString {
+	return s.Label
+}
+
+// GetOperation returns the value of Operation.
+func (s *CreateSyncBody) GetOperation() string {
+	return s.Operation
+}
+
+// GetDestinationAttributes returns the value of DestinationAttributes.
+func (s *CreateSyncBody) GetDestinationAttributes() CreateSyncBodyDestinationAttributes {
+	return s.DestinationAttributes
+}
+
+// SetLabel sets the value of Label.
+func (s *CreateSyncBody) SetLabel(val OptNilString) {
+	s.Label = val
+}
+
+// SetOperation sets the value of Operation.
+func (s *CreateSyncBody) SetOperation(val string) {
+	s.Operation = val
+}
+
+// SetDestinationAttributes sets the value of DestinationAttributes.
+func (s *CreateSyncBody) SetDestinationAttributes(val CreateSyncBodyDestinationAttributes) {
+	s.DestinationAttributes = val
+}
+
+type CreateSyncBodyDestinationAttributes struct {
+	// The id used to identify the destination connection.
+	ConnectionID int64 `json:"connection_id"`
+	// The full name of the destination object.
+	Object string `json:"object"`
+}
+
+// GetConnectionID returns the value of ConnectionID.
+func (s *CreateSyncBodyDestinationAttributes) GetConnectionID() int64 {
+	return s.ConnectionID
+}
+
+// GetObject returns the value of Object.
+func (s *CreateSyncBodyDestinationAttributes) GetObject() string {
+	return s.Object
+}
+
+// SetConnectionID sets the value of ConnectionID.
+func (s *CreateSyncBodyDestinationAttributes) SetConnectionID(val int64) {
+	s.ConnectionID = val
+}
+
+// SetObject sets the value of Object.
+func (s *CreateSyncBodyDestinationAttributes) SetObject(val string) {
+	s.Object = val
+}
+
 // Ref: #/components/schemas/DatasetData
 // DatasetData represents sum type.
 type DatasetData struct {
@@ -1338,6 +1404,200 @@ func (s *StatusResponseStatusCode) SetResponse(val StatusResponse) {
 	s.Response = val
 }
 
+// Ref: #/components/schemas/SyncData
+type SyncData struct {
+	// The id of this destination.
+	ID int64 `json:"id"`
+	// A label to give to this sync.
+	Label OptNilString `json:"label"`
+	// How records are synced to the destination.
+	Operation             string                        `json:"operation"`
+	DestinationAttributes SyncDataDestinationAttributes `json:"destination_attributes"`
+}
+
+// GetID returns the value of ID.
+func (s *SyncData) GetID() int64 {
+	return s.ID
+}
+
+// GetLabel returns the value of Label.
+func (s *SyncData) GetLabel() OptNilString {
+	return s.Label
+}
+
+// GetOperation returns the value of Operation.
+func (s *SyncData) GetOperation() string {
+	return s.Operation
+}
+
+// GetDestinationAttributes returns the value of DestinationAttributes.
+func (s *SyncData) GetDestinationAttributes() SyncDataDestinationAttributes {
+	return s.DestinationAttributes
+}
+
+// SetID sets the value of ID.
+func (s *SyncData) SetID(val int64) {
+	s.ID = val
+}
+
+// SetLabel sets the value of Label.
+func (s *SyncData) SetLabel(val OptNilString) {
+	s.Label = val
+}
+
+// SetOperation sets the value of Operation.
+func (s *SyncData) SetOperation(val string) {
+	s.Operation = val
+}
+
+// SetDestinationAttributes sets the value of DestinationAttributes.
+func (s *SyncData) SetDestinationAttributes(val SyncDataDestinationAttributes) {
+	s.DestinationAttributes = val
+}
+
+type SyncDataDestinationAttributes struct {
+	// The id used to identify the destination connection.
+	ConnectionID int64 `json:"connection_id"`
+	// The full name of the destination object.
+	Object string `json:"object"`
+}
+
+// GetConnectionID returns the value of ConnectionID.
+func (s *SyncDataDestinationAttributes) GetConnectionID() int64 {
+	return s.ConnectionID
+}
+
+// GetObject returns the value of Object.
+func (s *SyncDataDestinationAttributes) GetObject() string {
+	return s.Object
+}
+
+// SetConnectionID sets the value of ConnectionID.
+func (s *SyncDataDestinationAttributes) SetConnectionID(val int64) {
+	s.ConnectionID = val
+}
+
+// SetObject sets the value of Object.
+func (s *SyncDataDestinationAttributes) SetObject(val string) {
+	s.Object = val
+}
+
+type SyncIdResponse struct {
+	Status ResponseStatus     `json:"status"`
+	Data   SyncIdResponseData `json:"data"`
+}
+
+// GetStatus returns the value of Status.
+func (s *SyncIdResponse) GetStatus() ResponseStatus {
+	return s.Status
+}
+
+// GetData returns the value of Data.
+func (s *SyncIdResponse) GetData() SyncIdResponseData {
+	return s.Data
+}
+
+// SetStatus sets the value of Status.
+func (s *SyncIdResponse) SetStatus(val ResponseStatus) {
+	s.Status = val
+}
+
+// SetData sets the value of Data.
+func (s *SyncIdResponse) SetData(val SyncIdResponseData) {
+	s.Data = val
+}
+
+type SyncIdResponseData struct {
+	SyncID int64 `json:"sync_id"`
+}
+
+// GetSyncID returns the value of SyncID.
+func (s *SyncIdResponseData) GetSyncID() int64 {
+	return s.SyncID
+}
+
+// SetSyncID sets the value of SyncID.
+func (s *SyncIdResponseData) SetSyncID(val int64) {
+	s.SyncID = val
+}
+
+// SyncIdResponseStatusCode wraps SyncIdResponse with StatusCode.
+type SyncIdResponseStatusCode struct {
+	StatusCode int
+	Response   SyncIdResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *SyncIdResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *SyncIdResponseStatusCode) GetResponse() SyncIdResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *SyncIdResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *SyncIdResponseStatusCode) SetResponse(val SyncIdResponse) {
+	s.Response = val
+}
+
+type SyncResponse struct {
+	Status ResponseStatus `json:"status"`
+	Data   SyncData       `json:"data"`
+}
+
+// GetStatus returns the value of Status.
+func (s *SyncResponse) GetStatus() ResponseStatus {
+	return s.Status
+}
+
+// GetData returns the value of Data.
+func (s *SyncResponse) GetData() SyncData {
+	return s.Data
+}
+
+// SetStatus sets the value of Status.
+func (s *SyncResponse) SetStatus(val ResponseStatus) {
+	s.Status = val
+}
+
+// SetData sets the value of Data.
+func (s *SyncResponse) SetData(val SyncData) {
+	s.Data = val
+}
+
+// SyncResponseStatusCode wraps SyncResponse with StatusCode.
+type SyncResponseStatusCode struct {
+	StatusCode int
+	Response   SyncResponse
+}
+
+// GetStatusCode returns the value of StatusCode.
+func (s *SyncResponseStatusCode) GetStatusCode() int {
+	return s.StatusCode
+}
+
+// GetResponse returns the value of Response.
+func (s *SyncResponseStatusCode) GetResponse() SyncResponse {
+	return s.Response
+}
+
+// SetStatusCode sets the value of StatusCode.
+func (s *SyncResponseStatusCode) SetStatusCode(val int) {
+	s.StatusCode = val
+}
+
+// SetResponse sets the value of Response.
+func (s *SyncResponseStatusCode) SetResponse(val SyncResponse) {
+	s.Response = val
+}
+
 // Ref: #/components/schemas/UpdateDatasetBody
 // UpdateDatasetBody represents sum type.
 type UpdateDatasetBody struct {
@@ -1502,6 +1762,72 @@ func (s *UpdateSourceBodyConnection) SetLabel(val OptNilString) {
 // SetCredentials sets the value of Credentials.
 func (s *UpdateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
+}
+
+// Ref: #/components/schemas/UpdateSyncBody
+type UpdateSyncBody struct {
+	// A label to give to this sync.
+	Label OptNilString `json:"label"`
+	// How records are synced to the destination.
+	Operation             string                              `json:"operation"`
+	DestinationAttributes UpdateSyncBodyDestinationAttributes `json:"destination_attributes"`
+}
+
+// GetLabel returns the value of Label.
+func (s *UpdateSyncBody) GetLabel() OptNilString {
+	return s.Label
+}
+
+// GetOperation returns the value of Operation.
+func (s *UpdateSyncBody) GetOperation() string {
+	return s.Operation
+}
+
+// GetDestinationAttributes returns the value of DestinationAttributes.
+func (s *UpdateSyncBody) GetDestinationAttributes() UpdateSyncBodyDestinationAttributes {
+	return s.DestinationAttributes
+}
+
+// SetLabel sets the value of Label.
+func (s *UpdateSyncBody) SetLabel(val OptNilString) {
+	s.Label = val
+}
+
+// SetOperation sets the value of Operation.
+func (s *UpdateSyncBody) SetOperation(val string) {
+	s.Operation = val
+}
+
+// SetDestinationAttributes sets the value of DestinationAttributes.
+func (s *UpdateSyncBody) SetDestinationAttributes(val UpdateSyncBodyDestinationAttributes) {
+	s.DestinationAttributes = val
+}
+
+type UpdateSyncBodyDestinationAttributes struct {
+	// The id used to identify the destination connection.
+	ConnectionID int64 `json:"connection_id"`
+	// The full name of the destination object.
+	Object string `json:"object"`
+}
+
+// GetConnectionID returns the value of ConnectionID.
+func (s *UpdateSyncBodyDestinationAttributes) GetConnectionID() int64 {
+	return s.ConnectionID
+}
+
+// GetObject returns the value of Object.
+func (s *UpdateSyncBodyDestinationAttributes) GetObject() string {
+	return s.Object
+}
+
+// SetConnectionID sets the value of ConnectionID.
+func (s *UpdateSyncBodyDestinationAttributes) SetConnectionID(val int64) {
+	s.ConnectionID = val
+}
+
+// SetObject sets the value of Object.
+func (s *UpdateSyncBodyDestinationAttributes) SetObject(val string) {
+	s.Object = val
 }
 
 type WorkspaceApiKey struct {

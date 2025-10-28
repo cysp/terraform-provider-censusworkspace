@@ -36,16 +36,20 @@ var operationRolesWorkspaceApiKey = map[string][]string{
 	CreateDatasetOperation:     []string{},
 	CreateDestinationOperation: []string{},
 	CreateSourceOperation:      []string{},
+	CreateSyncOperation:        []string{},
 	DeleteDatasetOperation:     []string{},
 	DeleteDestinationOperation: []string{},
 	DeleteSourceOperation:      []string{},
+	DeleteSyncOperation:        []string{},
 	GetApiV1Operation:          []string{},
 	GetDatasetOperation:        []string{},
 	GetDestinationOperation:    []string{},
 	GetSourceOperation:         []string{},
+	GetSyncOperation:           []string{},
 	UpdateDatasetOperation:     []string{},
 	UpdateDestinationOperation: []string{},
 	UpdateSourceOperation:      []string{},
+	UpdateSyncOperation:        []string{},
 }
 
 func (s *Server) securityWorkspaceApiKey(ctx context.Context, operationName OperationName, req *http.Request) (context.Context, bool, error) {

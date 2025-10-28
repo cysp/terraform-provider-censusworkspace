@@ -26,6 +26,12 @@ type Handler interface {
 	//
 	// POST /api/v1/sources
 	CreateSource(ctx context.Context, req *CreateSourceBody) (*IdResponseStatusCode, error)
+	// CreateSync implements createSync operation.
+	//
+	// Create Sync.
+	//
+	// POST /api/v1/syncs
+	CreateSync(ctx context.Context, req *CreateSyncBody) (*SyncIdResponseStatusCode, error)
 	// DeleteDataset implements deleteDataset operation.
 	//
 	// Delete dataset.
@@ -44,6 +50,12 @@ type Handler interface {
 	//
 	// DELETE /api/v1/sources/{source_id}
 	DeleteSource(ctx context.Context, params DeleteSourceParams) (*StatusResponseStatusCode, error)
+	// DeleteSync implements deleteSync operation.
+	//
+	// Delete sync.
+	//
+	// DELETE /api/v1/syncs/{sync_id}
+	DeleteSync(ctx context.Context, params DeleteSyncParams) (*StatusResponseStatusCode, error)
 	// GetApiV1 implements getApiV1 operation.
 	//
 	// GET /api/v1
@@ -66,6 +78,12 @@ type Handler interface {
 	//
 	// GET /api/v1/sources/{source_id}
 	GetSource(ctx context.Context, params GetSourceParams) (*SourceResponseStatusCode, error)
+	// GetSync implements getSync operation.
+	//
+	// Fetch sync.
+	//
+	// GET /api/v1/syncs/{sync_id}
+	GetSync(ctx context.Context, params GetSyncParams) (*SyncResponseStatusCode, error)
 	// UpdateDataset implements updateDataset operation.
 	//
 	// Update dataset.
@@ -84,6 +102,12 @@ type Handler interface {
 	//
 	// PATCH /api/v1/sources/{source_id}
 	UpdateSource(ctx context.Context, req *UpdateSourceBody, params UpdateSourceParams) (*SourceResponseStatusCode, error)
+	// UpdateSync implements updateSync operation.
+	//
+	// Update sync.
+	//
+	// PATCH /api/v1/syncs/{sync_id}
+	UpdateSync(ctx context.Context, req *UpdateSyncBody, params UpdateSyncParams) (*SyncResponseStatusCode, error)
 	// NewError creates *StatusResponseStatusCode from error returned by handler.
 	//
 	// Used for common default response.

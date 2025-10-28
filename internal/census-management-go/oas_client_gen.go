@@ -39,6 +39,12 @@ type Invoker interface {
 	//
 	// POST /api/v1/sources
 	CreateSource(ctx context.Context, request *CreateSourceBody) (*IdResponseStatusCode, error)
+	// CreateSync invokes createSync operation.
+	//
+	// Create Sync.
+	//
+	// POST /api/v1/syncs
+	CreateSync(ctx context.Context, request *CreateSyncBody) (*SyncIdResponseStatusCode, error)
 	// DeleteDataset invokes deleteDataset operation.
 	//
 	// Delete dataset.
@@ -57,6 +63,12 @@ type Invoker interface {
 	//
 	// DELETE /api/v1/sources/{source_id}
 	DeleteSource(ctx context.Context, params DeleteSourceParams) (*StatusResponseStatusCode, error)
+	// DeleteSync invokes deleteSync operation.
+	//
+	// Delete sync.
+	//
+	// DELETE /api/v1/syncs/{sync_id}
+	DeleteSync(ctx context.Context, params DeleteSyncParams) (*StatusResponseStatusCode, error)
 	// GetApiV1 invokes getApiV1 operation.
 	//
 	// GET /api/v1
@@ -79,6 +91,12 @@ type Invoker interface {
 	//
 	// GET /api/v1/sources/{source_id}
 	GetSource(ctx context.Context, params GetSourceParams) (*SourceResponseStatusCode, error)
+	// GetSync invokes getSync operation.
+	//
+	// Fetch sync.
+	//
+	// GET /api/v1/syncs/{sync_id}
+	GetSync(ctx context.Context, params GetSyncParams) (*SyncResponseStatusCode, error)
 	// UpdateDataset invokes updateDataset operation.
 	//
 	// Update dataset.
@@ -97,6 +115,12 @@ type Invoker interface {
 	//
 	// PATCH /api/v1/sources/{source_id}
 	UpdateSource(ctx context.Context, request *UpdateSourceBody, params UpdateSourceParams) (*SourceResponseStatusCode, error)
+	// UpdateSync invokes updateSync operation.
+	//
+	// Update sync.
+	//
+	// PATCH /api/v1/syncs/{sync_id}
+	UpdateSync(ctx context.Context, request *UpdateSyncBody, params UpdateSyncParams) (*SyncResponseStatusCode, error)
 }
 
 // Client implements OAS client.
@@ -373,6 +397,78 @@ func (c *Client) sendCreateSource(ctx context.Context, request *CreateSourceBody
 	return result, nil
 }
 
+// CreateSync invokes createSync operation.
+//
+// Create Sync.
+//
+// POST /api/v1/syncs
+func (c *Client) CreateSync(ctx context.Context, request *CreateSyncBody) (*SyncIdResponseStatusCode, error) {
+	res, err := c.sendCreateSync(ctx, request)
+	return res, err
+}
+
+func (c *Client) sendCreateSync(ctx context.Context, request *CreateSyncBody) (res *SyncIdResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [1]string
+	pathParts[0] = "/api/v1/syncs"
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "POST", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeCreateSyncRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, CreateSyncOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeCreateSyncResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // DeleteDataset invokes deleteDataset operation.
 //
 // Delete dataset.
@@ -627,6 +723,93 @@ func (c *Client) sendDeleteSource(ctx context.Context, params DeleteSourceParams
 	defer resp.Body.Close()
 
 	result, err := decodeDeleteSourceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// DeleteSync invokes deleteSync operation.
+//
+// Delete sync.
+//
+// DELETE /api/v1/syncs/{sync_id}
+func (c *Client) DeleteSync(ctx context.Context, params DeleteSyncParams) (*StatusResponseStatusCode, error) {
+	res, err := c.sendDeleteSync(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendDeleteSync(ctx context.Context, params DeleteSyncParams) (res *StatusResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/syncs/"
+	{
+		// Encode "sync_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "sync_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.SyncID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "DELETE", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, DeleteSyncOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeDeleteSyncResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -962,6 +1145,93 @@ func (c *Client) sendGetSource(ctx context.Context, params GetSourceParams) (res
 	return result, nil
 }
 
+// GetSync invokes getSync operation.
+//
+// Fetch sync.
+//
+// GET /api/v1/syncs/{sync_id}
+func (c *Client) GetSync(ctx context.Context, params GetSyncParams) (*SyncResponseStatusCode, error) {
+	res, err := c.sendGetSync(ctx, params)
+	return res, err
+}
+
+func (c *Client) sendGetSync(ctx context.Context, params GetSyncParams) (res *SyncResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/syncs/"
+	{
+		// Encode "sync_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "sync_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.SyncID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "GET", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, GetSyncOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeGetSyncResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
 // UpdateDataset invokes updateDataset operation.
 //
 // Update dataset.
@@ -1225,6 +1495,96 @@ func (c *Client) sendUpdateSource(ctx context.Context, request *UpdateSourceBody
 	defer resp.Body.Close()
 
 	result, err := decodeUpdateSourceResponse(resp)
+	if err != nil {
+		return res, errors.Wrap(err, "decode response")
+	}
+
+	return result, nil
+}
+
+// UpdateSync invokes updateSync operation.
+//
+// Update sync.
+//
+// PATCH /api/v1/syncs/{sync_id}
+func (c *Client) UpdateSync(ctx context.Context, request *UpdateSyncBody, params UpdateSyncParams) (*SyncResponseStatusCode, error) {
+	res, err := c.sendUpdateSync(ctx, request, params)
+	return res, err
+}
+
+func (c *Client) sendUpdateSync(ctx context.Context, request *UpdateSyncBody, params UpdateSyncParams) (res *SyncResponseStatusCode, err error) {
+
+	u := uri.Clone(c.requestURL(ctx))
+	var pathParts [2]string
+	pathParts[0] = "/api/v1/syncs/"
+	{
+		// Encode "sync_id" parameter.
+		e := uri.NewPathEncoder(uri.PathEncoderConfig{
+			Param:   "sync_id",
+			Style:   uri.PathStyleSimple,
+			Explode: false,
+		})
+		if err := func() error {
+			return e.EncodeValue(conv.StringToString(params.SyncID))
+		}(); err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		encoded, err := e.Result()
+		if err != nil {
+			return res, errors.Wrap(err, "encode path")
+		}
+		pathParts[1] = encoded
+	}
+	uri.AddPathParts(u, pathParts[:]...)
+
+	r, err := ht.NewRequest(ctx, "PATCH", u)
+	if err != nil {
+		return res, errors.Wrap(err, "create request")
+	}
+	if err := encodeUpdateSyncRequest(request, r); err != nil {
+		return res, errors.Wrap(err, "encode request")
+	}
+
+	{
+		type bitset = [1]uint8
+		var satisfied bitset
+		{
+
+			switch err := c.securityWorkspaceApiKey(ctx, UpdateSyncOperation, r); {
+			case err == nil: // if NO error
+				satisfied[0] |= 1 << 0
+			case errors.Is(err, ogenerrors.ErrSkipClientSecurity):
+				// Skip this security.
+			default:
+				return res, errors.Wrap(err, "security \"WorkspaceApiKey\"")
+			}
+		}
+
+		if ok := func() bool {
+		nextRequirement:
+			for _, requirement := range []bitset{
+				{0b00000001},
+			} {
+				for i, mask := range requirement {
+					if satisfied[i]&mask != mask {
+						continue nextRequirement
+					}
+				}
+				return true
+			}
+			return false
+		}(); !ok {
+			return res, ogenerrors.ErrSecurityRequirementIsNotSatisfied
+		}
+	}
+
+	resp, err := c.cfg.Client.Do(r)
+	if err != nil {
+		return res, errors.Wrap(err, "do request")
+	}
+	defer resp.Body.Close()
+
+	result, err := decodeUpdateSyncResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

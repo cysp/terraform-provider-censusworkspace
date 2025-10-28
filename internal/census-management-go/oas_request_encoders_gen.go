@@ -52,6 +52,20 @@ func encodeCreateSourceRequest(
 	return nil
 }
 
+func encodeCreateSyncRequest(
+	req *CreateSyncBody,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
 func encodeUpdateDatasetRequest(
 	req UpdateDatasetBody,
 	r *http.Request,
@@ -82,6 +96,20 @@ func encodeUpdateDestinationRequest(
 
 func encodeUpdateSourceRequest(
 	req *UpdateSourceBody,
+	r *http.Request,
+) error {
+	const contentType = "application/json"
+	e := new(jx.Encoder)
+	{
+		req.Encode(e)
+	}
+	encoded := e.Bytes()
+	ht.SetBody(r, bytes.NewReader(encoded), contentType)
+	return nil
+}
+
+func encodeUpdateSyncRequest(
+	req *UpdateSyncBody,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

@@ -17,6 +17,9 @@ type Handler struct {
 
 	Sources      map[string]*cm.SourceData
 	sourceIDLast int64
+
+	Syncs      map[string]*cm.SyncData
+	syncIDLast int64
 }
 
 var _ cm.Handler = (*Handler)(nil)
@@ -30,5 +33,7 @@ func NewCensusManagementHandler() *Handler {
 		Destinations: make(map[string]*cm.DestinationData),
 
 		Sources: make(map[string]*cm.SourceData),
+
+		Syncs: make(map[string]*cm.SyncData),
 	}
 }
