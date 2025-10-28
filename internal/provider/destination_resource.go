@@ -50,7 +50,7 @@ func (r *destinationResource) IdentitySchema(ctx context.Context, _ resource.Ide
 }
 
 func (r *destinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("id"), req, resp)
+	ImportStatePassthroughMultipartID(ctx, []path.Path{path.Root("id")}, req, resp)
 }
 
 func (r *destinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -113,6 +113,7 @@ func (r *destinationResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
@@ -162,6 +163,7 @@ func (r *destinationResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
@@ -206,6 +208,7 @@ func (r *destinationResource) Update(ctx context.Context, req resource.UpdateReq
 
 	model.Credentials = plan.Credentials
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 

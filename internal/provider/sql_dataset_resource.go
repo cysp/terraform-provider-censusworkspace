@@ -45,7 +45,7 @@ func (r *sqlDatasetResource) IdentitySchema(ctx context.Context, _ resource.Iden
 }
 
 func (r *sqlDatasetResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("id"), req, resp)
+	ImportStatePassthroughMultipartID(ctx, []path.Path{path.Root("id")}, req, resp)
 }
 
 func (r *sqlDatasetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -106,6 +106,7 @@ func (r *sqlDatasetResource) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
@@ -153,6 +154,7 @@ func (r *sqlDatasetResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
@@ -195,6 +197,7 @@ func (r *sqlDatasetResource) Update(ctx context.Context, req resource.UpdateRequ
 	model, modelDiags := NewSQLDatasetModelFromResponse(ctx, path.Empty(), updateDatasetResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
+	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
 
