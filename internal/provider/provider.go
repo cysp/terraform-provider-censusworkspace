@@ -8,6 +8,7 @@ import (
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 	"github.com/hashicorp/go-retryablehttp"
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -51,7 +52,10 @@ type ProviderModel struct {
 	WorkspaceAPIKey types.String `tfsdk:"workspace_api_key"`
 }
 
-var _ provider.Provider = (*Provider)(nil)
+var (
+	_ provider.Provider            = (*Provider)(nil)
+	_ provider.ProviderWithActions = (*Provider)(nil)
+)
 
 type Option func(*Provider)
 
@@ -157,6 +161,7 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 		client: censusManagementClient,
 	}
 
+	resp.ActionData = providerData
 	resp.DataSourceData = providerData
 	resp.ResourceData = providerData
 }
@@ -164,6 +169,12 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 func (p *Provider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "censusworkspace"
 	resp.Version = p.version
+}
+
+func (p *Provider) Actions(context.Context) []func() action.Action {
+	return []func() action.Action{
+		NewDatasetRefreshColumnsAction,
+	}
 }
 
 func (p *Provider) DataSources(_ context.Context) []func() datasource.DataSource {
