@@ -11,7 +11,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SyncRequest'
+              $ref: '#/components/schemas/CreateOrUpdateSyncBody'
       responses:
         '201':
           description: Sync created
@@ -35,7 +35,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SyncRequest'
+              $ref: '#/components/schemas/CreateOrUpdateSyncBody'
       responses:
         '200':
           description: Sync updated
@@ -64,7 +64,7 @@ paths:
 components:
   schemas:
 
-    SyncRequest:
+    CreateOrUpdateSyncBody:
       type: object
       properties:
         label:
@@ -80,23 +80,23 @@ components:
             - update
             - upsert
         destination_attributes:
-          $ref: '#/components/schemas/DestinationAttributes'
+          $ref: '#/components/schemas/SyncDestinationAttributes'
         source_attributes:
-          $ref: '#/components/schemas/SourceAttributes'
+          $ref: '#/components/schemas/SyncSourceAttributes'
         mappings:
           type: array
           description: Array of mapping objects defining how source fields map to destination fields.
           items:
-            $ref: '#/components/schemas/Mapping'
+            $ref: '#/components/schemas/SyncMapping'
         alert_attributes:
           type: array
           description: Array of alert configuration objects determining when and how to send alerts.
           items:
-            $ref: '#/components/schemas/AlertAttributes'
+            $ref: '#/components/schemas/SyncAlertAttributes'
         advanced_configuration:
-          $ref: '#/components/schemas/AdvancedConfiguration'
+          $ref: '#/components/schemas/SyncAdvancedConfiguration'
         mode:
-          $ref: '#/components/schemas/Mode'
+          $ref: '#/components/schemas/SyncMode'
         paused:
           type: boolean
           description: Whether or not this sync should be paused.
@@ -116,7 +116,7 @@ components:
           type: string
           description: Name of the timestamp column for high‑water‑mark diffing strategy.
         high_water_mark_attributes:
-          $ref: '#/components/schemas/HighWaterMarkAttributes'
+          $ref: '#/components/schemas/SyncHighWaterMarkAttributes'
         validate_only:
           type: boolean
           description: When true, checks if the given payload is valid to configure a sync. Does not create the sync.
@@ -141,7 +141,87 @@ components:
         - source_attributes
         - mappings
 
-    DestinationAttributes:
+    SyncData:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID of the sync.
+        status:
+          type: string
+          description: Status of the sync (e.g., ready).
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the sync was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the sync was last updated.
+        label:
+          type: string
+          description: A label to give to this sync.
+        operation:
+          type: string
+          description: How records are synced to the destination.
+        destination_attributes:
+          $ref: '#/components/schemas/SyncDestinationAttributes'
+        source_attributes:
+          $ref: '#/components/schemas/SyncSourceAttributes'
+        mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/SyncMapping'
+        alert_attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SyncAlertAttributes'
+        advanced_configuration:
+          $ref: '#/components/schemas/SyncAdvancedConfiguration'
+        mode:
+          $ref: '#/components/schemas/SyncMode'
+        paused:
+          type: boolean
+          description: Whether or not this sync should be paused.
+        field_behavior:
+          type: string
+          description: How destination fields are updated.
+        field_normalization:
+          type: string
+          description: If field_behavior is 'sync_all_properties', how automatic mappings should be named.
+        field_order:
+          type: string
+          description: How the destination fields should be ordered.
+        sync_behavior_family:
+          type: string
+          description: Behavior family for the sync.
+        high_water_mark_attribute:
+          type: string
+          description: Name of the timestamp column for high‑water‑mark diffing strategy.
+        high_water_mark_attributes:
+          $ref: '#/components/schemas/SyncHighWaterMarkAttributes'
+        validate_only:
+          type: boolean
+          description: When true, checks if the given payload is valid to configure a sync. Does not create the sync.
+        failed_run_notifications_enabled:
+          type: boolean
+          description: Deprecated flag: when true, will email on sync failures and recoveries.
+        failed_record_notifications_enabled:
+          type: boolean
+          description: Deprecated flag: when true, will email on invalid/rejected record thresholds.
+        failed_record_notifications_threshold_percent:
+          type: integer
+          description: Deprecated: threshold percent of invalid/rejected records to trigger notification.
+        historical_sync_operation:
+          type: string
+          description: How the first sync should handle historical records for append operations.
+        mirror_strategy:
+          type: string
+          description: Strategy for mirror syncs.
+        match_rate_details:
+          $ref: '#/components/schemas/SyncMatchRateDetails'
+
+    SyncDestinationAttributes:
       type: object
       properties:
         connection_id:
@@ -154,19 +234,19 @@ components:
         - connection_id
         - object
 
-    SourceAttributes:
+    SyncSourceAttributes:
       type: object
       properties:
         connection_id:
           type: integer
           description: ID of the source connection.
         object:
-          $ref: '#/components/schemas/SourceObject'
+          $ref: '#/components/schemas/SyncSourceObject'
       required:
         - connection_id
         - object
 
-    SourceObject:
+    SyncSourceObject:
       type: object
       properties:
         type:
@@ -185,11 +265,11 @@ components:
           type: string
           description: Table name in the warehouse schema.
 
-    Mapping:
+    SyncMapping:
       type: object
       properties:
         from:
-          $ref: '#/components/schemas/MappingFrom'
+          $ref: '#/components/schemas/SyncMappingFrom'
         to:
           type: string
           description: Destination field or property name.
@@ -206,7 +286,7 @@ components:
         - from
         - to
 
-    MappingFrom:
+    SyncMappingFrom:
       type: object
       properties:
         type:
@@ -218,7 +298,7 @@ components:
         - type
         - data
 
-    AlertAttributes:
+    SyncAlertAttributes:
       type: object
       properties:
         type:
@@ -233,7 +313,7 @@ components:
         options:
           description: Additional options specific to the alert type.
 
-    AdvancedConfiguration:
+    SyncAdvancedConfiguration:
       type: object
       properties:
         data_source_country:
@@ -243,22 +323,22 @@ components:
           type: boolean
           description: Whether to use bulk ID lookup optimization.
 
-    Mode:
+    SyncMode:
       type: object
       properties:
         type:
           type: string
-          description: Mode type (e.g., triggered).
+          description: SyncMode type (e.g., triggered).
         triggers:
-          $ref: '#/components/schemas/Triggers'
+          $ref: '#/components/schemas/SyncTriggers'
 
-    Triggers:
+    SyncTriggers:
       type: object
       properties:
         schedule:
-          $ref: '#/components/schemas/Schedule'
+          $ref: '#/components/schemas/SyncSchedule'
 
-    Schedule:
+    SyncSchedule:
       type: object
       properties:
         frequency:
@@ -271,7 +351,7 @@ components:
           type: integer
           description: Minute of hour when the sync runs
 
-    HighWaterMarkAttributes:
+    SyncHighWaterMarkAttributes:
       type: object
       properties:
         use_high_water_mark_diff_type:
@@ -280,6 +360,17 @@ components:
         column_name:
           type: string
           description: Name of the timestamp column used for high water mark diffing.
+    SyncMatchRateDetails:
+      type: object
+      properties:
+        match_rate:
+          type: number
+          description: Overall match rate for the sync.
+        match_rate_last_calculated_at:
+          type: string
+          format: date-time
+          description: Timestamp when match rate was last calculated.
+
 
     CreateSyncResponse:
       type: object
@@ -325,94 +416,3 @@ components:
       required:
         - status
         - data
-
-    Sync:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: ID of the sync.
-        status:
-          type: string
-          description: Status of the sync (e.g., ready).
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp when the sync was created.
-        updated_at:
-          type: string
-          format: date-time
-          description: Timestamp when the sync was last updated.
-        label:
-          type: string
-          description: A label to give to this sync.
-        operation:
-          type: string
-          description: How records are synced to the destination.
-        destination_attributes:
-          $ref: '#/components/schemas/DestinationAttributes'
-        source_attributes:
-          $ref: '#/components/schemas/SourceAttributes'
-        mappings:
-          type: array
-          items:
-            $ref: '#/components/schemas/Mapping'
-        alert_attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/AlertAttributes'
-        advanced_configuration:
-          $ref: '#/components/schemas/AdvancedConfiguration'
-        mode:
-          $ref: '#/components/schemas/Mode'
-        paused:
-          type: boolean
-          description: Whether or not this sync should be paused.
-        field_behavior:
-          type: string
-          description: How destination fields are updated.
-        field_normalization:
-          type: string
-          description: If field_behavior is 'sync_all_properties', how automatic mappings should be named.
-        field_order:
-          type: string
-          description: How the destination fields should be ordered.
-        sync_behavior_family:
-          type: string
-          description: Behavior family for the sync.
-        high_water_mark_attribute:
-          type: string
-          description: Name of the timestamp column for high‑water‑mark diffing strategy.
-        high_water_mark_attributes:
-          $ref: '#/components/schemas/HighWaterMarkAttributes'
-        validate_only:
-          type: boolean
-          description: When true, checks if the given payload is valid to configure a sync. Does not create the sync.
-        failed_run_notifications_enabled:
-          type: boolean
-          description: Deprecated flag: when true, will email on sync failures and recoveries.
-        failed_record_notifications_enabled:
-          type: boolean
-          description: Deprecated flag: when true, will email on invalid/rejected record thresholds.
-        failed_record_notifications_threshold_percent:
-          type: integer
-          description: Deprecated: threshold percent of invalid/rejected records to trigger notification.
-        historical_sync_operation:
-          type: string
-          description: How the first sync should handle historical records for append operations.
-        mirror_strategy:
-          type: string
-          description: Strategy for mirror syncs.
-        match_rate_details:
-          $ref: '#/components/schemas/MatchRateDetails'
-
-    MatchRateDetails:
-      type: object
-      properties:
-        match_rate:
-          type: number
-          description: Overall match rate for the sync.
-        match_rate_last_calculated_at:
-          type: string
-          format: date-time
-          description: Timestamp when match rate was last calculated.

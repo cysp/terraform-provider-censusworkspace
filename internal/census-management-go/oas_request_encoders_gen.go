@@ -53,7 +53,7 @@ func encodeCreateSourceRequest(
 }
 
 func encodeCreateSyncRequest(
-	req *CreateSyncBody,
+	req *CreateOrUpdateSyncBody,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"
@@ -109,7 +109,7 @@ func encodeUpdateSourceRequest(
 }
 
 func encodeUpdateSyncRequest(
-	req *UpdateSyncBody,
+	req *CreateOrUpdateSyncBody,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

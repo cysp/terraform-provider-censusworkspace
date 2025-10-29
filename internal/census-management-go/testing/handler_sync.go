@@ -9,7 +9,7 @@ import (
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
-func (h *Handler) CreateSync(_ context.Context, req *cm.CreateSyncBody) (*cm.SyncIdResponseStatusCode, error) {
+func (h *Handler) CreateSync(_ context.Context, req *cm.CreateOrUpdateSyncBody) (*cm.SyncIdResponseStatusCode, error) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
@@ -49,7 +49,7 @@ func (h *Handler) GetSync(_ context.Context, params cm.GetSyncParams) (*cm.SyncR
 	}, nil
 }
 
-func (h *Handler) UpdateSync(_ context.Context, req *cm.UpdateSyncBody, params cm.UpdateSyncParams) (*cm.SyncResponseStatusCode, error) {
+func (h *Handler) UpdateSync(_ context.Context, req *cm.CreateOrUpdateSyncBody, params cm.UpdateSyncParams) (*cm.SyncResponseStatusCode, error) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
@@ -58,7 +58,7 @@ func (h *Handler) UpdateSync(_ context.Context, req *cm.UpdateSyncBody, params c
 		return nil, errNotFound
 	}
 
-	UpdateSyncWithUpdateSyncBody(sync, *req)
+	UpdateSyncWithCreateOrUpdateSyncBody(sync, *req)
 
 	return &cm.SyncResponseStatusCode{
 		StatusCode: http.StatusOK,

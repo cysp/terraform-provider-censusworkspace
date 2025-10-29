@@ -278,6 +278,461 @@ func (s *CreateDestinationBodyServiceConnection) UnmarshalJSON(data []byte) erro
 }
 
 // Encode implements json.Marshaler.
+func (s *CreateOrUpdateSyncBody) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *CreateOrUpdateSyncBody) encodeFields(e *jx.Encoder) {
+	{
+		if s.Label.Set {
+			e.FieldStart("label")
+			s.Label.Encode(e)
+		}
+	}
+	{
+		e.FieldStart("operation")
+		e.Str(s.Operation)
+	}
+	{
+		e.FieldStart("destination_attributes")
+		s.DestinationAttributes.Encode(e)
+	}
+	{
+		e.FieldStart("source_attributes")
+		s.SourceAttributes.Encode(e)
+	}
+	{
+		e.FieldStart("mappings")
+		e.ArrStart()
+		for _, elem := range s.Mappings {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	{
+		if s.AlertAttributes != nil {
+			e.FieldStart("alert_attributes")
+			e.ArrStart()
+			for _, elem := range s.AlertAttributes {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.AdvancedConfiguration.Set {
+			e.FieldStart("advanced_configuration")
+			s.AdvancedConfiguration.Encode(e)
+		}
+	}
+	{
+		if s.Mode.Set {
+			e.FieldStart("mode")
+			s.Mode.Encode(e)
+		}
+	}
+	{
+		if s.Paused.Set {
+			e.FieldStart("paused")
+			s.Paused.Encode(e)
+		}
+	}
+	{
+		if s.FieldBehavior.Set {
+			e.FieldStart("field_behavior")
+			s.FieldBehavior.Encode(e)
+		}
+	}
+	{
+		if s.FieldNormalization.Set {
+			e.FieldStart("field_normalization")
+			s.FieldNormalization.Encode(e)
+		}
+	}
+	{
+		if s.FieldOrder.Set {
+			e.FieldStart("field_order")
+			s.FieldOrder.Encode(e)
+		}
+	}
+	{
+		if s.SyncBehaviorFamily.Set {
+			e.FieldStart("sync_behavior_family")
+			s.SyncBehaviorFamily.Encode(e)
+		}
+	}
+	{
+		if s.HighWaterMarkAttribute.Set {
+			e.FieldStart("high_water_mark_attribute")
+			s.HighWaterMarkAttribute.Encode(e)
+		}
+	}
+	{
+		if s.HighWaterMarkAttributes.Set {
+			e.FieldStart("high_water_mark_attributes")
+			s.HighWaterMarkAttributes.Encode(e)
+		}
+	}
+	{
+		if s.ValidateOnly.Set {
+			e.FieldStart("validate_only")
+			s.ValidateOnly.Encode(e)
+		}
+	}
+	{
+		if s.FailedRunNotificationsEnabled.Set {
+			e.FieldStart("failed_run_notifications_enabled")
+			s.FailedRunNotificationsEnabled.Encode(e)
+		}
+	}
+	{
+		if s.FailedRecordNotificationsEnabled.Set {
+			e.FieldStart("failed_record_notifications_enabled")
+			s.FailedRecordNotificationsEnabled.Encode(e)
+		}
+	}
+	{
+		if s.FailedRecordNotificationsThresholdPercent.Set {
+			e.FieldStart("failed_record_notifications_threshold_percent")
+			s.FailedRecordNotificationsThresholdPercent.Encode(e)
+		}
+	}
+	{
+		if s.HistoricalSyncOperation.Set {
+			e.FieldStart("historical_sync_operation")
+			s.HistoricalSyncOperation.Encode(e)
+		}
+	}
+	{
+		if s.MirrorStrategy.Set {
+			e.FieldStart("mirror_strategy")
+			s.MirrorStrategy.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfCreateOrUpdateSyncBody = [21]string{
+	0:  "label",
+	1:  "operation",
+	2:  "destination_attributes",
+	3:  "source_attributes",
+	4:  "mappings",
+	5:  "alert_attributes",
+	6:  "advanced_configuration",
+	7:  "mode",
+	8:  "paused",
+	9:  "field_behavior",
+	10: "field_normalization",
+	11: "field_order",
+	12: "sync_behavior_family",
+	13: "high_water_mark_attribute",
+	14: "high_water_mark_attributes",
+	15: "validate_only",
+	16: "failed_run_notifications_enabled",
+	17: "failed_record_notifications_enabled",
+	18: "failed_record_notifications_threshold_percent",
+	19: "historical_sync_operation",
+	20: "mirror_strategy",
+}
+
+// Decode decodes CreateOrUpdateSyncBody from json.
+func (s *CreateOrUpdateSyncBody) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode CreateOrUpdateSyncBody to nil")
+	}
+	var requiredBitSet [3]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "label":
+			if err := func() error {
+				s.Label.Reset()
+				if err := s.Label.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"label\"")
+			}
+		case "operation":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Operation = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"operation\"")
+			}
+		case "destination_attributes":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				if err := s.DestinationAttributes.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"destination_attributes\"")
+			}
+		case "source_attributes":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				if err := s.SourceAttributes.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"source_attributes\"")
+			}
+		case "mappings":
+			requiredBitSet[0] |= 1 << 4
+			if err := func() error {
+				s.Mappings = make([]SyncMapping, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem SyncMapping
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Mappings = append(s.Mappings, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mappings\"")
+			}
+		case "alert_attributes":
+			if err := func() error {
+				s.AlertAttributes = make([]SyncAlertAttributes, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem SyncAlertAttributes
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.AlertAttributes = append(s.AlertAttributes, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"alert_attributes\"")
+			}
+		case "advanced_configuration":
+			if err := func() error {
+				s.AdvancedConfiguration.Reset()
+				if err := s.AdvancedConfiguration.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"advanced_configuration\"")
+			}
+		case "mode":
+			if err := func() error {
+				s.Mode.Reset()
+				if err := s.Mode.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mode\"")
+			}
+		case "paused":
+			if err := func() error {
+				s.Paused.Reset()
+				if err := s.Paused.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"paused\"")
+			}
+		case "field_behavior":
+			if err := func() error {
+				s.FieldBehavior.Reset()
+				if err := s.FieldBehavior.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"field_behavior\"")
+			}
+		case "field_normalization":
+			if err := func() error {
+				s.FieldNormalization.Reset()
+				if err := s.FieldNormalization.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"field_normalization\"")
+			}
+		case "field_order":
+			if err := func() error {
+				s.FieldOrder.Reset()
+				if err := s.FieldOrder.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"field_order\"")
+			}
+		case "sync_behavior_family":
+			if err := func() error {
+				s.SyncBehaviorFamily.Reset()
+				if err := s.SyncBehaviorFamily.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sync_behavior_family\"")
+			}
+		case "high_water_mark_attribute":
+			if err := func() error {
+				s.HighWaterMarkAttribute.Reset()
+				if err := s.HighWaterMarkAttribute.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"high_water_mark_attribute\"")
+			}
+		case "high_water_mark_attributes":
+			if err := func() error {
+				s.HighWaterMarkAttributes.Reset()
+				if err := s.HighWaterMarkAttributes.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"high_water_mark_attributes\"")
+			}
+		case "validate_only":
+			if err := func() error {
+				s.ValidateOnly.Reset()
+				if err := s.ValidateOnly.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"validate_only\"")
+			}
+		case "failed_run_notifications_enabled":
+			if err := func() error {
+				s.FailedRunNotificationsEnabled.Reset()
+				if err := s.FailedRunNotificationsEnabled.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"failed_run_notifications_enabled\"")
+			}
+		case "failed_record_notifications_enabled":
+			if err := func() error {
+				s.FailedRecordNotificationsEnabled.Reset()
+				if err := s.FailedRecordNotificationsEnabled.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"failed_record_notifications_enabled\"")
+			}
+		case "failed_record_notifications_threshold_percent":
+			if err := func() error {
+				s.FailedRecordNotificationsThresholdPercent.Reset()
+				if err := s.FailedRecordNotificationsThresholdPercent.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"failed_record_notifications_threshold_percent\"")
+			}
+		case "historical_sync_operation":
+			if err := func() error {
+				s.HistoricalSyncOperation.Reset()
+				if err := s.HistoricalSyncOperation.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"historical_sync_operation\"")
+			}
+		case "mirror_strategy":
+			if err := func() error {
+				s.MirrorStrategy.Reset()
+				if err := s.MirrorStrategy.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mirror_strategy\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode CreateOrUpdateSyncBody")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [3]uint8{
+		0b00011110,
+		0b00000000,
+		0b00000000,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfCreateOrUpdateSyncBody) {
+					name = jsonFieldsNameOfCreateOrUpdateSyncBody[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *CreateOrUpdateSyncBody) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *CreateOrUpdateSyncBody) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *CreateSQLDatasetBody) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -715,247 +1170,6 @@ func (s *CreateSourceBodyConnection) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *CreateSourceBodyConnection) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s *CreateSyncBody) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *CreateSyncBody) encodeFields(e *jx.Encoder) {
-	{
-		if s.Label.Set {
-			e.FieldStart("label")
-			s.Label.Encode(e)
-		}
-	}
-	{
-		e.FieldStart("operation")
-		e.Str(s.Operation)
-	}
-	{
-		e.FieldStart("destination_attributes")
-		s.DestinationAttributes.Encode(e)
-	}
-}
-
-var jsonFieldsNameOfCreateSyncBody = [3]string{
-	0: "label",
-	1: "operation",
-	2: "destination_attributes",
-}
-
-// Decode decodes CreateSyncBody from json.
-func (s *CreateSyncBody) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode CreateSyncBody to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "label":
-			if err := func() error {
-				s.Label.Reset()
-				if err := s.Label.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"label\"")
-			}
-		case "operation":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Str()
-				s.Operation = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"operation\"")
-			}
-		case "destination_attributes":
-			requiredBitSet[0] |= 1 << 2
-			if err := func() error {
-				if err := s.DestinationAttributes.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"destination_attributes\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode CreateSyncBody")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00000110,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfCreateSyncBody) {
-					name = jsonFieldsNameOfCreateSyncBody[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *CreateSyncBody) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *CreateSyncBody) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s *CreateSyncBodyDestinationAttributes) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *CreateSyncBodyDestinationAttributes) encodeFields(e *jx.Encoder) {
-	{
-		e.FieldStart("connection_id")
-		e.Int64(s.ConnectionID)
-	}
-	{
-		e.FieldStart("object")
-		e.Str(s.Object)
-	}
-}
-
-var jsonFieldsNameOfCreateSyncBodyDestinationAttributes = [2]string{
-	0: "connection_id",
-	1: "object",
-}
-
-// Decode decodes CreateSyncBodyDestinationAttributes from json.
-func (s *CreateSyncBodyDestinationAttributes) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode CreateSyncBodyDestinationAttributes to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "connection_id":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				v, err := d.Int64()
-				s.ConnectionID = int64(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"connection_id\"")
-			}
-		case "object":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Str()
-				s.Object = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"object\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode CreateSyncBodyDestinationAttributes")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00000011,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfCreateSyncBodyDestinationAttributes) {
-					name = jsonFieldsNameOfCreateSyncBodyDestinationAttributes[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *CreateSyncBodyDestinationAttributes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *CreateSyncBodyDestinationAttributes) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -1668,6 +1882,146 @@ func (s *NilString) UnmarshalJSON(data []byte) error {
 }
 
 // Encode encodes bool as json.
+func (o OptBool) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Bool(bool(o.Value))
+}
+
+// Decode decodes bool from json.
+func (o *OptBool) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptBool to nil")
+	}
+	o.Set = true
+	v, err := d.Bool()
+	if err != nil {
+		return err
+	}
+	o.Value = bool(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptBool) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptBool) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes time.Time as json.
+func (o OptDateTime) Encode(e *jx.Encoder, format func(*jx.Encoder, time.Time)) {
+	if !o.Set {
+		return
+	}
+	format(e, o.Value)
+}
+
+// Decode decodes time.Time from json.
+func (o *OptDateTime) Decode(d *jx.Decoder, format func(*jx.Decoder) (time.Time, error)) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptDateTime to nil")
+	}
+	o.Set = true
+	v, err := format(d)
+	if err != nil {
+		return err
+	}
+	o.Value = v
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptDateTime) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e, json.EncodeDateTime)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptDateTime) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d, json.DecodeDateTime)
+}
+
+// Encode encodes float64 as json.
+func (o OptFloat64) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Float64(float64(o.Value))
+}
+
+// Decode decodes float64 from json.
+func (o *OptFloat64) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptFloat64 to nil")
+	}
+	o.Set = true
+	v, err := d.Float64()
+	if err != nil {
+		return err
+	}
+	o.Value = float64(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptFloat64) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptFloat64) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes int as json.
+func (o OptInt) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Int(int(o.Value))
+}
+
+// Decode decodes int from json.
+func (o *OptInt) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptInt to nil")
+	}
+	o.Set = true
+	v, err := d.Int()
+	if err != nil {
+		return err
+	}
+	o.Value = int(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptInt) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptInt) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes bool as json.
 func (o OptNilBool) Encode(e *jx.Encoder) {
 	if !o.Set {
 		return
@@ -1851,6 +2205,204 @@ func (s OptString) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *OptString) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SyncAdvancedConfiguration as json.
+func (o OptSyncAdvancedConfiguration) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SyncAdvancedConfiguration from json.
+func (o *OptSyncAdvancedConfiguration) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSyncAdvancedConfiguration to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSyncAdvancedConfiguration) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSyncAdvancedConfiguration) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SyncHighWaterMarkAttributes as json.
+func (o OptSyncHighWaterMarkAttributes) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SyncHighWaterMarkAttributes from json.
+func (o *OptSyncHighWaterMarkAttributes) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSyncHighWaterMarkAttributes to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSyncHighWaterMarkAttributes) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSyncHighWaterMarkAttributes) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SyncMatchRateDetails as json.
+func (o OptSyncMatchRateDetails) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SyncMatchRateDetails from json.
+func (o *OptSyncMatchRateDetails) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSyncMatchRateDetails to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSyncMatchRateDetails) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSyncMatchRateDetails) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SyncMode as json.
+func (o OptSyncMode) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SyncMode from json.
+func (o *OptSyncMode) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSyncMode to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSyncMode) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSyncMode) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SyncSchedule as json.
+func (o OptSyncSchedule) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SyncSchedule from json.
+func (o *OptSyncSchedule) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSyncSchedule to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSyncSchedule) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSyncSchedule) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode encodes SyncTriggers as json.
+func (o OptSyncTriggers) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	o.Value.Encode(e)
+}
+
+// Decode decodes SyncTriggers from json.
+func (o *OptSyncTriggers) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptSyncTriggers to nil")
+	}
+	o.Set = true
+	if err := o.Value.Decode(d); err != nil {
+		return err
+	}
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptSyncTriggers) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptSyncTriggers) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -2655,6 +3207,201 @@ func (s *StatusResponseStatus) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *SyncAdvancedConfiguration) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncAdvancedConfiguration) encodeFields(e *jx.Encoder) {
+	{
+		if s.DataSourceCountry.Set {
+			e.FieldStart("data_source_country")
+			s.DataSourceCountry.Encode(e)
+		}
+	}
+	{
+		if s.BulkIDLookup.Set {
+			e.FieldStart("bulk_id_lookup")
+			s.BulkIDLookup.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSyncAdvancedConfiguration = [2]string{
+	0: "data_source_country",
+	1: "bulk_id_lookup",
+}
+
+// Decode decodes SyncAdvancedConfiguration from json.
+func (s *SyncAdvancedConfiguration) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncAdvancedConfiguration to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "data_source_country":
+			if err := func() error {
+				s.DataSourceCountry.Reset()
+				if err := s.DataSourceCountry.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"data_source_country\"")
+			}
+		case "bulk_id_lookup":
+			if err := func() error {
+				s.BulkIDLookup.Reset()
+				if err := s.BulkIDLookup.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"bulk_id_lookup\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncAdvancedConfiguration")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncAdvancedConfiguration) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncAdvancedConfiguration) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SyncAlertAttributes) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncAlertAttributes) encodeFields(e *jx.Encoder) {
+	{
+		if s.Type.Set {
+			e.FieldStart("type")
+			s.Type.Encode(e)
+		}
+	}
+	{
+		if s.SendFor.Set {
+			e.FieldStart("send_for")
+			s.SendFor.Encode(e)
+		}
+	}
+	{
+		if s.ShouldSendRecovery.Set {
+			e.FieldStart("should_send_recovery")
+			s.ShouldSendRecovery.Encode(e)
+		}
+	}
+	{
+		if len(s.Options) != 0 {
+			e.FieldStart("options")
+			e.Raw(s.Options)
+		}
+	}
+}
+
+var jsonFieldsNameOfSyncAlertAttributes = [4]string{
+	0: "type",
+	1: "send_for",
+	2: "should_send_recovery",
+	3: "options",
+}
+
+// Decode decodes SyncAlertAttributes from json.
+func (s *SyncAlertAttributes) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncAlertAttributes to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "type":
+			if err := func() error {
+				s.Type.Reset()
+				if err := s.Type.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"type\"")
+			}
+		case "send_for":
+			if err := func() error {
+				s.SendFor.Reset()
+				if err := s.SendFor.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"send_for\"")
+			}
+		case "should_send_recovery":
+			if err := func() error {
+				s.ShouldSendRecovery.Reset()
+				if err := s.ShouldSendRecovery.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"should_send_recovery\"")
+			}
+		case "options":
+			if err := func() error {
+				v, err := d.RawAppend(nil)
+				s.Options = jx.Raw(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"options\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncAlertAttributes")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncAlertAttributes) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncAlertAttributes) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *SyncData) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -2666,6 +3413,18 @@ func (s *SyncData) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
 		e.Int64(s.ID)
+	}
+	{
+		e.FieldStart("status")
+		e.Str(s.Status)
+	}
+	{
+		e.FieldStart("created_at")
+		json.EncodeDateTime(e, s.CreatedAt)
+	}
+	{
+		e.FieldStart("updated_at")
+		json.EncodeDateTime(e, s.UpdatedAt)
 	}
 	{
 		if s.Label.Set {
@@ -2681,13 +3440,153 @@ func (s *SyncData) encodeFields(e *jx.Encoder) {
 		e.FieldStart("destination_attributes")
 		s.DestinationAttributes.Encode(e)
 	}
+	{
+		e.FieldStart("source_attributes")
+		s.SourceAttributes.Encode(e)
+	}
+	{
+		e.FieldStart("mappings")
+		e.ArrStart()
+		for _, elem := range s.Mappings {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+	{
+		if s.AlertAttributes != nil {
+			e.FieldStart("alert_attributes")
+			e.ArrStart()
+			for _, elem := range s.AlertAttributes {
+				elem.Encode(e)
+			}
+			e.ArrEnd()
+		}
+	}
+	{
+		if s.AdvancedConfiguration.Set {
+			e.FieldStart("advanced_configuration")
+			s.AdvancedConfiguration.Encode(e)
+		}
+	}
+	{
+		if s.Mode.Set {
+			e.FieldStart("mode")
+			s.Mode.Encode(e)
+		}
+	}
+	{
+		if s.Paused.Set {
+			e.FieldStart("paused")
+			s.Paused.Encode(e)
+		}
+	}
+	{
+		if s.FieldBehavior.Set {
+			e.FieldStart("field_behavior")
+			s.FieldBehavior.Encode(e)
+		}
+	}
+	{
+		if s.FieldNormalization.Set {
+			e.FieldStart("field_normalization")
+			s.FieldNormalization.Encode(e)
+		}
+	}
+	{
+		if s.FieldOrder.Set {
+			e.FieldStart("field_order")
+			s.FieldOrder.Encode(e)
+		}
+	}
+	{
+		if s.SyncBehaviorFamily.Set {
+			e.FieldStart("sync_behavior_family")
+			s.SyncBehaviorFamily.Encode(e)
+		}
+	}
+	{
+		if s.HighWaterMarkAttribute.Set {
+			e.FieldStart("high_water_mark_attribute")
+			s.HighWaterMarkAttribute.Encode(e)
+		}
+	}
+	{
+		if s.HighWaterMarkAttributes.Set {
+			e.FieldStart("high_water_mark_attributes")
+			s.HighWaterMarkAttributes.Encode(e)
+		}
+	}
+	{
+		if s.ValidateOnly.Set {
+			e.FieldStart("validate_only")
+			s.ValidateOnly.Encode(e)
+		}
+	}
+	{
+		if s.FailedRunNotificationsEnabled.Set {
+			e.FieldStart("failed_run_notifications_enabled")
+			s.FailedRunNotificationsEnabled.Encode(e)
+		}
+	}
+	{
+		if s.FailedRecordNotificationsEnabled.Set {
+			e.FieldStart("failed_record_notifications_enabled")
+			s.FailedRecordNotificationsEnabled.Encode(e)
+		}
+	}
+	{
+		if s.FailedRecordNotificationsThresholdPercent.Set {
+			e.FieldStart("failed_record_notifications_threshold_percent")
+			s.FailedRecordNotificationsThresholdPercent.Encode(e)
+		}
+	}
+	{
+		if s.HistoricalSyncOperation.Set {
+			e.FieldStart("historical_sync_operation")
+			s.HistoricalSyncOperation.Encode(e)
+		}
+	}
+	{
+		if s.MirrorStrategy.Set {
+			e.FieldStart("mirror_strategy")
+			s.MirrorStrategy.Encode(e)
+		}
+	}
+	{
+		if s.MatchRateDetails.Set {
+			e.FieldStart("match_rate_details")
+			s.MatchRateDetails.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfSyncData = [4]string{
-	0: "id",
-	1: "label",
-	2: "operation",
-	3: "destination_attributes",
+var jsonFieldsNameOfSyncData = [26]string{
+	0:  "id",
+	1:  "status",
+	2:  "created_at",
+	3:  "updated_at",
+	4:  "label",
+	5:  "operation",
+	6:  "destination_attributes",
+	7:  "source_attributes",
+	8:  "mappings",
+	9:  "alert_attributes",
+	10: "advanced_configuration",
+	11: "mode",
+	12: "paused",
+	13: "field_behavior",
+	14: "field_normalization",
+	15: "field_order",
+	16: "sync_behavior_family",
+	17: "high_water_mark_attribute",
+	18: "high_water_mark_attributes",
+	19: "validate_only",
+	20: "failed_run_notifications_enabled",
+	21: "failed_record_notifications_enabled",
+	22: "failed_record_notifications_threshold_percent",
+	23: "historical_sync_operation",
+	24: "mirror_strategy",
+	25: "match_rate_details",
 }
 
 // Decode decodes SyncData from json.
@@ -2695,7 +3594,7 @@ func (s *SyncData) Decode(d *jx.Decoder) error {
 	if s == nil {
 		return errors.New("invalid: unable to decode SyncData to nil")
 	}
-	var requiredBitSet [1]uint8
+	var requiredBitSet [4]uint8
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
@@ -2711,6 +3610,42 @@ func (s *SyncData) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"id\"")
 			}
+		case "status":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.Status = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"status\"")
+			}
+		case "created_at":
+			requiredBitSet[0] |= 1 << 2
+			if err := func() error {
+				v, err := json.DecodeDateTime(d)
+				s.CreatedAt = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"created_at\"")
+			}
+		case "updated_at":
+			requiredBitSet[0] |= 1 << 3
+			if err := func() error {
+				v, err := json.DecodeDateTime(d)
+				s.UpdatedAt = v
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"updated_at\"")
+			}
 		case "label":
 			if err := func() error {
 				s.Label.Reset()
@@ -2722,7 +3657,7 @@ func (s *SyncData) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"label\"")
 			}
 		case "operation":
-			requiredBitSet[0] |= 1 << 2
+			requiredBitSet[0] |= 1 << 5
 			if err := func() error {
 				v, err := d.Str()
 				s.Operation = string(v)
@@ -2734,7 +3669,7 @@ func (s *SyncData) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"operation\"")
 			}
 		case "destination_attributes":
-			requiredBitSet[0] |= 1 << 3
+			requiredBitSet[0] |= 1 << 6
 			if err := func() error {
 				if err := s.DestinationAttributes.Decode(d); err != nil {
 					return err
@@ -2742,6 +3677,211 @@ func (s *SyncData) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"destination_attributes\"")
+			}
+		case "source_attributes":
+			requiredBitSet[0] |= 1 << 7
+			if err := func() error {
+				if err := s.SourceAttributes.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"source_attributes\"")
+			}
+		case "mappings":
+			requiredBitSet[1] |= 1 << 0
+			if err := func() error {
+				s.Mappings = make([]SyncMapping, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem SyncMapping
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Mappings = append(s.Mappings, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mappings\"")
+			}
+		case "alert_attributes":
+			if err := func() error {
+				s.AlertAttributes = make([]SyncAlertAttributes, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem SyncAlertAttributes
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.AlertAttributes = append(s.AlertAttributes, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"alert_attributes\"")
+			}
+		case "advanced_configuration":
+			if err := func() error {
+				s.AdvancedConfiguration.Reset()
+				if err := s.AdvancedConfiguration.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"advanced_configuration\"")
+			}
+		case "mode":
+			if err := func() error {
+				s.Mode.Reset()
+				if err := s.Mode.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mode\"")
+			}
+		case "paused":
+			if err := func() error {
+				s.Paused.Reset()
+				if err := s.Paused.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"paused\"")
+			}
+		case "field_behavior":
+			if err := func() error {
+				s.FieldBehavior.Reset()
+				if err := s.FieldBehavior.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"field_behavior\"")
+			}
+		case "field_normalization":
+			if err := func() error {
+				s.FieldNormalization.Reset()
+				if err := s.FieldNormalization.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"field_normalization\"")
+			}
+		case "field_order":
+			if err := func() error {
+				s.FieldOrder.Reset()
+				if err := s.FieldOrder.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"field_order\"")
+			}
+		case "sync_behavior_family":
+			if err := func() error {
+				s.SyncBehaviorFamily.Reset()
+				if err := s.SyncBehaviorFamily.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"sync_behavior_family\"")
+			}
+		case "high_water_mark_attribute":
+			if err := func() error {
+				s.HighWaterMarkAttribute.Reset()
+				if err := s.HighWaterMarkAttribute.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"high_water_mark_attribute\"")
+			}
+		case "high_water_mark_attributes":
+			if err := func() error {
+				s.HighWaterMarkAttributes.Reset()
+				if err := s.HighWaterMarkAttributes.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"high_water_mark_attributes\"")
+			}
+		case "validate_only":
+			if err := func() error {
+				s.ValidateOnly.Reset()
+				if err := s.ValidateOnly.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"validate_only\"")
+			}
+		case "failed_run_notifications_enabled":
+			if err := func() error {
+				s.FailedRunNotificationsEnabled.Reset()
+				if err := s.FailedRunNotificationsEnabled.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"failed_run_notifications_enabled\"")
+			}
+		case "failed_record_notifications_enabled":
+			if err := func() error {
+				s.FailedRecordNotificationsEnabled.Reset()
+				if err := s.FailedRecordNotificationsEnabled.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"failed_record_notifications_enabled\"")
+			}
+		case "failed_record_notifications_threshold_percent":
+			if err := func() error {
+				s.FailedRecordNotificationsThresholdPercent.Reset()
+				if err := s.FailedRecordNotificationsThresholdPercent.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"failed_record_notifications_threshold_percent\"")
+			}
+		case "historical_sync_operation":
+			if err := func() error {
+				s.HistoricalSyncOperation.Reset()
+				if err := s.HistoricalSyncOperation.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"historical_sync_operation\"")
+			}
+		case "mirror_strategy":
+			if err := func() error {
+				s.MirrorStrategy.Reset()
+				if err := s.MirrorStrategy.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"mirror_strategy\"")
+			}
+		case "match_rate_details":
+			if err := func() error {
+				s.MatchRateDetails.Reset()
+				if err := s.MatchRateDetails.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"match_rate_details\"")
 			}
 		default:
 			return d.Skip()
@@ -2752,8 +3892,11 @@ func (s *SyncData) Decode(d *jx.Decoder) error {
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00001101,
+	for i, mask := range [4]uint8{
+		0b11101111,
+		0b00000001,
+		0b00000000,
+		0b00000000,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
 			// Mask only required fields and check equality to mask using XOR.
@@ -2800,17 +3943,17 @@ func (s *SyncData) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *SyncDataDestinationAttributes) Encode(e *jx.Encoder) {
+func (s *SyncDestinationAttributes) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *SyncDataDestinationAttributes) encodeFields(e *jx.Encoder) {
+func (s *SyncDestinationAttributes) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("connection_id")
-		e.Int64(s.ConnectionID)
+		e.Int(s.ConnectionID)
 	}
 	{
 		e.FieldStart("object")
@@ -2818,15 +3961,15 @@ func (s *SyncDataDestinationAttributes) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfSyncDataDestinationAttributes = [2]string{
+var jsonFieldsNameOfSyncDestinationAttributes = [2]string{
 	0: "connection_id",
 	1: "object",
 }
 
-// Decode decodes SyncDataDestinationAttributes from json.
-func (s *SyncDataDestinationAttributes) Decode(d *jx.Decoder) error {
+// Decode decodes SyncDestinationAttributes from json.
+func (s *SyncDestinationAttributes) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode SyncDataDestinationAttributes to nil")
+		return errors.New("invalid: unable to decode SyncDestinationAttributes to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -2835,8 +3978,8 @@ func (s *SyncDataDestinationAttributes) Decode(d *jx.Decoder) error {
 		case "connection_id":
 			requiredBitSet[0] |= 1 << 0
 			if err := func() error {
-				v, err := d.Int64()
-				s.ConnectionID = int64(v)
+				v, err := d.Int()
+				s.ConnectionID = int(v)
 				if err != nil {
 					return err
 				}
@@ -2861,7 +4004,7 @@ func (s *SyncDataDestinationAttributes) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode SyncDataDestinationAttributes")
+		return errors.Wrap(err, "decode SyncDestinationAttributes")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -2878,8 +4021,8 @@ func (s *SyncDataDestinationAttributes) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfSyncDataDestinationAttributes) {
-					name = jsonFieldsNameOfSyncDataDestinationAttributes[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfSyncDestinationAttributes) {
+					name = jsonFieldsNameOfSyncDestinationAttributes[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -2900,14 +4043,94 @@ func (s *SyncDataDestinationAttributes) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *SyncDataDestinationAttributes) MarshalJSON() ([]byte, error) {
+func (s *SyncDestinationAttributes) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *SyncDataDestinationAttributes) UnmarshalJSON(data []byte) error {
+func (s *SyncDestinationAttributes) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SyncHighWaterMarkAttributes) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncHighWaterMarkAttributes) encodeFields(e *jx.Encoder) {
+	{
+		if s.UseHighWaterMarkDiffType.Set {
+			e.FieldStart("use_high_water_mark_diff_type")
+			s.UseHighWaterMarkDiffType.Encode(e)
+		}
+	}
+	{
+		if s.ColumnName.Set {
+			e.FieldStart("column_name")
+			s.ColumnName.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSyncHighWaterMarkAttributes = [2]string{
+	0: "use_high_water_mark_diff_type",
+	1: "column_name",
+}
+
+// Decode decodes SyncHighWaterMarkAttributes from json.
+func (s *SyncHighWaterMarkAttributes) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncHighWaterMarkAttributes to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "use_high_water_mark_diff_type":
+			if err := func() error {
+				s.UseHighWaterMarkDiffType.Reset()
+				if err := s.UseHighWaterMarkDiffType.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"use_high_water_mark_diff_type\"")
+			}
+		case "column_name":
+			if err := func() error {
+				s.ColumnName.Reset()
+				if err := s.ColumnName.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"column_name\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncHighWaterMarkAttributes")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncHighWaterMarkAttributes) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncHighWaterMarkAttributes) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -3118,6 +4341,443 @@ func (s *SyncIdResponseData) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
+func (s *SyncMapping) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncMapping) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("from")
+		s.From.Encode(e)
+	}
+	{
+		e.FieldStart("to")
+		e.Str(s.To)
+	}
+	{
+		if s.IsPrimaryIdentifier.Set {
+			e.FieldStart("is_primary_identifier")
+			s.IsPrimaryIdentifier.Encode(e)
+		}
+	}
+	{
+		if s.LookupObject.Set {
+			e.FieldStart("lookup_object")
+			s.LookupObject.Encode(e)
+		}
+	}
+	{
+		if s.LookupField.Set {
+			e.FieldStart("lookup_field")
+			s.LookupField.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSyncMapping = [5]string{
+	0: "from",
+	1: "to",
+	2: "is_primary_identifier",
+	3: "lookup_object",
+	4: "lookup_field",
+}
+
+// Decode decodes SyncMapping from json.
+func (s *SyncMapping) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncMapping to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "from":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				if err := s.From.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"from\"")
+			}
+		case "to":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.Str()
+				s.To = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"to\"")
+			}
+		case "is_primary_identifier":
+			if err := func() error {
+				s.IsPrimaryIdentifier.Reset()
+				if err := s.IsPrimaryIdentifier.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"is_primary_identifier\"")
+			}
+		case "lookup_object":
+			if err := func() error {
+				s.LookupObject.Reset()
+				if err := s.LookupObject.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lookup_object\"")
+			}
+		case "lookup_field":
+			if err := func() error {
+				s.LookupField.Reset()
+				if err := s.LookupField.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"lookup_field\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncMapping")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSyncMapping) {
+					name = jsonFieldsNameOfSyncMapping[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncMapping) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncMapping) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SyncMappingFrom) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncMappingFrom) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("type")
+		e.Str(s.Type)
+	}
+	{
+		if len(s.Data) != 0 {
+			e.FieldStart("data")
+			e.Raw(s.Data)
+		}
+	}
+}
+
+var jsonFieldsNameOfSyncMappingFrom = [2]string{
+	0: "type",
+	1: "data",
+}
+
+// Decode decodes SyncMappingFrom from json.
+func (s *SyncMappingFrom) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncMappingFrom to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "type":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Str()
+				s.Type = string(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"type\"")
+			}
+		case "data":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				v, err := d.RawAppend(nil)
+				s.Data = jx.Raw(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"data\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncMappingFrom")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSyncMappingFrom) {
+					name = jsonFieldsNameOfSyncMappingFrom[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncMappingFrom) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncMappingFrom) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SyncMatchRateDetails) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncMatchRateDetails) encodeFields(e *jx.Encoder) {
+	{
+		if s.MatchRate.Set {
+			e.FieldStart("match_rate")
+			s.MatchRate.Encode(e)
+		}
+	}
+	{
+		if s.MatchRateLastCalculatedAt.Set {
+			e.FieldStart("match_rate_last_calculated_at")
+			s.MatchRateLastCalculatedAt.Encode(e, json.EncodeDateTime)
+		}
+	}
+}
+
+var jsonFieldsNameOfSyncMatchRateDetails = [2]string{
+	0: "match_rate",
+	1: "match_rate_last_calculated_at",
+}
+
+// Decode decodes SyncMatchRateDetails from json.
+func (s *SyncMatchRateDetails) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncMatchRateDetails to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "match_rate":
+			if err := func() error {
+				s.MatchRate.Reset()
+				if err := s.MatchRate.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"match_rate\"")
+			}
+		case "match_rate_last_calculated_at":
+			if err := func() error {
+				s.MatchRateLastCalculatedAt.Reset()
+				if err := s.MatchRateLastCalculatedAt.Decode(d, json.DecodeDateTime); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"match_rate_last_calculated_at\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncMatchRateDetails")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncMatchRateDetails) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncMatchRateDetails) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SyncMode) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncMode) encodeFields(e *jx.Encoder) {
+	{
+		if s.Type.Set {
+			e.FieldStart("type")
+			s.Type.Encode(e)
+		}
+	}
+	{
+		if s.Triggers.Set {
+			e.FieldStart("triggers")
+			s.Triggers.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSyncMode = [2]string{
+	0: "type",
+	1: "triggers",
+}
+
+// Decode decodes SyncMode from json.
+func (s *SyncMode) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncMode to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "type":
+			if err := func() error {
+				s.Type.Reset()
+				if err := s.Type.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"type\"")
+			}
+		case "triggers":
+			if err := func() error {
+				s.Triggers.Reset()
+				if err := s.Triggers.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"triggers\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncMode")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncMode) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncMode) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
 func (s *SyncResponse) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
@@ -3222,6 +4882,408 @@ func (s *SyncResponse) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *SyncResponse) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SyncSchedule) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncSchedule) encodeFields(e *jx.Encoder) {
+	{
+		if s.Frequency.Set {
+			e.FieldStart("frequency")
+			s.Frequency.Encode(e)
+		}
+	}
+	{
+		if s.Hour.Set {
+			e.FieldStart("hour")
+			s.Hour.Encode(e)
+		}
+	}
+	{
+		if s.Minute.Set {
+			e.FieldStart("minute")
+			s.Minute.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSyncSchedule = [3]string{
+	0: "frequency",
+	1: "hour",
+	2: "minute",
+}
+
+// Decode decodes SyncSchedule from json.
+func (s *SyncSchedule) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncSchedule to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "frequency":
+			if err := func() error {
+				s.Frequency.Reset()
+				if err := s.Frequency.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"frequency\"")
+			}
+		case "hour":
+			if err := func() error {
+				s.Hour.Reset()
+				if err := s.Hour.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"hour\"")
+			}
+		case "minute":
+			if err := func() error {
+				s.Minute.Reset()
+				if err := s.Minute.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"minute\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncSchedule")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncSchedule) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncSchedule) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SyncSourceAttributes) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncSourceAttributes) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("connection_id")
+		e.Int(s.ConnectionID)
+	}
+	{
+		e.FieldStart("object")
+		s.Object.Encode(e)
+	}
+}
+
+var jsonFieldsNameOfSyncSourceAttributes = [2]string{
+	0: "connection_id",
+	1: "object",
+}
+
+// Decode decodes SyncSourceAttributes from json.
+func (s *SyncSourceAttributes) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncSourceAttributes to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "connection_id":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				v, err := d.Int()
+				s.ConnectionID = int(v)
+				if err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"connection_id\"")
+			}
+		case "object":
+			requiredBitSet[0] |= 1 << 1
+			if err := func() error {
+				if err := s.Object.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"object\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncSourceAttributes")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000011,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfSyncSourceAttributes) {
+					name = jsonFieldsNameOfSyncSourceAttributes[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncSourceAttributes) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncSourceAttributes) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SyncSourceObject) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncSourceObject) encodeFields(e *jx.Encoder) {
+	{
+		if s.Type.Set {
+			e.FieldStart("type")
+			s.Type.Encode(e)
+		}
+	}
+	{
+		if s.ID.Set {
+			e.FieldStart("id")
+			s.ID.Encode(e)
+		}
+	}
+	{
+		if s.TableCatalog.Set {
+			e.FieldStart("table_catalog")
+			s.TableCatalog.Encode(e)
+		}
+	}
+	{
+		if s.TableSchema.Set {
+			e.FieldStart("table_schema")
+			s.TableSchema.Encode(e)
+		}
+	}
+	{
+		if s.TableName.Set {
+			e.FieldStart("table_name")
+			s.TableName.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSyncSourceObject = [5]string{
+	0: "type",
+	1: "id",
+	2: "table_catalog",
+	3: "table_schema",
+	4: "table_name",
+}
+
+// Decode decodes SyncSourceObject from json.
+func (s *SyncSourceObject) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncSourceObject to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "type":
+			if err := func() error {
+				s.Type.Reset()
+				if err := s.Type.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"type\"")
+			}
+		case "id":
+			if err := func() error {
+				s.ID.Reset()
+				if err := s.ID.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"id\"")
+			}
+		case "table_catalog":
+			if err := func() error {
+				s.TableCatalog.Reset()
+				if err := s.TableCatalog.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"table_catalog\"")
+			}
+		case "table_schema":
+			if err := func() error {
+				s.TableSchema.Reset()
+				if err := s.TableSchema.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"table_schema\"")
+			}
+		case "table_name":
+			if err := func() error {
+				s.TableName.Reset()
+				if err := s.TableName.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"table_name\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncSourceObject")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncSourceObject) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncSourceObject) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *SyncTriggers) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *SyncTriggers) encodeFields(e *jx.Encoder) {
+	{
+		if s.Schedule.Set {
+			e.FieldStart("schedule")
+			s.Schedule.Encode(e)
+		}
+	}
+}
+
+var jsonFieldsNameOfSyncTriggers = [1]string{
+	0: "schedule",
+}
+
+// Decode decodes SyncTriggers from json.
+func (s *SyncTriggers) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode SyncTriggers to nil")
+	}
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "schedule":
+			if err := func() error {
+				s.Schedule.Reset()
+				if err := s.Schedule.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"schedule\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode SyncTriggers")
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *SyncTriggers) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *SyncTriggers) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -3708,247 +5770,6 @@ func (s *UpdateSourceBodyConnection) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
 func (s *UpdateSourceBodyConnection) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s *UpdateSyncBody) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *UpdateSyncBody) encodeFields(e *jx.Encoder) {
-	{
-		if s.Label.Set {
-			e.FieldStart("label")
-			s.Label.Encode(e)
-		}
-	}
-	{
-		e.FieldStart("operation")
-		e.Str(s.Operation)
-	}
-	{
-		e.FieldStart("destination_attributes")
-		s.DestinationAttributes.Encode(e)
-	}
-}
-
-var jsonFieldsNameOfUpdateSyncBody = [3]string{
-	0: "label",
-	1: "operation",
-	2: "destination_attributes",
-}
-
-// Decode decodes UpdateSyncBody from json.
-func (s *UpdateSyncBody) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode UpdateSyncBody to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "label":
-			if err := func() error {
-				s.Label.Reset()
-				if err := s.Label.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"label\"")
-			}
-		case "operation":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Str()
-				s.Operation = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"operation\"")
-			}
-		case "destination_attributes":
-			requiredBitSet[0] |= 1 << 2
-			if err := func() error {
-				if err := s.DestinationAttributes.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"destination_attributes\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode UpdateSyncBody")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00000110,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfUpdateSyncBody) {
-					name = jsonFieldsNameOfUpdateSyncBody[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *UpdateSyncBody) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *UpdateSyncBody) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s *UpdateSyncBodyDestinationAttributes) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *UpdateSyncBodyDestinationAttributes) encodeFields(e *jx.Encoder) {
-	{
-		e.FieldStart("connection_id")
-		e.Int64(s.ConnectionID)
-	}
-	{
-		e.FieldStart("object")
-		e.Str(s.Object)
-	}
-}
-
-var jsonFieldsNameOfUpdateSyncBodyDestinationAttributes = [2]string{
-	0: "connection_id",
-	1: "object",
-}
-
-// Decode decodes UpdateSyncBodyDestinationAttributes from json.
-func (s *UpdateSyncBodyDestinationAttributes) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode UpdateSyncBodyDestinationAttributes to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "connection_id":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				v, err := d.Int64()
-				s.ConnectionID = int64(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"connection_id\"")
-			}
-		case "object":
-			requiredBitSet[0] |= 1 << 1
-			if err := func() error {
-				v, err := d.Str()
-				s.Object = string(v)
-				if err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"object\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode UpdateSyncBodyDestinationAttributes")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00000011,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfUpdateSyncBodyDestinationAttributes) {
-					name = jsonFieldsNameOfUpdateSyncBodyDestinationAttributes[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *UpdateSyncBodyDestinationAttributes) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *UpdateSyncBodyDestinationAttributes) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }

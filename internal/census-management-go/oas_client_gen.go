@@ -44,7 +44,7 @@ type Invoker interface {
 	// Create Sync.
 	//
 	// POST /api/v1/syncs
-	CreateSync(ctx context.Context, request *CreateSyncBody) (*SyncIdResponseStatusCode, error)
+	CreateSync(ctx context.Context, request *CreateOrUpdateSyncBody) (*SyncIdResponseStatusCode, error)
 	// DeleteDataset invokes deleteDataset operation.
 	//
 	// Delete dataset.
@@ -120,7 +120,7 @@ type Invoker interface {
 	// Update sync.
 	//
 	// PATCH /api/v1/syncs/{sync_id}
-	UpdateSync(ctx context.Context, request *UpdateSyncBody, params UpdateSyncParams) (*SyncResponseStatusCode, error)
+	UpdateSync(ctx context.Context, request *CreateOrUpdateSyncBody, params UpdateSyncParams) (*SyncResponseStatusCode, error)
 }
 
 // Client implements OAS client.
@@ -402,12 +402,21 @@ func (c *Client) sendCreateSource(ctx context.Context, request *CreateSourceBody
 // Create Sync.
 //
 // POST /api/v1/syncs
-func (c *Client) CreateSync(ctx context.Context, request *CreateSyncBody) (*SyncIdResponseStatusCode, error) {
+func (c *Client) CreateSync(ctx context.Context, request *CreateOrUpdateSyncBody) (*SyncIdResponseStatusCode, error) {
 	res, err := c.sendCreateSync(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendCreateSync(ctx context.Context, request *CreateSyncBody) (res *SyncIdResponseStatusCode, err error) {
+func (c *Client) sendCreateSync(ctx context.Context, request *CreateOrUpdateSyncBody) (res *SyncIdResponseStatusCode, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1507,12 +1516,21 @@ func (c *Client) sendUpdateSource(ctx context.Context, request *UpdateSourceBody
 // Update sync.
 //
 // PATCH /api/v1/syncs/{sync_id}
-func (c *Client) UpdateSync(ctx context.Context, request *UpdateSyncBody, params UpdateSyncParams) (*SyncResponseStatusCode, error) {
+func (c *Client) UpdateSync(ctx context.Context, request *CreateOrUpdateSyncBody, params UpdateSyncParams) (*SyncResponseStatusCode, error) {
 	res, err := c.sendUpdateSync(ctx, request, params)
 	return res, err
 }
 
-func (c *Client) sendUpdateSync(ctx context.Context, request *UpdateSyncBody, params UpdateSyncParams) (res *SyncResponseStatusCode, err error) {
+func (c *Client) sendUpdateSync(ctx context.Context, request *CreateOrUpdateSyncBody, params UpdateSyncParams) (res *SyncResponseStatusCode, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string

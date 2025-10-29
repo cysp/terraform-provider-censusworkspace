@@ -19,6 +19,29 @@ func (s CreateDatasetBody) Validate() error {
 	}
 }
 
+func (s *CreateOrUpdateSyncBody) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if s.Mappings == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "mappings",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
 func (s *CreateSQLDatasetBody) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -369,6 +392,47 @@ func (s *StatusResponseStatusCode) Validate() error {
 	return nil
 }
 
+func (s *SyncData) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if s.Mappings == nil {
+			return errors.New("nil is invalid value")
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "mappings",
+			Error: err,
+		})
+	}
+	if err := func() error {
+		if value, ok := s.MatchRateDetails.Get(); ok {
+			if err := func() error {
+				if err := value.Validate(); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "match_rate_details",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
 func (s *SyncIdResponse) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -415,6 +479,36 @@ func (s *SyncIdResponseStatusCode) Validate() error {
 	return nil
 }
 
+func (s *SyncMatchRateDetails) Validate() error {
+	if s == nil {
+		return validate.ErrNilPointer
+	}
+
+	var failures []validate.FieldError
+	if err := func() error {
+		if value, ok := s.MatchRate.Get(); ok {
+			if err := func() error {
+				if err := (validate.Float{}).Validate(float64(value)); err != nil {
+					return errors.Wrap(err, "float")
+				}
+				return nil
+			}(); err != nil {
+				return err
+			}
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "match_rate",
+			Error: err,
+		})
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+	return nil
+}
+
 func (s *SyncResponse) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
@@ -429,6 +523,17 @@ func (s *SyncResponse) Validate() error {
 	}(); err != nil {
 		failures = append(failures, validate.FieldError{
 			Name:  "status",
+			Error: err,
+		})
+	}
+	if err := func() error {
+		if err := s.Data.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		failures = append(failures, validate.FieldError{
+			Name:  "data",
 			Error: err,
 		})
 	}

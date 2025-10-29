@@ -236,7 +236,7 @@ func (s *Server) decodeCreateSourceRequest(r *http.Request) (
 }
 
 func (s *Server) decodeCreateSyncRequest(r *http.Request) (
-	req *CreateSyncBody,
+	req *CreateOrUpdateSyncBody,
 	rawBody []byte,
 	close func() error,
 	rerr error,
@@ -283,7 +283,7 @@ func (s *Server) decodeCreateSyncRequest(r *http.Request) (
 		rawBody = append(rawBody, buf...)
 		d := jx.DecodeBytes(buf)
 
-		var request CreateSyncBody
+		var request CreateOrUpdateSyncBody
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -299,6 +299,14 @@ func (s *Server) decodeCreateSyncRequest(r *http.Request) (
 				Err:         err,
 			}
 			return req, rawBody, close, err
+		}
+		if err := func() error {
+			if err := request.Validate(); err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return req, rawBody, close, errors.Wrap(err, "validate")
 		}
 		return &request, rawBody, close, nil
 	default:
@@ -520,7 +528,7 @@ func (s *Server) decodeUpdateSourceRequest(r *http.Request) (
 }
 
 func (s *Server) decodeUpdateSyncRequest(r *http.Request) (
-	req *UpdateSyncBody,
+	req *CreateOrUpdateSyncBody,
 	rawBody []byte,
 	close func() error,
 	rerr error,
@@ -567,7 +575,7 @@ func (s *Server) decodeUpdateSyncRequest(r *http.Request) (
 		rawBody = append(rawBody, buf...)
 		d := jx.DecodeBytes(buf)
 
-		var request UpdateSyncBody
+		var request CreateOrUpdateSyncBody
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err
@@ -583,6 +591,14 @@ func (s *Server) decodeUpdateSyncRequest(r *http.Request) (
 				Err:         err,
 			}
 			return req, rawBody, close, err
+		}
+		if err := func() error {
+			if err := request.Validate(); err != nil {
+				return err
+			}
+			return nil
+		}(); err != nil {
+			return req, rawBody, close, errors.Wrap(err, "validate")
 		}
 		return &request, rawBody, close, nil
 	default:

@@ -542,7 +542,7 @@ func (s *Server) handleCreateSyncRequest(args [0]string, argsEscaped bool, w htt
 		}
 
 		type (
-			Request  = *CreateSyncBody
+			Request  = *CreateOrUpdateSyncBody
 			Params   = struct{}
 			Response = *SyncIdResponseStatusCode
 		)
@@ -2418,7 +2418,7 @@ func (s *Server) handleUpdateSyncRequest(args [1]string, argsEscaped bool, w htt
 		}
 
 		type (
-			Request  = *UpdateSyncBody
+			Request  = *CreateOrUpdateSyncBody
 			Params   = UpdateSyncParams
 			Response = *SyncResponseStatusCode
 		)

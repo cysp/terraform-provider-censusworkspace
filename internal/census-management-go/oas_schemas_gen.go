@@ -112,6 +112,257 @@ func (s *CreateDestinationBodyServiceConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
 }
 
+// Ref: #/components/schemas/CreateOrUpdateSyncBody
+type CreateOrUpdateSyncBody struct {
+	// A label to give to this sync.
+	Label OptNilString `json:"label"`
+	// How records are synced to the destination.
+	Operation             string                    `json:"operation"`
+	DestinationAttributes SyncDestinationAttributes `json:"destination_attributes"`
+	SourceAttributes      SyncSourceAttributes      `json:"source_attributes"`
+	// Array of mapping objects defining how source fields map to destination fields.
+	Mappings []SyncMapping `json:"mappings"`
+	// Array of alert configuration objects determining when and how to send alerts.
+	AlertAttributes       []SyncAlertAttributes        `json:"alert_attributes"`
+	AdvancedConfiguration OptSyncAdvancedConfiguration `json:"advanced_configuration"`
+	Mode                  OptSyncMode                  `json:"mode"`
+	// Whether or not this sync should be paused.
+	Paused OptBool `json:"paused"`
+	// How destination fields are updated.
+	FieldBehavior OptString `json:"field_behavior"`
+	// If field_behavior is 'sync_all_properties', how automatic mappings should be named.
+	FieldNormalization OptString `json:"field_normalization"`
+	// How the destination fields should be ordered.
+	FieldOrder OptString `json:"field_order"`
+	// Behavior family for the sync.
+	SyncBehaviorFamily OptString `json:"sync_behavior_family"`
+	// Name of the timestamp column for high-water-mark diffing strategy.
+	HighWaterMarkAttribute  OptString                      `json:"high_water_mark_attribute"`
+	HighWaterMarkAttributes OptSyncHighWaterMarkAttributes `json:"high_water_mark_attributes"`
+	// When true, checks if the given payload is valid to configure a sync. Does not create the sync.
+	ValidateOnly OptBool `json:"validate_only"`
+	// Deprecated flag: when true, will email on sync failures and recoveries.
+	FailedRunNotificationsEnabled OptBool `json:"failed_run_notifications_enabled"`
+	// Deprecated flag: when true, will email on invalid/rejected record thresholds.
+	FailedRecordNotificationsEnabled OptBool `json:"failed_record_notifications_enabled"`
+	// Deprecated: threshold percent of invalid/rejected records to trigger notification.
+	FailedRecordNotificationsThresholdPercent OptInt `json:"failed_record_notifications_threshold_percent"`
+	// How the first sync should handle historical records for append operations.
+	HistoricalSyncOperation OptString `json:"historical_sync_operation"`
+	// Strategy for mirror syncs.
+	MirrorStrategy OptString `json:"mirror_strategy"`
+}
+
+// GetLabel returns the value of Label.
+func (s *CreateOrUpdateSyncBody) GetLabel() OptNilString {
+	return s.Label
+}
+
+// GetOperation returns the value of Operation.
+func (s *CreateOrUpdateSyncBody) GetOperation() string {
+	return s.Operation
+}
+
+// GetDestinationAttributes returns the value of DestinationAttributes.
+func (s *CreateOrUpdateSyncBody) GetDestinationAttributes() SyncDestinationAttributes {
+	return s.DestinationAttributes
+}
+
+// GetSourceAttributes returns the value of SourceAttributes.
+func (s *CreateOrUpdateSyncBody) GetSourceAttributes() SyncSourceAttributes {
+	return s.SourceAttributes
+}
+
+// GetMappings returns the value of Mappings.
+func (s *CreateOrUpdateSyncBody) GetMappings() []SyncMapping {
+	return s.Mappings
+}
+
+// GetAlertAttributes returns the value of AlertAttributes.
+func (s *CreateOrUpdateSyncBody) GetAlertAttributes() []SyncAlertAttributes {
+	return s.AlertAttributes
+}
+
+// GetAdvancedConfiguration returns the value of AdvancedConfiguration.
+func (s *CreateOrUpdateSyncBody) GetAdvancedConfiguration() OptSyncAdvancedConfiguration {
+	return s.AdvancedConfiguration
+}
+
+// GetMode returns the value of Mode.
+func (s *CreateOrUpdateSyncBody) GetMode() OptSyncMode {
+	return s.Mode
+}
+
+// GetPaused returns the value of Paused.
+func (s *CreateOrUpdateSyncBody) GetPaused() OptBool {
+	return s.Paused
+}
+
+// GetFieldBehavior returns the value of FieldBehavior.
+func (s *CreateOrUpdateSyncBody) GetFieldBehavior() OptString {
+	return s.FieldBehavior
+}
+
+// GetFieldNormalization returns the value of FieldNormalization.
+func (s *CreateOrUpdateSyncBody) GetFieldNormalization() OptString {
+	return s.FieldNormalization
+}
+
+// GetFieldOrder returns the value of FieldOrder.
+func (s *CreateOrUpdateSyncBody) GetFieldOrder() OptString {
+	return s.FieldOrder
+}
+
+// GetSyncBehaviorFamily returns the value of SyncBehaviorFamily.
+func (s *CreateOrUpdateSyncBody) GetSyncBehaviorFamily() OptString {
+	return s.SyncBehaviorFamily
+}
+
+// GetHighWaterMarkAttribute returns the value of HighWaterMarkAttribute.
+func (s *CreateOrUpdateSyncBody) GetHighWaterMarkAttribute() OptString {
+	return s.HighWaterMarkAttribute
+}
+
+// GetHighWaterMarkAttributes returns the value of HighWaterMarkAttributes.
+func (s *CreateOrUpdateSyncBody) GetHighWaterMarkAttributes() OptSyncHighWaterMarkAttributes {
+	return s.HighWaterMarkAttributes
+}
+
+// GetValidateOnly returns the value of ValidateOnly.
+func (s *CreateOrUpdateSyncBody) GetValidateOnly() OptBool {
+	return s.ValidateOnly
+}
+
+// GetFailedRunNotificationsEnabled returns the value of FailedRunNotificationsEnabled.
+func (s *CreateOrUpdateSyncBody) GetFailedRunNotificationsEnabled() OptBool {
+	return s.FailedRunNotificationsEnabled
+}
+
+// GetFailedRecordNotificationsEnabled returns the value of FailedRecordNotificationsEnabled.
+func (s *CreateOrUpdateSyncBody) GetFailedRecordNotificationsEnabled() OptBool {
+	return s.FailedRecordNotificationsEnabled
+}
+
+// GetFailedRecordNotificationsThresholdPercent returns the value of FailedRecordNotificationsThresholdPercent.
+func (s *CreateOrUpdateSyncBody) GetFailedRecordNotificationsThresholdPercent() OptInt {
+	return s.FailedRecordNotificationsThresholdPercent
+}
+
+// GetHistoricalSyncOperation returns the value of HistoricalSyncOperation.
+func (s *CreateOrUpdateSyncBody) GetHistoricalSyncOperation() OptString {
+	return s.HistoricalSyncOperation
+}
+
+// GetMirrorStrategy returns the value of MirrorStrategy.
+func (s *CreateOrUpdateSyncBody) GetMirrorStrategy() OptString {
+	return s.MirrorStrategy
+}
+
+// SetLabel sets the value of Label.
+func (s *CreateOrUpdateSyncBody) SetLabel(val OptNilString) {
+	s.Label = val
+}
+
+// SetOperation sets the value of Operation.
+func (s *CreateOrUpdateSyncBody) SetOperation(val string) {
+	s.Operation = val
+}
+
+// SetDestinationAttributes sets the value of DestinationAttributes.
+func (s *CreateOrUpdateSyncBody) SetDestinationAttributes(val SyncDestinationAttributes) {
+	s.DestinationAttributes = val
+}
+
+// SetSourceAttributes sets the value of SourceAttributes.
+func (s *CreateOrUpdateSyncBody) SetSourceAttributes(val SyncSourceAttributes) {
+	s.SourceAttributes = val
+}
+
+// SetMappings sets the value of Mappings.
+func (s *CreateOrUpdateSyncBody) SetMappings(val []SyncMapping) {
+	s.Mappings = val
+}
+
+// SetAlertAttributes sets the value of AlertAttributes.
+func (s *CreateOrUpdateSyncBody) SetAlertAttributes(val []SyncAlertAttributes) {
+	s.AlertAttributes = val
+}
+
+// SetAdvancedConfiguration sets the value of AdvancedConfiguration.
+func (s *CreateOrUpdateSyncBody) SetAdvancedConfiguration(val OptSyncAdvancedConfiguration) {
+	s.AdvancedConfiguration = val
+}
+
+// SetMode sets the value of Mode.
+func (s *CreateOrUpdateSyncBody) SetMode(val OptSyncMode) {
+	s.Mode = val
+}
+
+// SetPaused sets the value of Paused.
+func (s *CreateOrUpdateSyncBody) SetPaused(val OptBool) {
+	s.Paused = val
+}
+
+// SetFieldBehavior sets the value of FieldBehavior.
+func (s *CreateOrUpdateSyncBody) SetFieldBehavior(val OptString) {
+	s.FieldBehavior = val
+}
+
+// SetFieldNormalization sets the value of FieldNormalization.
+func (s *CreateOrUpdateSyncBody) SetFieldNormalization(val OptString) {
+	s.FieldNormalization = val
+}
+
+// SetFieldOrder sets the value of FieldOrder.
+func (s *CreateOrUpdateSyncBody) SetFieldOrder(val OptString) {
+	s.FieldOrder = val
+}
+
+// SetSyncBehaviorFamily sets the value of SyncBehaviorFamily.
+func (s *CreateOrUpdateSyncBody) SetSyncBehaviorFamily(val OptString) {
+	s.SyncBehaviorFamily = val
+}
+
+// SetHighWaterMarkAttribute sets the value of HighWaterMarkAttribute.
+func (s *CreateOrUpdateSyncBody) SetHighWaterMarkAttribute(val OptString) {
+	s.HighWaterMarkAttribute = val
+}
+
+// SetHighWaterMarkAttributes sets the value of HighWaterMarkAttributes.
+func (s *CreateOrUpdateSyncBody) SetHighWaterMarkAttributes(val OptSyncHighWaterMarkAttributes) {
+	s.HighWaterMarkAttributes = val
+}
+
+// SetValidateOnly sets the value of ValidateOnly.
+func (s *CreateOrUpdateSyncBody) SetValidateOnly(val OptBool) {
+	s.ValidateOnly = val
+}
+
+// SetFailedRunNotificationsEnabled sets the value of FailedRunNotificationsEnabled.
+func (s *CreateOrUpdateSyncBody) SetFailedRunNotificationsEnabled(val OptBool) {
+	s.FailedRunNotificationsEnabled = val
+}
+
+// SetFailedRecordNotificationsEnabled sets the value of FailedRecordNotificationsEnabled.
+func (s *CreateOrUpdateSyncBody) SetFailedRecordNotificationsEnabled(val OptBool) {
+	s.FailedRecordNotificationsEnabled = val
+}
+
+// SetFailedRecordNotificationsThresholdPercent sets the value of FailedRecordNotificationsThresholdPercent.
+func (s *CreateOrUpdateSyncBody) SetFailedRecordNotificationsThresholdPercent(val OptInt) {
+	s.FailedRecordNotificationsThresholdPercent = val
+}
+
+// SetHistoricalSyncOperation sets the value of HistoricalSyncOperation.
+func (s *CreateOrUpdateSyncBody) SetHistoricalSyncOperation(val OptString) {
+	s.HistoricalSyncOperation = val
+}
+
+// SetMirrorStrategy sets the value of MirrorStrategy.
+func (s *CreateOrUpdateSyncBody) SetMirrorStrategy(val OptString) {
+	s.MirrorStrategy = val
+}
+
 // Ref: #/components/schemas/CreateSQLDatasetBody
 type CreateSQLDatasetBody struct {
 	// The name of the dataset.
@@ -276,72 +527,6 @@ func (s *CreateSourceBodyConnection) SetLabel(val OptNilString) {
 // SetCredentials sets the value of Credentials.
 func (s *CreateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
-}
-
-// Ref: #/components/schemas/CreateSyncBody
-type CreateSyncBody struct {
-	// A label to give to this sync.
-	Label OptNilString `json:"label"`
-	// How records are synced to the destination.
-	Operation             string                              `json:"operation"`
-	DestinationAttributes CreateSyncBodyDestinationAttributes `json:"destination_attributes"`
-}
-
-// GetLabel returns the value of Label.
-func (s *CreateSyncBody) GetLabel() OptNilString {
-	return s.Label
-}
-
-// GetOperation returns the value of Operation.
-func (s *CreateSyncBody) GetOperation() string {
-	return s.Operation
-}
-
-// GetDestinationAttributes returns the value of DestinationAttributes.
-func (s *CreateSyncBody) GetDestinationAttributes() CreateSyncBodyDestinationAttributes {
-	return s.DestinationAttributes
-}
-
-// SetLabel sets the value of Label.
-func (s *CreateSyncBody) SetLabel(val OptNilString) {
-	s.Label = val
-}
-
-// SetOperation sets the value of Operation.
-func (s *CreateSyncBody) SetOperation(val string) {
-	s.Operation = val
-}
-
-// SetDestinationAttributes sets the value of DestinationAttributes.
-func (s *CreateSyncBody) SetDestinationAttributes(val CreateSyncBodyDestinationAttributes) {
-	s.DestinationAttributes = val
-}
-
-type CreateSyncBodyDestinationAttributes struct {
-	// The id used to identify the destination connection.
-	ConnectionID int64 `json:"connection_id"`
-	// The full name of the destination object.
-	Object string `json:"object"`
-}
-
-// GetConnectionID returns the value of ConnectionID.
-func (s *CreateSyncBodyDestinationAttributes) GetConnectionID() int64 {
-	return s.ConnectionID
-}
-
-// GetObject returns the value of Object.
-func (s *CreateSyncBodyDestinationAttributes) GetObject() string {
-	return s.Object
-}
-
-// SetConnectionID sets the value of ConnectionID.
-func (s *CreateSyncBodyDestinationAttributes) SetConnectionID(val int64) {
-	s.ConnectionID = val
-}
-
-// SetObject sets the value of Object.
-func (s *CreateSyncBodyDestinationAttributes) SetObject(val string) {
-	s.Object = val
 }
 
 // Ref: #/components/schemas/DatasetData
@@ -684,6 +869,190 @@ func (o NilString) Or(d string) string {
 	return d
 }
 
+// NewOptBool returns new OptBool with value set to v.
+func NewOptBool(v bool) OptBool {
+	return OptBool{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptBool is optional bool.
+type OptBool struct {
+	Value bool
+	Set   bool
+}
+
+// IsSet returns true if OptBool was set.
+func (o OptBool) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptBool) Reset() {
+	var v bool
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptBool) SetTo(v bool) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptBool) Get() (v bool, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptDateTime returns new OptDateTime with value set to v.
+func NewOptDateTime(v time.Time) OptDateTime {
+	return OptDateTime{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptDateTime is optional time.Time.
+type OptDateTime struct {
+	Value time.Time
+	Set   bool
+}
+
+// IsSet returns true if OptDateTime was set.
+func (o OptDateTime) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptDateTime) Reset() {
+	var v time.Time
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptDateTime) SetTo(v time.Time) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptDateTime) Get() (v time.Time, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptDateTime) Or(d time.Time) time.Time {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptFloat64 returns new OptFloat64 with value set to v.
+func NewOptFloat64(v float64) OptFloat64 {
+	return OptFloat64{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptFloat64 is optional float64.
+type OptFloat64 struct {
+	Value float64
+	Set   bool
+}
+
+// IsSet returns true if OptFloat64 was set.
+func (o OptFloat64) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptFloat64) Reset() {
+	var v float64
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptFloat64) SetTo(v float64) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptFloat64) Get() (v float64, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptFloat64) Or(d float64) float64 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptInt returns new OptInt with value set to v.
+func NewOptInt(v int) OptInt {
+	return OptInt{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInt is optional int.
+type OptInt struct {
+	Value int
+	Set   bool
+}
+
+// IsSet returns true if OptInt was set.
+func (o OptInt) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInt) Reset() {
+	var v int
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInt) SetTo(v int) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInt) Get() (v int, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInt) Or(d int) int {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptNilBool returns new OptNilBool with value set to v.
 func NewOptNilBool(v bool) OptNilBool {
 	return OptNilBool{
@@ -913,6 +1282,282 @@ func (o OptString) Get() (v string, ok bool) {
 
 // Or returns value if set, or given parameter if does not.
 func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSyncAdvancedConfiguration returns new OptSyncAdvancedConfiguration with value set to v.
+func NewOptSyncAdvancedConfiguration(v SyncAdvancedConfiguration) OptSyncAdvancedConfiguration {
+	return OptSyncAdvancedConfiguration{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSyncAdvancedConfiguration is optional SyncAdvancedConfiguration.
+type OptSyncAdvancedConfiguration struct {
+	Value SyncAdvancedConfiguration
+	Set   bool
+}
+
+// IsSet returns true if OptSyncAdvancedConfiguration was set.
+func (o OptSyncAdvancedConfiguration) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSyncAdvancedConfiguration) Reset() {
+	var v SyncAdvancedConfiguration
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSyncAdvancedConfiguration) SetTo(v SyncAdvancedConfiguration) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSyncAdvancedConfiguration) Get() (v SyncAdvancedConfiguration, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSyncAdvancedConfiguration) Or(d SyncAdvancedConfiguration) SyncAdvancedConfiguration {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSyncHighWaterMarkAttributes returns new OptSyncHighWaterMarkAttributes with value set to v.
+func NewOptSyncHighWaterMarkAttributes(v SyncHighWaterMarkAttributes) OptSyncHighWaterMarkAttributes {
+	return OptSyncHighWaterMarkAttributes{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSyncHighWaterMarkAttributes is optional SyncHighWaterMarkAttributes.
+type OptSyncHighWaterMarkAttributes struct {
+	Value SyncHighWaterMarkAttributes
+	Set   bool
+}
+
+// IsSet returns true if OptSyncHighWaterMarkAttributes was set.
+func (o OptSyncHighWaterMarkAttributes) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSyncHighWaterMarkAttributes) Reset() {
+	var v SyncHighWaterMarkAttributes
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSyncHighWaterMarkAttributes) SetTo(v SyncHighWaterMarkAttributes) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSyncHighWaterMarkAttributes) Get() (v SyncHighWaterMarkAttributes, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSyncHighWaterMarkAttributes) Or(d SyncHighWaterMarkAttributes) SyncHighWaterMarkAttributes {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSyncMatchRateDetails returns new OptSyncMatchRateDetails with value set to v.
+func NewOptSyncMatchRateDetails(v SyncMatchRateDetails) OptSyncMatchRateDetails {
+	return OptSyncMatchRateDetails{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSyncMatchRateDetails is optional SyncMatchRateDetails.
+type OptSyncMatchRateDetails struct {
+	Value SyncMatchRateDetails
+	Set   bool
+}
+
+// IsSet returns true if OptSyncMatchRateDetails was set.
+func (o OptSyncMatchRateDetails) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSyncMatchRateDetails) Reset() {
+	var v SyncMatchRateDetails
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSyncMatchRateDetails) SetTo(v SyncMatchRateDetails) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSyncMatchRateDetails) Get() (v SyncMatchRateDetails, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSyncMatchRateDetails) Or(d SyncMatchRateDetails) SyncMatchRateDetails {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSyncMode returns new OptSyncMode with value set to v.
+func NewOptSyncMode(v SyncMode) OptSyncMode {
+	return OptSyncMode{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSyncMode is optional SyncMode.
+type OptSyncMode struct {
+	Value SyncMode
+	Set   bool
+}
+
+// IsSet returns true if OptSyncMode was set.
+func (o OptSyncMode) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSyncMode) Reset() {
+	var v SyncMode
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSyncMode) SetTo(v SyncMode) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSyncMode) Get() (v SyncMode, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSyncMode) Or(d SyncMode) SyncMode {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSyncSchedule returns new OptSyncSchedule with value set to v.
+func NewOptSyncSchedule(v SyncSchedule) OptSyncSchedule {
+	return OptSyncSchedule{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSyncSchedule is optional SyncSchedule.
+type OptSyncSchedule struct {
+	Value SyncSchedule
+	Set   bool
+}
+
+// IsSet returns true if OptSyncSchedule was set.
+func (o OptSyncSchedule) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSyncSchedule) Reset() {
+	var v SyncSchedule
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSyncSchedule) SetTo(v SyncSchedule) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSyncSchedule) Get() (v SyncSchedule, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSyncSchedule) Or(d SyncSchedule) SyncSchedule {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptSyncTriggers returns new OptSyncTriggers with value set to v.
+func NewOptSyncTriggers(v SyncTriggers) OptSyncTriggers {
+	return OptSyncTriggers{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptSyncTriggers is optional SyncTriggers.
+type OptSyncTriggers struct {
+	Value SyncTriggers
+	Set   bool
+}
+
+// IsSet returns true if OptSyncTriggers was set.
+func (o OptSyncTriggers) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptSyncTriggers) Reset() {
+	var v SyncTriggers
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptSyncTriggers) SetTo(v SyncTriggers) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptSyncTriggers) Get() (v SyncTriggers, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptSyncTriggers) Or(d SyncTriggers) SyncTriggers {
 	if v, ok := o.Get(); ok {
 		return v
 	}
@@ -1404,20 +2049,152 @@ func (s *StatusResponseStatusCode) SetResponse(val StatusResponse) {
 	s.Response = val
 }
 
+// Ref: #/components/schemas/SyncAdvancedConfiguration
+type SyncAdvancedConfiguration struct {
+	// Country or countries of the data source (e.g., 'US, GB').
+	DataSourceCountry OptString `json:"data_source_country"`
+	// Whether to use bulk ID lookup optimization.
+	BulkIDLookup OptBool `json:"bulk_id_lookup"`
+}
+
+// GetDataSourceCountry returns the value of DataSourceCountry.
+func (s *SyncAdvancedConfiguration) GetDataSourceCountry() OptString {
+	return s.DataSourceCountry
+}
+
+// GetBulkIDLookup returns the value of BulkIDLookup.
+func (s *SyncAdvancedConfiguration) GetBulkIDLookup() OptBool {
+	return s.BulkIDLookup
+}
+
+// SetDataSourceCountry sets the value of DataSourceCountry.
+func (s *SyncAdvancedConfiguration) SetDataSourceCountry(val OptString) {
+	s.DataSourceCountry = val
+}
+
+// SetBulkIDLookup sets the value of BulkIDLookup.
+func (s *SyncAdvancedConfiguration) SetBulkIDLookup(val OptBool) {
+	s.BulkIDLookup = val
+}
+
+// Ref: #/components/schemas/SyncAlertAttributes
+type SyncAlertAttributes struct {
+	// Type of alert configuration.
+	Type OptString `json:"type"`
+	// When to send the alert (first_time, every_time, etc.).
+	SendFor OptString `json:"send_for"`
+	// Whether to send a recovery notification when issue is resolved.
+	ShouldSendRecovery OptBool `json:"should_send_recovery"`
+	// Additional options specific to the alert type.
+	Options jx.Raw `json:"options"`
+}
+
+// GetType returns the value of Type.
+func (s *SyncAlertAttributes) GetType() OptString {
+	return s.Type
+}
+
+// GetSendFor returns the value of SendFor.
+func (s *SyncAlertAttributes) GetSendFor() OptString {
+	return s.SendFor
+}
+
+// GetShouldSendRecovery returns the value of ShouldSendRecovery.
+func (s *SyncAlertAttributes) GetShouldSendRecovery() OptBool {
+	return s.ShouldSendRecovery
+}
+
+// GetOptions returns the value of Options.
+func (s *SyncAlertAttributes) GetOptions() jx.Raw {
+	return s.Options
+}
+
+// SetType sets the value of Type.
+func (s *SyncAlertAttributes) SetType(val OptString) {
+	s.Type = val
+}
+
+// SetSendFor sets the value of SendFor.
+func (s *SyncAlertAttributes) SetSendFor(val OptString) {
+	s.SendFor = val
+}
+
+// SetShouldSendRecovery sets the value of ShouldSendRecovery.
+func (s *SyncAlertAttributes) SetShouldSendRecovery(val OptBool) {
+	s.ShouldSendRecovery = val
+}
+
+// SetOptions sets the value of Options.
+func (s *SyncAlertAttributes) SetOptions(val jx.Raw) {
+	s.Options = val
+}
+
 // Ref: #/components/schemas/SyncData
 type SyncData struct {
-	// The id of this destination.
+	// ID of the sync.
 	ID int64 `json:"id"`
+	// Status of the sync (e.g., ready).
+	Status string `json:"status"`
+	// Timestamp when the sync was created.
+	CreatedAt time.Time `json:"created_at"`
+	// Timestamp when the sync was last updated.
+	UpdatedAt time.Time `json:"updated_at"`
 	// A label to give to this sync.
 	Label OptNilString `json:"label"`
 	// How records are synced to the destination.
-	Operation             string                        `json:"operation"`
-	DestinationAttributes SyncDataDestinationAttributes `json:"destination_attributes"`
+	Operation             string                       `json:"operation"`
+	DestinationAttributes SyncDestinationAttributes    `json:"destination_attributes"`
+	SourceAttributes      SyncSourceAttributes         `json:"source_attributes"`
+	Mappings              []SyncMapping                `json:"mappings"`
+	AlertAttributes       []SyncAlertAttributes        `json:"alert_attributes"`
+	AdvancedConfiguration OptSyncAdvancedConfiguration `json:"advanced_configuration"`
+	Mode                  OptSyncMode                  `json:"mode"`
+	// Whether or not this sync should be paused.
+	Paused OptBool `json:"paused"`
+	// How destination fields are updated.
+	FieldBehavior OptString `json:"field_behavior"`
+	// If field_behavior is 'sync_all_properties', how automatic mappings should be named.
+	FieldNormalization OptString `json:"field_normalization"`
+	// How the destination fields should be ordered.
+	FieldOrder OptString `json:"field_order"`
+	// Behavior family for the sync.
+	SyncBehaviorFamily OptString `json:"sync_behavior_family"`
+	// Name of the timestamp column for high-water-mark diffing strategy.
+	HighWaterMarkAttribute  OptString                      `json:"high_water_mark_attribute"`
+	HighWaterMarkAttributes OptSyncHighWaterMarkAttributes `json:"high_water_mark_attributes"`
+	// When true, checks if the given payload is valid to configure a sync. Does not create the sync.
+	ValidateOnly OptBool `json:"validate_only"`
+	// Deprecated flag: when true, will email on sync failures and recoveries.
+	FailedRunNotificationsEnabled OptBool `json:"failed_run_notifications_enabled"`
+	// Deprecated flag: when true, will email on invalid/rejected record thresholds.
+	FailedRecordNotificationsEnabled OptBool `json:"failed_record_notifications_enabled"`
+	// Deprecated: threshold percent of invalid/rejected records to trigger notification.
+	FailedRecordNotificationsThresholdPercent OptInt `json:"failed_record_notifications_threshold_percent"`
+	// How the first sync should handle historical records for append operations.
+	HistoricalSyncOperation OptString `json:"historical_sync_operation"`
+	// Strategy for mirror syncs.
+	MirrorStrategy   OptString               `json:"mirror_strategy"`
+	MatchRateDetails OptSyncMatchRateDetails `json:"match_rate_details"`
 }
 
 // GetID returns the value of ID.
 func (s *SyncData) GetID() int64 {
 	return s.ID
+}
+
+// GetStatus returns the value of Status.
+func (s *SyncData) GetStatus() string {
+	return s.Status
+}
+
+// GetCreatedAt returns the value of CreatedAt.
+func (s *SyncData) GetCreatedAt() time.Time {
+	return s.CreatedAt
+}
+
+// GetUpdatedAt returns the value of UpdatedAt.
+func (s *SyncData) GetUpdatedAt() time.Time {
+	return s.UpdatedAt
 }
 
 // GetLabel returns the value of Label.
@@ -1431,13 +2208,123 @@ func (s *SyncData) GetOperation() string {
 }
 
 // GetDestinationAttributes returns the value of DestinationAttributes.
-func (s *SyncData) GetDestinationAttributes() SyncDataDestinationAttributes {
+func (s *SyncData) GetDestinationAttributes() SyncDestinationAttributes {
 	return s.DestinationAttributes
+}
+
+// GetSourceAttributes returns the value of SourceAttributes.
+func (s *SyncData) GetSourceAttributes() SyncSourceAttributes {
+	return s.SourceAttributes
+}
+
+// GetMappings returns the value of Mappings.
+func (s *SyncData) GetMappings() []SyncMapping {
+	return s.Mappings
+}
+
+// GetAlertAttributes returns the value of AlertAttributes.
+func (s *SyncData) GetAlertAttributes() []SyncAlertAttributes {
+	return s.AlertAttributes
+}
+
+// GetAdvancedConfiguration returns the value of AdvancedConfiguration.
+func (s *SyncData) GetAdvancedConfiguration() OptSyncAdvancedConfiguration {
+	return s.AdvancedConfiguration
+}
+
+// GetMode returns the value of Mode.
+func (s *SyncData) GetMode() OptSyncMode {
+	return s.Mode
+}
+
+// GetPaused returns the value of Paused.
+func (s *SyncData) GetPaused() OptBool {
+	return s.Paused
+}
+
+// GetFieldBehavior returns the value of FieldBehavior.
+func (s *SyncData) GetFieldBehavior() OptString {
+	return s.FieldBehavior
+}
+
+// GetFieldNormalization returns the value of FieldNormalization.
+func (s *SyncData) GetFieldNormalization() OptString {
+	return s.FieldNormalization
+}
+
+// GetFieldOrder returns the value of FieldOrder.
+func (s *SyncData) GetFieldOrder() OptString {
+	return s.FieldOrder
+}
+
+// GetSyncBehaviorFamily returns the value of SyncBehaviorFamily.
+func (s *SyncData) GetSyncBehaviorFamily() OptString {
+	return s.SyncBehaviorFamily
+}
+
+// GetHighWaterMarkAttribute returns the value of HighWaterMarkAttribute.
+func (s *SyncData) GetHighWaterMarkAttribute() OptString {
+	return s.HighWaterMarkAttribute
+}
+
+// GetHighWaterMarkAttributes returns the value of HighWaterMarkAttributes.
+func (s *SyncData) GetHighWaterMarkAttributes() OptSyncHighWaterMarkAttributes {
+	return s.HighWaterMarkAttributes
+}
+
+// GetValidateOnly returns the value of ValidateOnly.
+func (s *SyncData) GetValidateOnly() OptBool {
+	return s.ValidateOnly
+}
+
+// GetFailedRunNotificationsEnabled returns the value of FailedRunNotificationsEnabled.
+func (s *SyncData) GetFailedRunNotificationsEnabled() OptBool {
+	return s.FailedRunNotificationsEnabled
+}
+
+// GetFailedRecordNotificationsEnabled returns the value of FailedRecordNotificationsEnabled.
+func (s *SyncData) GetFailedRecordNotificationsEnabled() OptBool {
+	return s.FailedRecordNotificationsEnabled
+}
+
+// GetFailedRecordNotificationsThresholdPercent returns the value of FailedRecordNotificationsThresholdPercent.
+func (s *SyncData) GetFailedRecordNotificationsThresholdPercent() OptInt {
+	return s.FailedRecordNotificationsThresholdPercent
+}
+
+// GetHistoricalSyncOperation returns the value of HistoricalSyncOperation.
+func (s *SyncData) GetHistoricalSyncOperation() OptString {
+	return s.HistoricalSyncOperation
+}
+
+// GetMirrorStrategy returns the value of MirrorStrategy.
+func (s *SyncData) GetMirrorStrategy() OptString {
+	return s.MirrorStrategy
+}
+
+// GetMatchRateDetails returns the value of MatchRateDetails.
+func (s *SyncData) GetMatchRateDetails() OptSyncMatchRateDetails {
+	return s.MatchRateDetails
 }
 
 // SetID sets the value of ID.
 func (s *SyncData) SetID(val int64) {
 	s.ID = val
+}
+
+// SetStatus sets the value of Status.
+func (s *SyncData) SetStatus(val string) {
+	s.Status = val
+}
+
+// SetCreatedAt sets the value of CreatedAt.
+func (s *SyncData) SetCreatedAt(val time.Time) {
+	s.CreatedAt = val
+}
+
+// SetUpdatedAt sets the value of UpdatedAt.
+func (s *SyncData) SetUpdatedAt(val time.Time) {
+	s.UpdatedAt = val
 }
 
 // SetLabel sets the value of Label.
@@ -1451,35 +2338,159 @@ func (s *SyncData) SetOperation(val string) {
 }
 
 // SetDestinationAttributes sets the value of DestinationAttributes.
-func (s *SyncData) SetDestinationAttributes(val SyncDataDestinationAttributes) {
+func (s *SyncData) SetDestinationAttributes(val SyncDestinationAttributes) {
 	s.DestinationAttributes = val
 }
 
-type SyncDataDestinationAttributes struct {
-	// The id used to identify the destination connection.
-	ConnectionID int64 `json:"connection_id"`
-	// The full name of the destination object.
+// SetSourceAttributes sets the value of SourceAttributes.
+func (s *SyncData) SetSourceAttributes(val SyncSourceAttributes) {
+	s.SourceAttributes = val
+}
+
+// SetMappings sets the value of Mappings.
+func (s *SyncData) SetMappings(val []SyncMapping) {
+	s.Mappings = val
+}
+
+// SetAlertAttributes sets the value of AlertAttributes.
+func (s *SyncData) SetAlertAttributes(val []SyncAlertAttributes) {
+	s.AlertAttributes = val
+}
+
+// SetAdvancedConfiguration sets the value of AdvancedConfiguration.
+func (s *SyncData) SetAdvancedConfiguration(val OptSyncAdvancedConfiguration) {
+	s.AdvancedConfiguration = val
+}
+
+// SetMode sets the value of Mode.
+func (s *SyncData) SetMode(val OptSyncMode) {
+	s.Mode = val
+}
+
+// SetPaused sets the value of Paused.
+func (s *SyncData) SetPaused(val OptBool) {
+	s.Paused = val
+}
+
+// SetFieldBehavior sets the value of FieldBehavior.
+func (s *SyncData) SetFieldBehavior(val OptString) {
+	s.FieldBehavior = val
+}
+
+// SetFieldNormalization sets the value of FieldNormalization.
+func (s *SyncData) SetFieldNormalization(val OptString) {
+	s.FieldNormalization = val
+}
+
+// SetFieldOrder sets the value of FieldOrder.
+func (s *SyncData) SetFieldOrder(val OptString) {
+	s.FieldOrder = val
+}
+
+// SetSyncBehaviorFamily sets the value of SyncBehaviorFamily.
+func (s *SyncData) SetSyncBehaviorFamily(val OptString) {
+	s.SyncBehaviorFamily = val
+}
+
+// SetHighWaterMarkAttribute sets the value of HighWaterMarkAttribute.
+func (s *SyncData) SetHighWaterMarkAttribute(val OptString) {
+	s.HighWaterMarkAttribute = val
+}
+
+// SetHighWaterMarkAttributes sets the value of HighWaterMarkAttributes.
+func (s *SyncData) SetHighWaterMarkAttributes(val OptSyncHighWaterMarkAttributes) {
+	s.HighWaterMarkAttributes = val
+}
+
+// SetValidateOnly sets the value of ValidateOnly.
+func (s *SyncData) SetValidateOnly(val OptBool) {
+	s.ValidateOnly = val
+}
+
+// SetFailedRunNotificationsEnabled sets the value of FailedRunNotificationsEnabled.
+func (s *SyncData) SetFailedRunNotificationsEnabled(val OptBool) {
+	s.FailedRunNotificationsEnabled = val
+}
+
+// SetFailedRecordNotificationsEnabled sets the value of FailedRecordNotificationsEnabled.
+func (s *SyncData) SetFailedRecordNotificationsEnabled(val OptBool) {
+	s.FailedRecordNotificationsEnabled = val
+}
+
+// SetFailedRecordNotificationsThresholdPercent sets the value of FailedRecordNotificationsThresholdPercent.
+func (s *SyncData) SetFailedRecordNotificationsThresholdPercent(val OptInt) {
+	s.FailedRecordNotificationsThresholdPercent = val
+}
+
+// SetHistoricalSyncOperation sets the value of HistoricalSyncOperation.
+func (s *SyncData) SetHistoricalSyncOperation(val OptString) {
+	s.HistoricalSyncOperation = val
+}
+
+// SetMirrorStrategy sets the value of MirrorStrategy.
+func (s *SyncData) SetMirrorStrategy(val OptString) {
+	s.MirrorStrategy = val
+}
+
+// SetMatchRateDetails sets the value of MatchRateDetails.
+func (s *SyncData) SetMatchRateDetails(val OptSyncMatchRateDetails) {
+	s.MatchRateDetails = val
+}
+
+// Ref: #/components/schemas/SyncDestinationAttributes
+type SyncDestinationAttributes struct {
+	// ID of the destination connection.
+	ConnectionID int `json:"connection_id"`
+	// Destination object (table, entity) to sync into.
 	Object string `json:"object"`
 }
 
 // GetConnectionID returns the value of ConnectionID.
-func (s *SyncDataDestinationAttributes) GetConnectionID() int64 {
+func (s *SyncDestinationAttributes) GetConnectionID() int {
 	return s.ConnectionID
 }
 
 // GetObject returns the value of Object.
-func (s *SyncDataDestinationAttributes) GetObject() string {
+func (s *SyncDestinationAttributes) GetObject() string {
 	return s.Object
 }
 
 // SetConnectionID sets the value of ConnectionID.
-func (s *SyncDataDestinationAttributes) SetConnectionID(val int64) {
+func (s *SyncDestinationAttributes) SetConnectionID(val int) {
 	s.ConnectionID = val
 }
 
 // SetObject sets the value of Object.
-func (s *SyncDataDestinationAttributes) SetObject(val string) {
+func (s *SyncDestinationAttributes) SetObject(val string) {
 	s.Object = val
+}
+
+// Ref: #/components/schemas/SyncHighWaterMarkAttributes
+type SyncHighWaterMarkAttributes struct {
+	// Whether to use the high water mark diff type.
+	UseHighWaterMarkDiffType OptBool `json:"use_high_water_mark_diff_type"`
+	// Name of the timestamp column used for high water mark diffing.
+	ColumnName OptString `json:"column_name"`
+}
+
+// GetUseHighWaterMarkDiffType returns the value of UseHighWaterMarkDiffType.
+func (s *SyncHighWaterMarkAttributes) GetUseHighWaterMarkDiffType() OptBool {
+	return s.UseHighWaterMarkDiffType
+}
+
+// GetColumnName returns the value of ColumnName.
+func (s *SyncHighWaterMarkAttributes) GetColumnName() OptString {
+	return s.ColumnName
+}
+
+// SetUseHighWaterMarkDiffType sets the value of UseHighWaterMarkDiffType.
+func (s *SyncHighWaterMarkAttributes) SetUseHighWaterMarkDiffType(val OptBool) {
+	s.UseHighWaterMarkDiffType = val
+}
+
+// SetColumnName sets the value of ColumnName.
+func (s *SyncHighWaterMarkAttributes) SetColumnName(val OptString) {
+	s.ColumnName = val
 }
 
 type SyncIdResponse struct {
@@ -1547,6 +2558,152 @@ func (s *SyncIdResponseStatusCode) SetResponse(val SyncIdResponse) {
 	s.Response = val
 }
 
+// Ref: #/components/schemas/SyncMapping
+type SyncMapping struct {
+	From SyncMappingFrom `json:"from"`
+	// Destination field or property name.
+	To string `json:"to"`
+	// Whether this mapping is used as the primary identifier.
+	IsPrimaryIdentifier OptBool `json:"is_primary_identifier"`
+	// Destination lookup object name if using a lookup.
+	LookupObject OptString `json:"lookup_object"`
+	// Field to look up on the destination object if using a lookup.
+	LookupField OptString `json:"lookup_field"`
+}
+
+// GetFrom returns the value of From.
+func (s *SyncMapping) GetFrom() SyncMappingFrom {
+	return s.From
+}
+
+// GetTo returns the value of To.
+func (s *SyncMapping) GetTo() string {
+	return s.To
+}
+
+// GetIsPrimaryIdentifier returns the value of IsPrimaryIdentifier.
+func (s *SyncMapping) GetIsPrimaryIdentifier() OptBool {
+	return s.IsPrimaryIdentifier
+}
+
+// GetLookupObject returns the value of LookupObject.
+func (s *SyncMapping) GetLookupObject() OptString {
+	return s.LookupObject
+}
+
+// GetLookupField returns the value of LookupField.
+func (s *SyncMapping) GetLookupField() OptString {
+	return s.LookupField
+}
+
+// SetFrom sets the value of From.
+func (s *SyncMapping) SetFrom(val SyncMappingFrom) {
+	s.From = val
+}
+
+// SetTo sets the value of To.
+func (s *SyncMapping) SetTo(val string) {
+	s.To = val
+}
+
+// SetIsPrimaryIdentifier sets the value of IsPrimaryIdentifier.
+func (s *SyncMapping) SetIsPrimaryIdentifier(val OptBool) {
+	s.IsPrimaryIdentifier = val
+}
+
+// SetLookupObject sets the value of LookupObject.
+func (s *SyncMapping) SetLookupObject(val OptString) {
+	s.LookupObject = val
+}
+
+// SetLookupField sets the value of LookupField.
+func (s *SyncMapping) SetLookupField(val OptString) {
+	s.LookupField = val
+}
+
+// Ref: #/components/schemas/SyncMappingFrom
+type SyncMappingFrom struct {
+	// Type of source data reference (column, constant_value, etc.).
+	Type string `json:"type"`
+	// Data or value used from the source side (column name or constant value object).
+	Data jx.Raw `json:"data"`
+}
+
+// GetType returns the value of Type.
+func (s *SyncMappingFrom) GetType() string {
+	return s.Type
+}
+
+// GetData returns the value of Data.
+func (s *SyncMappingFrom) GetData() jx.Raw {
+	return s.Data
+}
+
+// SetType sets the value of Type.
+func (s *SyncMappingFrom) SetType(val string) {
+	s.Type = val
+}
+
+// SetData sets the value of Data.
+func (s *SyncMappingFrom) SetData(val jx.Raw) {
+	s.Data = val
+}
+
+// Ref: #/components/schemas/SyncMatchRateDetails
+type SyncMatchRateDetails struct {
+	// Overall match rate for the sync.
+	MatchRate OptFloat64 `json:"match_rate"`
+	// Timestamp when match rate was last calculated.
+	MatchRateLastCalculatedAt OptDateTime `json:"match_rate_last_calculated_at"`
+}
+
+// GetMatchRate returns the value of MatchRate.
+func (s *SyncMatchRateDetails) GetMatchRate() OptFloat64 {
+	return s.MatchRate
+}
+
+// GetMatchRateLastCalculatedAt returns the value of MatchRateLastCalculatedAt.
+func (s *SyncMatchRateDetails) GetMatchRateLastCalculatedAt() OptDateTime {
+	return s.MatchRateLastCalculatedAt
+}
+
+// SetMatchRate sets the value of MatchRate.
+func (s *SyncMatchRateDetails) SetMatchRate(val OptFloat64) {
+	s.MatchRate = val
+}
+
+// SetMatchRateLastCalculatedAt sets the value of MatchRateLastCalculatedAt.
+func (s *SyncMatchRateDetails) SetMatchRateLastCalculatedAt(val OptDateTime) {
+	s.MatchRateLastCalculatedAt = val
+}
+
+// Ref: #/components/schemas/SyncMode
+type SyncMode struct {
+	// SyncMode type (e.g., triggered).
+	Type     OptString       `json:"type"`
+	Triggers OptSyncTriggers `json:"triggers"`
+}
+
+// GetType returns the value of Type.
+func (s *SyncMode) GetType() OptString {
+	return s.Type
+}
+
+// GetTriggers returns the value of Triggers.
+func (s *SyncMode) GetTriggers() OptSyncTriggers {
+	return s.Triggers
+}
+
+// SetType sets the value of Type.
+func (s *SyncMode) SetType(val OptString) {
+	s.Type = val
+}
+
+// SetTriggers sets the value of Triggers.
+func (s *SyncMode) SetTriggers(val OptSyncTriggers) {
+	s.Triggers = val
+}
+
 type SyncResponse struct {
 	Status ResponseStatus `json:"status"`
 	Data   SyncData       `json:"data"`
@@ -1596,6 +2753,152 @@ func (s *SyncResponseStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *SyncResponseStatusCode) SetResponse(val SyncResponse) {
 	s.Response = val
+}
+
+// Ref: #/components/schemas/SyncSchedule
+type SyncSchedule struct {
+	// Run frequency (e.g., daily).
+	Frequency OptString `json:"frequency"`
+	// Hour of day when the sync runs (24‑hour clock).
+	Hour OptInt `json:"hour"`
+	// Minute of hour when the sync runs.
+	Minute OptInt `json:"minute"`
+}
+
+// GetFrequency returns the value of Frequency.
+func (s *SyncSchedule) GetFrequency() OptString {
+	return s.Frequency
+}
+
+// GetHour returns the value of Hour.
+func (s *SyncSchedule) GetHour() OptInt {
+	return s.Hour
+}
+
+// GetMinute returns the value of Minute.
+func (s *SyncSchedule) GetMinute() OptInt {
+	return s.Minute
+}
+
+// SetFrequency sets the value of Frequency.
+func (s *SyncSchedule) SetFrequency(val OptString) {
+	s.Frequency = val
+}
+
+// SetHour sets the value of Hour.
+func (s *SyncSchedule) SetHour(val OptInt) {
+	s.Hour = val
+}
+
+// SetMinute sets the value of Minute.
+func (s *SyncSchedule) SetMinute(val OptInt) {
+	s.Minute = val
+}
+
+// Ref: #/components/schemas/SyncSourceAttributes
+type SyncSourceAttributes struct {
+	// ID of the source connection.
+	ConnectionID int              `json:"connection_id"`
+	Object       SyncSourceObject `json:"object"`
+}
+
+// GetConnectionID returns the value of ConnectionID.
+func (s *SyncSourceAttributes) GetConnectionID() int {
+	return s.ConnectionID
+}
+
+// GetObject returns the value of Object.
+func (s *SyncSourceAttributes) GetObject() SyncSourceObject {
+	return s.Object
+}
+
+// SetConnectionID sets the value of ConnectionID.
+func (s *SyncSourceAttributes) SetConnectionID(val int) {
+	s.ConnectionID = val
+}
+
+// SetObject sets the value of Object.
+func (s *SyncSourceAttributes) SetObject(val SyncSourceObject) {
+	s.Object = val
+}
+
+// Ref: #/components/schemas/SyncSourceObject
+type SyncSourceObject struct {
+	// Source object type (dataset, table, etc.).
+	Type OptString `json:"type"`
+	// ID of the dataset source.
+	ID OptInt `json:"id"`
+	// Catalog name for the table in the warehouse.
+	TableCatalog OptString `json:"table_catalog"`
+	// Schema name for the table in the warehouse.
+	TableSchema OptString `json:"table_schema"`
+	// Table name in the warehouse schema.
+	TableName OptString `json:"table_name"`
+}
+
+// GetType returns the value of Type.
+func (s *SyncSourceObject) GetType() OptString {
+	return s.Type
+}
+
+// GetID returns the value of ID.
+func (s *SyncSourceObject) GetID() OptInt {
+	return s.ID
+}
+
+// GetTableCatalog returns the value of TableCatalog.
+func (s *SyncSourceObject) GetTableCatalog() OptString {
+	return s.TableCatalog
+}
+
+// GetTableSchema returns the value of TableSchema.
+func (s *SyncSourceObject) GetTableSchema() OptString {
+	return s.TableSchema
+}
+
+// GetTableName returns the value of TableName.
+func (s *SyncSourceObject) GetTableName() OptString {
+	return s.TableName
+}
+
+// SetType sets the value of Type.
+func (s *SyncSourceObject) SetType(val OptString) {
+	s.Type = val
+}
+
+// SetID sets the value of ID.
+func (s *SyncSourceObject) SetID(val OptInt) {
+	s.ID = val
+}
+
+// SetTableCatalog sets the value of TableCatalog.
+func (s *SyncSourceObject) SetTableCatalog(val OptString) {
+	s.TableCatalog = val
+}
+
+// SetTableSchema sets the value of TableSchema.
+func (s *SyncSourceObject) SetTableSchema(val OptString) {
+	s.TableSchema = val
+}
+
+// SetTableName sets the value of TableName.
+func (s *SyncSourceObject) SetTableName(val OptString) {
+	s.TableName = val
+}
+
+// Ref: #/components/schemas/SyncTriggers
+type SyncTriggers struct {
+	Schedule OptSyncSchedule `json:"schedule"`
+}
+
+// GetSchedule returns the value of Schedule.
+func (s *SyncTriggers) GetSchedule() OptSyncSchedule {
+	return s.Schedule
+}
+
+// SetSchedule sets the value of Schedule.
+func (s *SyncTriggers) SetSchedule(val OptSyncSchedule) {
+	s.Schedule = val
 }
 
 // Ref: #/components/schemas/UpdateDatasetBody
@@ -1762,72 +3065,6 @@ func (s *UpdateSourceBodyConnection) SetLabel(val OptNilString) {
 // SetCredentials sets the value of Credentials.
 func (s *UpdateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
-}
-
-// Ref: #/components/schemas/UpdateSyncBody
-type UpdateSyncBody struct {
-	// A label to give to this sync.
-	Label OptNilString `json:"label"`
-	// How records are synced to the destination.
-	Operation             string                              `json:"operation"`
-	DestinationAttributes UpdateSyncBodyDestinationAttributes `json:"destination_attributes"`
-}
-
-// GetLabel returns the value of Label.
-func (s *UpdateSyncBody) GetLabel() OptNilString {
-	return s.Label
-}
-
-// GetOperation returns the value of Operation.
-func (s *UpdateSyncBody) GetOperation() string {
-	return s.Operation
-}
-
-// GetDestinationAttributes returns the value of DestinationAttributes.
-func (s *UpdateSyncBody) GetDestinationAttributes() UpdateSyncBodyDestinationAttributes {
-	return s.DestinationAttributes
-}
-
-// SetLabel sets the value of Label.
-func (s *UpdateSyncBody) SetLabel(val OptNilString) {
-	s.Label = val
-}
-
-// SetOperation sets the value of Operation.
-func (s *UpdateSyncBody) SetOperation(val string) {
-	s.Operation = val
-}
-
-// SetDestinationAttributes sets the value of DestinationAttributes.
-func (s *UpdateSyncBody) SetDestinationAttributes(val UpdateSyncBodyDestinationAttributes) {
-	s.DestinationAttributes = val
-}
-
-type UpdateSyncBodyDestinationAttributes struct {
-	// The id used to identify the destination connection.
-	ConnectionID int64 `json:"connection_id"`
-	// The full name of the destination object.
-	Object string `json:"object"`
-}
-
-// GetConnectionID returns the value of ConnectionID.
-func (s *UpdateSyncBodyDestinationAttributes) GetConnectionID() int64 {
-	return s.ConnectionID
-}
-
-// GetObject returns the value of Object.
-func (s *UpdateSyncBodyDestinationAttributes) GetObject() string {
-	return s.Object
-}
-
-// SetConnectionID sets the value of ConnectionID.
-func (s *UpdateSyncBodyDestinationAttributes) SetConnectionID(val int64) {
-	s.ConnectionID = val
-}
-
-// SetObject sets the value of Object.
-func (s *UpdateSyncBodyDestinationAttributes) SetObject(val string) {
-	s.Object = val
 }
 
 type WorkspaceApiKey struct {

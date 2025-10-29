@@ -31,7 +31,7 @@ type Handler interface {
 	// Create Sync.
 	//
 	// POST /api/v1/syncs
-	CreateSync(ctx context.Context, req *CreateSyncBody) (*SyncIdResponseStatusCode, error)
+	CreateSync(ctx context.Context, req *CreateOrUpdateSyncBody) (*SyncIdResponseStatusCode, error)
 	// DeleteDataset implements deleteDataset operation.
 	//
 	// Delete dataset.
@@ -107,7 +107,7 @@ type Handler interface {
 	// Update sync.
 	//
 	// PATCH /api/v1/syncs/{sync_id}
-	UpdateSync(ctx context.Context, req *UpdateSyncBody, params UpdateSyncParams) (*SyncResponseStatusCode, error)
+	UpdateSync(ctx context.Context, req *CreateOrUpdateSyncBody, params UpdateSyncParams) (*SyncResponseStatusCode, error)
 	// NewError creates *StatusResponseStatusCode from error returned by handler.
 	//
 	// Used for common default response.
