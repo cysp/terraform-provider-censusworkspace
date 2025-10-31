@@ -179,5 +179,6 @@ func (p *Provider) Resources(_ context.Context) []func() resource.Resource {
 		NewDestinationResource,
 		NewSourceResource,
 		NewSQLDatasetResource,
+		NewSyncResource,
 	}
 }
