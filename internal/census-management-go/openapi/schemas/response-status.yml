@@ -1,0 +1,9 @@
+ResponseStatus:
+  type: string
+  enum:
+    - success
+    - updated
+    - created
+    - deleted
+    - not_found
+    - error

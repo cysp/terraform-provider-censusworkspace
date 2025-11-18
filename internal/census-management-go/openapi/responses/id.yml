@@ -1,0 +1,20 @@
+idResponse:
+  description: A resource id
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          status:
+            $ref: ../schemas/response-status.yml#/ResponseStatus
+          data:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int64
+            required:
+              - id
+        required:
+          - status
+          - data

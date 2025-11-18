@@ -1,0 +1,15 @@
+statusResponse:
+  description: Status response
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          status:
+            oneOf:
+              - $ref: ../schemas/response-status.yml#/ResponseStatus
+              - type: integer
+          message:
+            type: string
+        required:
+          - status

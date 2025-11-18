@@ -1,0 +1,14 @@
+datasetResponse:
+  description: A dataset
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          status:
+            $ref: ../schemas/response-status.yml#/ResponseStatus
+          data:
+            $ref: ../schemas/dataset/data.yml#/DatasetData
+        required:
+          - status
+          - data

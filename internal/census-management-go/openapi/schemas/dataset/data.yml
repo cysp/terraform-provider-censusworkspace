@@ -1,0 +1,3 @@
+DatasetData:
+  anyOf:
+    - $ref: ./sql/data.yml#/SQLDatasetData

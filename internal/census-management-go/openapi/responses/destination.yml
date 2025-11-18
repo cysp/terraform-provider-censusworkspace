@@ -1,0 +1,14 @@
+destinationResponse:
+  description: A destination
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          status:
+            $ref: ../schemas/response-status.yml#/ResponseStatus
+          data:
+            $ref: ../schemas/destination/data.yml#/DestinationData
+        required:
+          - status
+          - data

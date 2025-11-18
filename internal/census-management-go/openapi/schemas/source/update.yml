@@ -1,0 +1,14 @@
+UpdateSourceBody:
+  type: object
+  properties:
+    connection:
+      type: object
+      properties:
+        label:
+          type: string
+          description: An optional label that can be assigned to the source for better categorization or identification.
+          nullable: true
+        credentials:
+          description: Credentials that should be associated with this source (e.g. hostname, port)
+  required:
+    - connection

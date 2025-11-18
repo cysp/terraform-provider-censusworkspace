@@ -1,0 +1,184 @@
+openapi: "3.1.0"
+info:
+  title: Census Management API
+  version: "0.1"
+servers:
+  - url: https://app.getcensus.com
+components:
+  parameters:
+    dataset_id:
+      in: path
+      name: dataset_id
+      required: true
+      schema:
+        type: string
+    source_id:
+      in: path
+      name: source_id
+      required: true
+      schema:
+        type: string
+    destination_id:
+      in: path
+      name: destination_id
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    workspaceApiKey:
+      type: http
+      scheme: bearer
+      bearerFormat: Census Workspace API Key
+security:
+  - workspaceApiKey: []
+paths:
+  /api/v1:
+    get:
+      operationId: getApiV1
+      responses:
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+  /api/v1/sources:
+    post:
+      operationId: createSource
+      summary: Create Source
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/source/create.yml#/CreateSourceBody"
+      responses:
+        2XX:
+          $ref: "./responses/id.yml#/idResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+  /api/v1/sources/{source_id}:
+    parameters:
+      - $ref: "#/components/parameters/source_id"
+    get:
+      operationId: getSource
+      summary: Fetch source
+      responses:
+        2XX:
+          $ref: "./responses/source.yml#/sourceResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+    patch:
+      operationId: updateSource
+      summary: Update source
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/source/update.yml#/UpdateSourceBody"
+      responses:
+        2XX:
+          $ref: "./responses/source.yml#/sourceResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+    delete:
+      operationId: deleteSource
+      summary: Delete source
+      responses:
+        2XX:
+          $ref: "./responses/status.yml#/statusResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+  /api/v1/datasets:
+    post:
+      operationId: createDataset
+      summary: Create dataset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/dataset/create.yml#/CreateDatasetBody"
+      responses:
+        2XX:
+          $ref: "./responses/id.yml#/idResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+  /api/v1/datasets/{dataset_id}:
+    parameters:
+      - $ref: "#/components/parameters/dataset_id"
+    get:
+      operationId: getDataset
+      summary: Fetch dataset
+      responses:
+        2XX:
+          $ref: "./responses/dataset.yml#/datasetResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+    patch:
+      operationId: updateDataset
+      summary: Update dataset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/dataset/update.yml#/UpdateDatasetBody"
+      responses:
+        2XX:
+          $ref: "./responses/dataset.yml#/datasetResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+    delete:
+      operationId: deleteDataset
+      summary: Delete dataset
+      responses:
+        2XX:
+          $ref: "./responses/status.yml#/statusResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+  /api/v1/destinations:
+    post:
+      operationId: createDestination
+      summary: Create Destination
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/destination/create.yml#/CreateDestinationBody"
+      responses:
+        2XX:
+          $ref: "./responses/id.yml#/idResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+  /api/v1/destinations/{destination_id}:
+    parameters:
+      - $ref: "#/components/parameters/destination_id"
+    get:
+      operationId: getDestination
+      summary: Fetch destination
+      responses:
+        2XX:
+          $ref: "./responses/destination.yml#/destinationResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+    patch:
+      operationId: updateDestination
+      summary: Update destination
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas/destination/update.yml#/UpdateDestinationBody"
+      responses:
+        2XX:
+          $ref: "./responses/destination.yml#/destinationResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
+    delete:
+      operationId: deleteDestination
+      summary: Delete destination
+      responses:
+        2XX:
+          $ref: "./responses/status.yml#/statusResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
