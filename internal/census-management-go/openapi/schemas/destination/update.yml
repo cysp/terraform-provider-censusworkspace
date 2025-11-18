@@ -1,0 +1,13 @@
+UpdateDestinationBody:
+  type: object
+  properties:
+    service_connection:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of this destination.
+        credentials:
+          description: The credentials needed to create each type of connection. These can be found in the GET /connectors API for most destinations.
+  required:
+    - service_connection

@@ -1,0 +1,14 @@
+sourceResponse:
+  description: A source
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          status:
+            $ref: ../schemas/response-status.yml#/ResponseStatus
+          data:
+            $ref: ../schemas/source/data.yml#/SourceData
+        required:
+          - status
+          - data

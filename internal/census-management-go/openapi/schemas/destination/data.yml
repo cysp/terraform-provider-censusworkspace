@@ -1,0 +1,32 @@
+DestinationData:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+      description: The id of this destination.
+    name:
+      type: string
+      description: The name of this destination.
+    type:
+      type: string
+      description: The type of connection to be used for this destination. A valid type is the service_name of a connector returned from the /connectors endpoint, where the connector is marked as creatable_via_api.
+    connection_details: {}
+    created_at:
+      type: string
+      format: date-time
+      description: The timestamp when the destination was created.
+    last_test_succeeded:
+      type: boolean
+      description: Indicates if the last connection test to this destination was successful.
+      nullable: true
+    last_tested_at:
+      type: string
+      format: date-time
+      description: Timestamp of when the last connection test was conducted on this destination.
+      nullable: true
+  required:
+    - id
+    - name
+    - type
+    - created_at

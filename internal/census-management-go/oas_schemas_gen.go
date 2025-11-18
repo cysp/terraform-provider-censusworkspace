@@ -14,7 +14,7 @@ func (s *StatusResponseStatusCode) Error() string {
 	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
 }
 
-// Ref: #/components/schemas/CreateDatasetBody
+// Ref: #/CreateDatasetBody
 // CreateDatasetBody represents sum type.
 type CreateDatasetBody struct {
 	Type                 CreateDatasetBodyType // switch on this field
@@ -55,7 +55,7 @@ func NewCreateSQLDatasetBodyCreateDatasetBody(v CreateSQLDatasetBody) CreateData
 	return s
 }
 
-// Ref: #/components/schemas/CreateDestinationBody
+// Ref: #/CreateDestinationBody
 type CreateDestinationBody struct {
 	ServiceConnection CreateDestinationBodyServiceConnection `json:"service_connection"`
 }
@@ -112,7 +112,7 @@ func (s *CreateDestinationBodyServiceConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
 }
 
-// Ref: #/components/schemas/CreateSQLDatasetBody
+// Ref: #/CreateSQLDatasetBody
 type CreateSQLDatasetBody struct {
 	// The name of the dataset.
 	Name string `json:"name"`
@@ -211,7 +211,7 @@ func (s *CreateSQLDatasetBodyType) UnmarshalText(data []byte) error {
 	}
 }
 
-// Ref: #/components/schemas/CreateSourceBody
+// Ref: #/CreateSourceBody
 type CreateSourceBody struct {
 	Connection CreateSourceBodyConnection `json:"connection"`
 }
@@ -278,7 +278,7 @@ func (s *CreateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
 }
 
-// Ref: #/components/schemas/DatasetData
+// Ref: #/DatasetData
 // DatasetData represents sum type.
 type DatasetData struct {
 	Type           DatasetDataType // switch on this field
@@ -368,7 +368,7 @@ func (s *DatasetResponseStatusCode) SetResponse(val DatasetResponse) {
 	s.Response = val
 }
 
-// Ref: #/components/schemas/DestinationData
+// Ref: #/DestinationData
 type DestinationData struct {
 	// The id of this destination.
 	ID int64 `json:"id"`
@@ -379,11 +379,11 @@ type DestinationData struct {
 	// creatable_via_api.
 	Type              string `json:"type"`
 	ConnectionDetails jx.Raw `json:"connection_details"`
-	// The timestamp when the source was created.
+	// The timestamp when the destination was created.
 	CreatedAt time.Time `json:"created_at"`
-	// Indicates if the last connection test to this source was successful.
+	// Indicates if the last connection test to this destination was successful.
 	LastTestSucceeded OptNilBool `json:"last_test_succeeded"`
-	// Timestamp of when the last connection test was conducted on this source.
+	// Timestamp of when the last connection test was conducted on this destination.
 	LastTestedAt OptNilDateTime `json:"last_tested_at"`
 }
 
@@ -853,7 +853,7 @@ func (o OptString) Or(d string) string {
 	return d
 }
 
-// Ref: #/components/schemas/ResponseStatus
+// Ref: #/ResponseStatus
 type ResponseStatus string
 
 const (
@@ -923,7 +923,7 @@ func (s *ResponseStatus) UnmarshalText(data []byte) error {
 	}
 }
 
-// Ref: #/components/schemas/SQLDatasetData
+// Ref: #/SQLDatasetData
 type SQLDatasetData struct {
 	// Unique identifier for the dataset.
 	ID int64 `json:"id"`
@@ -1058,7 +1058,7 @@ func (s *SQLDatasetDataType) UnmarshalText(data []byte) error {
 	}
 }
 
-// Ref: #/components/schemas/SourceData
+// Ref: #/SourceData
 type SourceData struct {
 	// The unique identifier of the source.
 	ID int64 `json:"id"`
@@ -1338,7 +1338,7 @@ func (s *StatusResponseStatusCode) SetResponse(val StatusResponse) {
 	s.Response = val
 }
 
-// Ref: #/components/schemas/UpdateDatasetBody
+// Ref: #/UpdateDatasetBody
 // UpdateDatasetBody represents sum type.
 type UpdateDatasetBody struct {
 	Type                 UpdateDatasetBodyType // switch on this field
@@ -1379,7 +1379,7 @@ func NewUpdateSQLDatasetBodyUpdateDatasetBody(v UpdateSQLDatasetBody) UpdateData
 	return s
 }
 
-// Ref: #/components/schemas/UpdateDestinationBody
+// Ref: #/UpdateDestinationBody
 type UpdateDestinationBody struct {
 	ServiceConnection UpdateDestinationBodyServiceConnection `json:"service_connection"`
 }
@@ -1422,7 +1422,7 @@ func (s *UpdateDestinationBodyServiceConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
 }
 
-// Ref: #/components/schemas/UpdateSQLDatasetBody
+// Ref: #/UpdateSQLDatasetBody
 type UpdateSQLDatasetBody struct {
 	// The name of the dataset.
 	Name OptString `json:"name"`
@@ -1462,7 +1462,7 @@ func (s *UpdateSQLDatasetBody) SetDescription(val OptNilString) {
 	s.Description = val
 }
 
-// Ref: #/components/schemas/UpdateSourceBody
+// Ref: #/UpdateSourceBody
 type UpdateSourceBody struct {
 	Connection UpdateSourceBodyConnection `json:"connection"`
 }

@@ -1,0 +1,3 @@
+CreateDatasetBody:
+  anyOf:
+    - $ref: ./sql/create.yml#/CreateSQLDatasetBody

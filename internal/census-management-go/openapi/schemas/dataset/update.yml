@@ -1,0 +1,3 @@
+UpdateDatasetBody:
+  anyOf:
+    - $ref: ./sql/update.yml#/UpdateSQLDatasetBody

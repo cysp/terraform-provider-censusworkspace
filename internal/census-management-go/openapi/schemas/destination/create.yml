@@ -1,0 +1,19 @@
+CreateDestinationBody:
+  type: object
+  properties:
+    service_connection:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of connection to be used for this destination. A valid type is the service_name of a connector returned from the /connectors endpoint, where the connector is marked as creatable_via_api.
+        name:
+          type: string
+          description: The name of this destination.
+        credentials:
+          description: The credentials needed to create each type of connection. These can be found in the GET /connectors API for most destinations.
+      required:
+        - type
+        - name
+  required:
+    - service_connection

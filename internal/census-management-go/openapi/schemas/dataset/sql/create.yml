@@ -1,0 +1,27 @@
+CreateSQLDatasetBody:
+  type: object
+  properties:
+    name:
+      type: string
+      description: The name of the dataset
+    type:
+      type: string
+      description: Type of dataset
+      enum:
+        - sql
+    source_id:
+      type: integer
+      format: int64
+      description: ID of the source connection to run the query against
+    query:
+      type: string
+      description: SQL query that defines the dataset
+    description:
+      type: string
+      description: Optional description of the dataset
+      nullable: true
+  required:
+    - name
+    - type
+    - source_id
+    - query
