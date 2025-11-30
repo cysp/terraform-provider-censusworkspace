@@ -1,4 +1,3 @@
-//nolint:dupl
 package provider
 
 import (
@@ -15,8 +14,6 @@ import (
 func NewCustomAPIDestinationModelFromResponse(ctx context.Context, response cm.DestinationData) (CustomAPIDestinationModel, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
-	path := path.Empty()
-
 	model := CustomAPIDestinationModel{
 		destinationModelBase: destinationModelBase{
 			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
@@ -26,9 +23,9 @@ func NewCustomAPIDestinationModelFromResponse(ctx context.Context, response cm.D
 	}
 
 	if response.ConnectionDetails != nil {
-		path := path.AtName("connection_details")
+		connectionDetailsPath := path.Root("connection_details")
 
-		connectionDetails, connectionDetailsDiags := NewCustomAPIDestinationConnectionDetailsFromResponse(ctx, path, response.ConnectionDetails)
+		connectionDetails, connectionDetailsDiags := NewCustomAPIDestinationConnectionDetailsFromResponse(ctx, connectionDetailsPath, response.ConnectionDetails)
 		diags.Append(connectionDetailsDiags...)
 
 		model.ConnectionDetails = connectionDetails

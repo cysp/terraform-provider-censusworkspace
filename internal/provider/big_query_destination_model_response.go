@@ -1,4 +1,3 @@
-//nolint:dupl
 package provider
 
 import (
@@ -15,8 +14,6 @@ import (
 func NewBigQueryDestinationModelFromResponse(ctx context.Context, response cm.DestinationData) (BigQueryDestinationModel, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
-	path := path.Empty()
-
 	model := BigQueryDestinationModel{
 		destinationModelBase: destinationModelBase{
 			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
@@ -26,9 +23,9 @@ func NewBigQueryDestinationModelFromResponse(ctx context.Context, response cm.De
 	}
 
 	if response.ConnectionDetails != nil {
-		path := path.AtName("connection_details")
+		connectionDetailsPath := path.Root("connection_details")
 
-		connectionDetails, connectionDetailsDiags := NewBigQueryDestinationConnectionDetailsFromResponse(ctx, path, response.ConnectionDetails)
+		connectionDetails, connectionDetailsDiags := NewBigQueryDestinationConnectionDetailsFromResponse(ctx, connectionDetailsPath, response.ConnectionDetails)
 		diags.Append(connectionDetailsDiags...)
 
 		model.ConnectionDetails = connectionDetails

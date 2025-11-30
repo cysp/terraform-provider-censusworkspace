@@ -1,4 +1,3 @@
-//nolint:dupl
 package provider
 
 import (
@@ -15,8 +14,6 @@ import (
 func NewBrazeDestinationModelFromResponse(ctx context.Context, response cm.DestinationData) (BrazeDestinationModel, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
-	path := path.Empty()
-
 	model := BrazeDestinationModel{
 		destinationModelBase: destinationModelBase{
 			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
@@ -26,9 +23,9 @@ func NewBrazeDestinationModelFromResponse(ctx context.Context, response cm.Desti
 	}
 
 	if response.ConnectionDetails != nil {
-		path := path.AtName("connection_details")
+		connectionDetailsPath := path.Root("connection_details")
 
-		connectionDetails, connectionDetailsDiags := NewBrazeDestinationConnectionDetailsFromResponse(ctx, path, response.ConnectionDetails)
+		connectionDetails, connectionDetailsDiags := NewBrazeDestinationConnectionDetailsFromResponse(ctx, connectionDetailsPath, response.ConnectionDetails)
 		diags.Append(connectionDetailsDiags...)
 
 		model.ConnectionDetails = connectionDetails

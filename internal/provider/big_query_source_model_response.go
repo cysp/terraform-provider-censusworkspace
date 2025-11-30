@@ -14,8 +14,6 @@ import (
 func NewBigQuerySourceModelFromResponse(ctx context.Context, response cm.SourceData) (BigQuerySourceModel, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
-	path := path.Empty()
-
 	model := BigQuerySourceModel{
 		sourceModelBase: sourceModelBase{
 			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
@@ -30,9 +28,9 @@ func NewBigQuerySourceModelFromResponse(ctx context.Context, response cm.SourceD
 	}
 
 	if response.ConnectionDetails != nil {
-		path := path.AtName("connection_details")
+		connectionDetailsPath := path.Root("connection_details")
 
-		connectionDetails, connectionDetailsDiags := NewBigQuerySourceConnectionDetailsFromResponse(ctx, path, response.ConnectionDetails)
+		connectionDetails, connectionDetailsDiags := NewBigQuerySourceConnectionDetailsFromResponse(ctx, connectionDetailsPath, response.ConnectionDetails)
 		diags.Append(connectionDetailsDiags...)
 
 		model.ConnectionDetails = connectionDetails
