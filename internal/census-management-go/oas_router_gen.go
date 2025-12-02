@@ -285,12 +285,13 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // Route is route object.
 type Route struct {
-	name        string
-	summary     string
-	operationID string
-	pathPattern string
-	count       int
-	args        [1]string
+	name           string
+	summary        string
+	operationID    string
+	operationGroup string
+	pathPattern    string
+	count          int
+	args           [1]string
 }
 
 // Name returns ogen operation name.
@@ -308,6 +309,11 @@ func (r Route) Summary() string {
 // OperationID returns OpenAPI operationId.
 func (r Route) OperationID() string {
 	return r.operationID
+}
+
+// OperationGroup returns the x-ogen-operation-group value.
+func (r Route) OperationGroup() string {
+	return r.operationGroup
 }
 
 // PathPattern returns OpenAPI path.
@@ -372,6 +378,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 					r.name = GetApiV1Operation
 					r.summary = ""
 					r.operationID = "getApiV1"
+					r.operationGroup = ""
 					r.pathPattern = "/api/v1"
 					r.args = args
 					r.count = 0
@@ -419,6 +426,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = CreateDatasetOperation
 								r.summary = "Create dataset"
 								r.operationID = "createDataset"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/datasets"
 								r.args = args
 								r.count = 0
@@ -452,6 +460,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = DeleteDatasetOperation
 									r.summary = "Delete dataset"
 									r.operationID = "deleteDataset"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/datasets/{dataset_id}"
 									r.args = args
 									r.count = 1
@@ -460,6 +469,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = GetDatasetOperation
 									r.summary = "Fetch dataset"
 									r.operationID = "getDataset"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/datasets/{dataset_id}"
 									r.args = args
 									r.count = 1
@@ -468,6 +478,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = UpdateDatasetOperation
 									r.summary = "Update dataset"
 									r.operationID = "updateDataset"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/datasets/{dataset_id}"
 									r.args = args
 									r.count = 1
@@ -493,6 +504,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = CreateDestinationOperation
 								r.summary = "Create Destination"
 								r.operationID = "createDestination"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/destinations"
 								r.args = args
 								r.count = 0
@@ -526,6 +538,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = DeleteDestinationOperation
 									r.summary = "Delete destination"
 									r.operationID = "deleteDestination"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/destinations/{destination_id}"
 									r.args = args
 									r.count = 1
@@ -534,6 +547,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = GetDestinationOperation
 									r.summary = "Fetch destination"
 									r.operationID = "getDestination"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/destinations/{destination_id}"
 									r.args = args
 									r.count = 1
@@ -542,6 +556,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 									r.name = UpdateDestinationOperation
 									r.summary = "Update destination"
 									r.operationID = "updateDestination"
+									r.operationGroup = ""
 									r.pathPattern = "/api/v1/destinations/{destination_id}"
 									r.args = args
 									r.count = 1
@@ -569,6 +584,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 							r.name = CreateSourceOperation
 							r.summary = "Create Source"
 							r.operationID = "createSource"
+							r.operationGroup = ""
 							r.pathPattern = "/api/v1/sources"
 							r.args = args
 							r.count = 0
@@ -602,6 +618,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = DeleteSourceOperation
 								r.summary = "Delete source"
 								r.operationID = "deleteSource"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/sources/{source_id}"
 								r.args = args
 								r.count = 1
@@ -610,6 +627,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = GetSourceOperation
 								r.summary = "Fetch source"
 								r.operationID = "getSource"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/sources/{source_id}"
 								r.args = args
 								r.count = 1
@@ -618,6 +636,7 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 								r.name = UpdateSourceOperation
 								r.summary = "Update source"
 								r.operationID = "updateSource"
+								r.operationGroup = ""
 								r.pathPattern = "/api/v1/sources/{source_id}"
 								r.args = args
 								r.count = 1
