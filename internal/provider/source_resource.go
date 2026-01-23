@@ -74,7 +74,7 @@ func (r *sourceResource) Create(ctx context.Context, req resource.CreateRequest,
 	})
 
 	if createSourceResponse == nil {
-		resp.Diagnostics.AddError("Failed to create source", createSourceErr.Error())
+		resp.Diagnostics.AddError("Failed to create source", detailFromError(createSourceErr))
 
 		return
 	}
@@ -149,7 +149,7 @@ func (r *sourceResource) Read(ctx context.Context, req resource.ReadRequest, res
 			}
 		}
 
-		resp.Diagnostics.AddError("Failed to read source", getSourceErr.Error())
+		resp.Diagnostics.AddError("Failed to read source", detailFromError(getSourceErr))
 
 		return
 	}
@@ -202,7 +202,7 @@ func (r *sourceResource) Update(ctx context.Context, req resource.UpdateRequest,
 	})
 
 	if updateSourceResponse == nil {
-		resp.Diagnostics.AddError("Failed to update source", updateSourceErr.Error())
+		resp.Diagnostics.AddError("Failed to update source", detailFromError(updateSourceErr))
 
 		return
 	}

@@ -133,7 +133,7 @@ func (r *brazeDestinationResource) Create(ctx context.Context, req resource.Crea
 	})
 
 	if createDestinationResponse == nil {
-		resp.Diagnostics.AddError("Failed to create destination", createDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to create destination", detailFromError(createDestinationErr))
 
 		return
 	}
@@ -207,7 +207,7 @@ func (r *brazeDestinationResource) Read(ctx context.Context, req resource.ReadRe
 			}
 		}
 
-		resp.Diagnostics.AddError("Failed to read destination", getDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to read destination", detailFromError(getDestinationErr))
 
 		return
 	}
@@ -259,7 +259,7 @@ func (r *brazeDestinationResource) Update(ctx context.Context, req resource.Upda
 	})
 
 	if updateDestinationResponse == nil {
-		resp.Diagnostics.AddError("Failed to update destination", updateDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to update destination", detailFromError(updateDestinationErr))
 
 		return
 	}

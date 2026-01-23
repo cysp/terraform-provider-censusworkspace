@@ -78,7 +78,7 @@ func (r *destinationResource) Create(ctx context.Context, req resource.CreateReq
 	})
 
 	if createDestinationResponse == nil {
-		resp.Diagnostics.AddError("Failed to create destination", createDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to create destination", detailFromError(createDestinationErr))
 
 		return
 	}
@@ -149,7 +149,7 @@ func (r *destinationResource) Read(ctx context.Context, req resource.ReadRequest
 			}
 		}
 
-		resp.Diagnostics.AddError("Failed to read destination", getDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to read destination", detailFromError(getDestinationErr))
 
 		return
 	}
@@ -198,7 +198,7 @@ func (r *destinationResource) Update(ctx context.Context, req resource.UpdateReq
 	})
 
 	if updateDestinationResponse == nil {
-		resp.Diagnostics.AddError("Failed to update destination", updateDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to update destination", detailFromError(updateDestinationErr))
 
 		return
 	}

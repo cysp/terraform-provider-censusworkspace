@@ -150,7 +150,15 @@ func (p *Provider) Configure(ctx context.Context, req provider.ConfigureRequest,
 		cm.WithClient(NewHTTPClientWithUserAgent(retryableClient.StandardClient(), "terraform-provider-censusworkspace/"+p.version)),
 	)
 	if err != nil {
-		resp.Diagnostics.AddError("Failed to create Census client: %s", err.Error())
+		resp.Diagnostics.AddError("Failed to create Census client", detailFromError(err))
+
+		return
+	}
+
+	if censusManagementClient == nil {
+		resp.Diagnostics.AddError("Failed to create Census client", "client initialization returned nil")
+
+		return
 	}
 
 	providerData := ProviderData{

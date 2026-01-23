@@ -139,7 +139,7 @@ func (r *bigQueryDestinationResource) Create(ctx context.Context, req resource.C
 	})
 
 	if createDestinationResponse == nil {
-		resp.Diagnostics.AddError("Failed to create destination", createDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to create destination", detailFromError(createDestinationErr))
 
 		return
 	}
@@ -213,7 +213,7 @@ func (r *bigQueryDestinationResource) Read(ctx context.Context, req resource.Rea
 			}
 		}
 
-		resp.Diagnostics.AddError("Failed to read destination", getDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to read destination", detailFromError(getDestinationErr))
 
 		return
 	}
@@ -265,7 +265,7 @@ func (r *bigQueryDestinationResource) Update(ctx context.Context, req resource.U
 	})
 
 	if updateDestinationResponse == nil {
-		resp.Diagnostics.AddError("Failed to update destination", updateDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to update destination", detailFromError(updateDestinationErr))
 
 		return
 	}
