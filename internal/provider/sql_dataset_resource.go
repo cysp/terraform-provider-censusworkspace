@@ -73,7 +73,7 @@ func (r *sqlDatasetResource) Create(ctx context.Context, req resource.CreateRequ
 	})
 
 	if createDatasetResponse == nil {
-		resp.Diagnostics.AddError("Failed to create dataset", createDatasetErr.Error())
+		resp.Diagnostics.AddError("Failed to create dataset", detailFromError(createDatasetErr))
 
 		return
 	}
@@ -142,7 +142,7 @@ func (r *sqlDatasetResource) Read(ctx context.Context, req resource.ReadRequest,
 			}
 		}
 
-		resp.Diagnostics.AddError("Failed to read dataset", getDatasetErr.Error())
+		resp.Diagnostics.AddError("Failed to read dataset", detailFromError(getDatasetErr))
 
 		return
 	}
@@ -189,7 +189,7 @@ func (r *sqlDatasetResource) Update(ctx context.Context, req resource.UpdateRequ
 	})
 
 	if updateDatasetResponse == nil {
-		resp.Diagnostics.AddError("Failed to update dataset", updateDatasetErr.Error())
+		resp.Diagnostics.AddError("Failed to update dataset", detailFromError(updateDatasetErr))
 
 		return
 	}

@@ -168,7 +168,7 @@ func (r *customAPIDestinationResource) Create(ctx context.Context, req resource.
 	})
 
 	if createDestinationResponse == nil {
-		resp.Diagnostics.AddError("Failed to create destination", createDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to create destination", detailFromError(createDestinationErr))
 
 		return
 	}
@@ -242,7 +242,7 @@ func (r *customAPIDestinationResource) Read(ctx context.Context, req resource.Re
 			}
 		}
 
-		resp.Diagnostics.AddError("Failed to read destination", getDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to read destination", detailFromError(getDestinationErr))
 
 		return
 	}
@@ -294,7 +294,7 @@ func (r *customAPIDestinationResource) Update(ctx context.Context, req resource.
 	})
 
 	if updateDestinationResponse == nil {
-		resp.Diagnostics.AddError("Failed to update destination", updateDestinationErr.Error())
+		resp.Diagnostics.AddError("Failed to update destination", detailFromError(updateDestinationErr))
 
 		return
 	}

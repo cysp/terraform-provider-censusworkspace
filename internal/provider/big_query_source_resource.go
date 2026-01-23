@@ -157,7 +157,7 @@ func (r *bigQuerySourceResource) Create(ctx context.Context, req resource.Create
 	})
 
 	if createSourceResponse == nil {
-		resp.Diagnostics.AddError("Failed to create source", createSourceErr.Error())
+		resp.Diagnostics.AddError("Failed to create source", detailFromError(createSourceErr))
 
 		return
 	}
@@ -235,7 +235,7 @@ func (r *bigQuerySourceResource) Read(ctx context.Context, req resource.ReadRequ
 			}
 		}
 
-		resp.Diagnostics.AddError("Failed to read source", getSourceErr.Error())
+		resp.Diagnostics.AddError("Failed to read source", detailFromError(getSourceErr))
 
 		return
 	}
@@ -291,7 +291,7 @@ func (r *bigQuerySourceResource) Update(ctx context.Context, req resource.Update
 	})
 
 	if updateSourceResponse == nil {
-		resp.Diagnostics.AddError("Failed to update source", updateSourceErr.Error())
+		resp.Diagnostics.AddError("Failed to update source", detailFromError(updateSourceErr))
 
 		return
 	}
