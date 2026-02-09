@@ -1,4 +1,3 @@
-//nolint:dupl
 package provider
 
 import (
@@ -19,9 +18,8 @@ func NewBigQueryDestinationModelFromResponse(ctx context.Context, response cm.De
 
 	model := BigQueryDestinationModel{
 		destinationModelBase: destinationModelBase{
-			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
-			Name:      types.StringValue(response.Name),
-			CreatedAt: timetypes.NewRFC3339TimeValue(response.CreatedAt),
+			ID:   types.StringValue(strconv.FormatInt(response.ID, 10)),
+			Name: types.StringValue(response.Name),
 		},
 	}
 

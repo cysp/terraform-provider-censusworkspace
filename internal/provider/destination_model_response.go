@@ -14,9 +14,8 @@ import (
 func NewDestinationModelFromResponse(_ context.Context, response cm.DestinationData) (DestinationModel, diag.Diagnostics) {
 	model := DestinationModel{
 		destinationModelBase: destinationModelBase{
-			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
-			Name:      types.StringValue(response.Name),
-			CreatedAt: timetypes.NewRFC3339TimeValue(response.CreatedAt),
+			ID:   types.StringValue(strconv.FormatInt(response.ID, 10)),
+			Name: types.StringValue(response.Name),
 		},
 		Type: types.StringValue(response.Type),
 	}

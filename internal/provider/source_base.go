@@ -15,7 +15,6 @@ type sourceModelBase struct {
 	Name              types.String      `tfsdk:"name"`
 	Label             types.String      `tfsdk:"label"`
 	SyncEngine        types.String      `tfsdk:"sync_engine"`
-	CreatedAt         timetypes.RFC3339 `tfsdk:"created_at"`
 	LastTestedAt      timetypes.RFC3339 `tfsdk:"last_tested_at"`
 	LastTestSucceeded types.Bool        `tfsdk:"last_test_succeeded"`
 }
@@ -44,11 +43,6 @@ func sourceBaseResourceSchemaAttributes(_ context.Context) map[string]schema.Att
 				stringplanmodifier.UseStateForUnknown(),
 			},
 			MarkdownDescription: "The sync engine type for this source. Can only be set during creation and cannot be modified after.",
-		},
-		"created_at": schema.StringAttribute{
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-			MarkdownDescription: "When the connection was created",
 		},
 		"last_tested_at": schema.StringAttribute{
 			CustomType:          timetypes.RFC3339Type{},

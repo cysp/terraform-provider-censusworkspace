@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
-	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -33,9 +32,6 @@ func NewSQLDatasetModelFromResponse(_ context.Context, path path.Path, data cm.D
 	if description != "" {
 		model.Description = types.StringValue(description)
 	}
-
-	model.CreatedAt = timetypes.NewRFC3339TimeValue(sql.CreatedAt)
-	model.UpdatedAt = timetypes.NewRFC3339TimeValue(sql.UpdatedAt)
 
 	return model, diags
 }
