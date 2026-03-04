@@ -32,6 +32,7 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 	return "", false
 }
 
+// operationRolesWorkspaceApiKey is a private map storing roles per operation.
 var operationRolesWorkspaceApiKey = map[string][]string{
 	CreateDatasetOperation:     []string{},
 	CreateDestinationOperation: []string{},
@@ -46,6 +47,27 @@ var operationRolesWorkspaceApiKey = map[string][]string{
 	UpdateDatasetOperation:     []string{},
 	UpdateDestinationOperation: []string{},
 	UpdateSourceOperation:      []string{},
+}
+
+// GetRolesForWorkspaceApiKey returns the required roles for the given operation.
+//
+// This is useful for authorization scenarios where you need to know which roles
+// are required for an operation.
+//
+// Example:
+//
+//	requiredRoles := GetRolesForWorkspaceApiKey(AddPetOperation)
+//
+// Returns nil if the operation has no role requirements or if the operation is unknown.
+func GetRolesForWorkspaceApiKey(operation string) []string {
+	roles, ok := operationRolesWorkspaceApiKey[operation]
+	if !ok {
+		return nil
+	}
+	// Return a copy to prevent external modification
+	result := make([]string, len(roles))
+	copy(result, roles)
+	return result
 }
 
 func (s *Server) securityWorkspaceApiKey(ctx context.Context, operationName OperationName, req *http.Request) (context.Context, bool, error) {

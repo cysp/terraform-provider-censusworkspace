@@ -105,14 +105,6 @@ type Client struct {
 	sec       SecuritySource
 	baseClient
 }
-type errorHandler interface {
-	NewError(ctx context.Context, err error) *StatusResponseStatusCode
-}
-
-var _ Handler = struct {
-	errorHandler
-	*Client
-}{}
 
 // NewClient initializes new Client defined by OAS.
 func NewClient(serverURL string, sec SecuritySource, opts ...ClientOption) (*Client, error) {
@@ -219,7 +211,8 @@ func (c *Client) sendCreateDataset(ctx context.Context, request CreateDatasetBod
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeCreateDatasetResponse(resp)
 	if err != nil {
@@ -291,7 +284,8 @@ func (c *Client) sendCreateDestination(ctx context.Context, request *CreateDesti
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeCreateDestinationResponse(resp)
 	if err != nil {
@@ -363,7 +357,8 @@ func (c *Client) sendCreateSource(ctx context.Context, request *CreateSourceBody
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeCreateSourceResponse(resp)
 	if err != nil {
@@ -450,7 +445,8 @@ func (c *Client) sendDeleteDataset(ctx context.Context, params DeleteDatasetPara
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeDeleteDatasetResponse(resp)
 	if err != nil {
@@ -537,7 +533,8 @@ func (c *Client) sendDeleteDestination(ctx context.Context, params DeleteDestina
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeDeleteDestinationResponse(resp)
 	if err != nil {
@@ -624,7 +621,8 @@ func (c *Client) sendDeleteSource(ctx context.Context, params DeleteSourceParams
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeDeleteSourceResponse(resp)
 	if err != nil {
@@ -691,7 +689,8 @@ func (c *Client) sendGetApiV1(ctx context.Context) (res GetApiV1Res, err error) 
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeGetApiV1Response(resp)
 	if err != nil {
@@ -778,7 +777,8 @@ func (c *Client) sendGetDataset(ctx context.Context, params GetDatasetParams) (r
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeGetDatasetResponse(resp)
 	if err != nil {
@@ -865,7 +865,8 @@ func (c *Client) sendGetDestination(ctx context.Context, params GetDestinationPa
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeGetDestinationResponse(resp)
 	if err != nil {
@@ -952,7 +953,8 @@ func (c *Client) sendGetSource(ctx context.Context, params GetSourceParams) (res
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeGetSourceResponse(resp)
 	if err != nil {
@@ -1042,7 +1044,8 @@ func (c *Client) sendUpdateDataset(ctx context.Context, request UpdateDatasetBod
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeUpdateDatasetResponse(resp)
 	if err != nil {
@@ -1132,7 +1135,8 @@ func (c *Client) sendUpdateDestination(ctx context.Context, request *UpdateDesti
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeUpdateDestinationResponse(resp)
 	if err != nil {
@@ -1222,7 +1226,8 @@ func (c *Client) sendUpdateSource(ctx context.Context, request *UpdateSourceBody
 	if err != nil {
 		return res, errors.Wrap(err, "do request")
 	}
-	defer resp.Body.Close()
+	body := resp.Body
+	defer body.Close()
 
 	result, err := decodeUpdateSourceResponse(resp)
 	if err != nil {
