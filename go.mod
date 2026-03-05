@@ -1,6 +1,6 @@
 module github.com/cysp/terraform-provider-censusworkspace
 
-go 1.24.1
+go 1.25.0
 
 require (
 	github.com/go-faster/errors v0.7.1
@@ -14,7 +14,7 @@ require (
 	github.com/hashicorp/terraform-plugin-go v0.30.0
 	github.com/hashicorp/terraform-plugin-log v0.10.0
 	github.com/hashicorp/terraform-plugin-testing v1.14.0
-	github.com/ogen-go/ogen v1.18.0
+	github.com/ogen-go/ogen v1.20.1
 	github.com/stretchr/testify v1.11.1
 )
 
@@ -98,7 +98,7 @@ require (
 	golang.org/x/crypto v0.48.0 // indirect
 	golang.org/x/exp v0.0.0-20260112195511-716be5621a96 // indirect
 	golang.org/x/mod v0.33.0 // indirect
-	golang.org/x/net v0.50.0 // indirect
+	golang.org/x/net v0.51.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect
 	golang.org/x/text v0.34.0 // indirect
