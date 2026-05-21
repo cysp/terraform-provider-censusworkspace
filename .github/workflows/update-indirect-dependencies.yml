@@ -13,11 +13,6 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@f808768d1510423e83855289c910610ca9b43176 # v2.17.0
-        with:
-          egress-policy: audit
-
       - id: cyspbot
         uses: chikachow/cyspbot-app-token-action@d879d41c65cc2cc85387bc0f483f33f97d9001ae # v0.0.1
 
