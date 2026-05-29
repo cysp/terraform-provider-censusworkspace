@@ -26,9 +26,7 @@ func attributeTypesOf(ctx context.Context, typ reflect.Type) map[string]attr.Typ
 
 	attrs := make(map[string]attr.Type)
 
-	for i := range typ.NumField() {
-		field := typ.Field(i)
-
+	for field := range typ.Fields() {
 		tag := field.Tag.Get("tfsdk")
 		if tag == "" {
 			continue
