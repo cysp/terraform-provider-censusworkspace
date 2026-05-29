@@ -232,7 +232,9 @@ type CreateSourceBodyConnection struct {
 	Type string `json:"type"`
 	// The sync engine type for this source. Can only be set during creation and cannot be modified after.
 	SyncEngine OptString `json:"sync_engine"`
-	// An optional label that can be assigned to the source for better categorization or identification.
+	// The name assigned to this source.
+	Name OptString `json:"name"`
+	// Deprecated. Use name instead.
 	Label OptNilString `json:"label"`
 	// Credentials that should be associated with this source (e.g. hostname, port).
 	Credentials jx.Raw `json:"credentials"`
@@ -246,6 +248,11 @@ func (s *CreateSourceBodyConnection) GetType() string {
 // GetSyncEngine returns the value of SyncEngine.
 func (s *CreateSourceBodyConnection) GetSyncEngine() OptString {
 	return s.SyncEngine
+}
+
+// GetName returns the value of Name.
+func (s *CreateSourceBodyConnection) GetName() OptString {
+	return s.Name
 }
 
 // GetLabel returns the value of Label.
@@ -266,6 +273,11 @@ func (s *CreateSourceBodyConnection) SetType(val string) {
 // SetSyncEngine sets the value of SyncEngine.
 func (s *CreateSourceBodyConnection) SetSyncEngine(val OptString) {
 	s.SyncEngine = val
+}
+
+// SetName sets the value of Name.
+func (s *CreateSourceBodyConnection) SetName(val OptString) {
+	s.Name = val
 }
 
 // SetLabel sets the value of Label.
@@ -571,51 +583,6 @@ func (s *IdResponseStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *IdResponseStatusCode) SetResponse(val IdResponse) {
 	s.Response = val
-}
-
-// NewNilString returns new NilString with value set to v.
-func NewNilString(v string) NilString {
-	return NilString{
-		Value: v,
-	}
-}
-
-// NilString is nullable string.
-type NilString struct {
-	Value string
-	Null  bool
-}
-
-// SetTo sets value to v.
-func (o *NilString) SetTo(v string) {
-	o.Null = false
-	o.Value = v
-}
-
-// IsNull returns true if value is Null.
-func (o NilString) IsNull() bool { return o.Null }
-
-// SetToNull sets value to null.
-func (o *NilString) SetToNull() {
-	o.Null = true
-	var v string
-	o.Value = v
-}
-
-// Get returns value and boolean that denotes whether value was set.
-func (o NilString) Get() (v string, ok bool) {
-	if o.Null {
-		return v, false
-	}
-	return o.Value, true
-}
-
-// Or returns value if set, or given parameter if does not.
-func (o NilString) Or(d string) string {
-	if v, ok := o.Get(); ok {
-		return v
-	}
-	return d
 }
 
 // NewOptNilBool returns new OptNilBool with value set to v.
@@ -1069,9 +1036,9 @@ type SourceData struct {
 	Type string `json:"type"`
 	// The sync engine type for this source.
 	SyncEngine OptString `json:"sync_engine"`
-	// An optional label that can be assigned to the source for better categorization or identification.
-	Label             NilString `json:"label"`
-	ConnectionDetails jx.Raw    `json:"connection_details"`
+	// Deprecated. Use name instead.
+	Label             OptNilString `json:"label"`
+	ConnectionDetails jx.Raw       `json:"connection_details"`
 	// The timestamp when the source was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Indicates if the last connection test to this source was successful.
@@ -1101,7 +1068,7 @@ func (s *SourceData) GetSyncEngine() OptString {
 }
 
 // GetLabel returns the value of Label.
-func (s *SourceData) GetLabel() NilString {
+func (s *SourceData) GetLabel() OptNilString {
 	return s.Label
 }
 
@@ -1146,7 +1113,7 @@ func (s *SourceData) SetSyncEngine(val OptString) {
 }
 
 // SetLabel sets the value of Label.
-func (s *SourceData) SetLabel(val NilString) {
+func (s *SourceData) SetLabel(val OptNilString) {
 	s.Label = val
 }
 
@@ -1478,10 +1445,17 @@ func (s *UpdateSourceBody) SetConnection(val UpdateSourceBodyConnection) {
 }
 
 type UpdateSourceBodyConnection struct {
-	// An optional label that can be assigned to the source for better categorization or identification.
+	// The name assigned to this source.
+	Name OptString `json:"name"`
+	// Deprecated. Use name instead.
 	Label OptNilString `json:"label"`
 	// Credentials that should be associated with this source (e.g. hostname, port).
 	Credentials jx.Raw `json:"credentials"`
+}
+
+// GetName returns the value of Name.
+func (s *UpdateSourceBodyConnection) GetName() OptString {
+	return s.Name
 }
 
 // GetLabel returns the value of Label.
@@ -1492,6 +1466,11 @@ func (s *UpdateSourceBodyConnection) GetLabel() OptNilString {
 // GetCredentials returns the value of Credentials.
 func (s *UpdateSourceBodyConnection) GetCredentials() jx.Raw {
 	return s.Credentials
+}
+
+// SetName sets the value of Name.
+func (s *UpdateSourceBodyConnection) SetName(val OptString) {
+	s.Name = val
 }
 
 // SetLabel sets the value of Label.

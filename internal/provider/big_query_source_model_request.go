@@ -20,12 +20,7 @@ func (m *BigQuerySourceModel) ToCreateSourceData(_ context.Context) (cm.CreateSo
 		body.Connection.SyncEngine.SetTo(syncEngine)
 	}
 
-	label := m.Label.ValueString()
-	if label != "" {
-		body.Connection.Label.SetTo(label)
-	} else {
-		body.Connection.Label.SetToNull()
-	}
+	body.Connection.Name.SetTo(m.Name.ValueString())
 
 	enc := jx.Encoder{}
 	m.Credentials.Value().Encode(&enc)
@@ -38,12 +33,7 @@ func (m *BigQuerySourceModel) ToCreateSourceData(_ context.Context) (cm.CreateSo
 func (m *BigQuerySourceModel) ToUpdateSourceData(_ context.Context) (cm.UpdateSourceBody, diag.Diagnostics) {
 	body := cm.UpdateSourceBody{}
 
-	label := m.Label.ValueString()
-	if label != "" {
-		body.Connection.Label.SetTo(label)
-	} else {
-		body.Connection.Label.SetToNull()
-	}
+	body.Connection.Name.SetTo(m.Name.ValueString())
 
 	enc := jx.Encoder{}
 	m.Credentials.Value().Encode(&enc)

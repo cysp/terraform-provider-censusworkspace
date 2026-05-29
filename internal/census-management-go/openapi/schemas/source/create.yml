@@ -10,9 +10,12 @@ CreateSourceBody:
         sync_engine:
           type: string
           description: The sync engine type for this source. Can only be set during creation and cannot be modified after.
+        name:
+          type: string
+          description: The name assigned to this source.
         label:
           type: string
-          description: An optional label that can be assigned to the source for better categorization or identification.
+          description: Deprecated. Use name instead.
           nullable: true
         credentials:
           description: Credentials that should be associated with this source (e.g. hostname, port)

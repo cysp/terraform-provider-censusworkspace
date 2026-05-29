@@ -16,7 +16,7 @@ description: |-
 resource "censusworkspace_big_query_source" "test" {
   sync_engine = "advanced"
 
-  label = "BigQuery - project-id"
+  name = "BigQuery - project-id"
 
   credentials = {
     project_id = "project-id"
@@ -31,7 +31,7 @@ resource "censusworkspace_big_query_source" "test" {
 ### Required
 
 - `credentials` (Attributes) (see [below for nested schema](#nestedatt--credentials))
-- `label` (String) An optional label that can be assigned to the source for better categorization or identification.
+- `name` (String) The name assigned to this source.
 
 ### Optional
 
@@ -42,9 +42,9 @@ resource "censusworkspace_big_query_source" "test" {
 - `connection_details` (Attributes) (see [below for nested schema](#nestedatt--connection_details))
 - `created_at` (String) When the connection was created
 - `id` (String) The ID of this resource.
+- `label` (String, Deprecated) Deprecated. Use `name` for configuration. This read-only field reflects the API label when returned.
 - `last_test_succeeded` (Boolean) Indicates if the last connection test to this source was successful.
 - `last_tested_at` (String) Timestamp of when the last connection test was conducted on this source.
-- `name` (String) The name assigned to this source, typically a combination of type and location.
 
 <a id="nestedatt--credentials"></a>
 ### Nested Schema for `credentials`
