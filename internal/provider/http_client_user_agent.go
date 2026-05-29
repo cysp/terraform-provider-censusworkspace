@@ -22,6 +22,6 @@ func (c *HTTPClientWithUserAgent) Do(req *http.Request) (*http.Response, error) 
 		req.Header.Set("User-Agent", c.UserAgent)
 	}
 
-	//nolint:wrapcheck
+	//nolint:wrapcheck,gosec // The provider caller controls the Census API base URL.
 	return c.client.Do(req)
 }
