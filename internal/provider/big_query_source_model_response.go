@@ -29,6 +29,10 @@ func NewBigQuerySourceModelFromResponse(ctx context.Context, response cm.SourceD
 		model.SyncEngine = types.StringValue(syncEngine)
 	}
 
+	if warehouseWritebackRetentionInDays, warehouseWritebackRetentionInDaysOk := response.WarehouseWritebackRetentionInDays.Get(); warehouseWritebackRetentionInDaysOk {
+		model.WarehouseWritebackRetentionInDays = types.Int64Value(warehouseWritebackRetentionInDays)
+	}
+
 	if response.ConnectionDetails != nil {
 		path := path.AtName("connection_details")
 

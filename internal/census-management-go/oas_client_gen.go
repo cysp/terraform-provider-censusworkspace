@@ -306,6 +306,15 @@ func (c *Client) CreateSource(ctx context.Context, request *CreateSourceBody) (*
 }
 
 func (c *Client) sendCreateSource(ctx context.Context, request *CreateSourceBody) (res *IdResponseStatusCode, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
@@ -1157,6 +1166,15 @@ func (c *Client) UpdateSource(ctx context.Context, request *UpdateSourceBody, pa
 }
 
 func (c *Client) sendUpdateSource(ctx context.Context, request *UpdateSourceBody, params UpdateSourceParams) (res *SourceResponseStatusCode, err error) {
+	// Validate request before sending.
+	if err := func() error {
+		if err := request.Validate(); err != nil {
+			return err
+		}
+		return nil
+	}(); err != nil {
+		return res, errors.Wrap(err, "validate")
+	}
 
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string

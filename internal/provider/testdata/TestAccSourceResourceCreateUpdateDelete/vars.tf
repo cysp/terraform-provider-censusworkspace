@@ -9,3 +9,8 @@ variable "source_name" {
 
 variable "source_credentials" {
 }
+
+variable "source_warehouse_writeback_retention_in_days" {
+  type    = number
+  default = null
+}

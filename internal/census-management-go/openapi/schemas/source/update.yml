@@ -13,5 +13,10 @@ UpdateSourceBody:
           nullable: true
         credentials:
           description: Credentials that should be associated with this source (e.g. hostname, port)
+        warehouse_writeback_retention_in_days:
+          type: integer
+          format: int64
+          minimum: 1
+          description: Number of days to retain warehouse writeback data. When set, automatically enables sync logs for this source.
   required:
     - connection

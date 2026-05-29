@@ -36,6 +36,7 @@ resource "censusworkspace_big_query_source" "test" {
 ### Optional
 
 - `sync_engine` (String) The sync engine type for this source. Can only be set during creation and cannot be modified after.
+- `warehouse_writeback_retention_in_days` (Number) Number of days to retain warehouse writeback data. When set, automatically enables sync logs for this source.
 
 ### Read-Only
 

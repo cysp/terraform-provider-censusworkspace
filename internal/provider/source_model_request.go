@@ -25,6 +25,10 @@ func (m *SourceModel) ToCreateSourceData(_ context.Context) (cm.CreateSourceBody
 		body.Connection.Credentials = []byte(*credentials)
 	}
 
+	if !m.WarehouseWritebackRetentionInDays.IsNull() && !m.WarehouseWritebackRetentionInDays.IsUnknown() {
+		body.Connection.WarehouseWritebackRetentionInDays.SetTo(m.WarehouseWritebackRetentionInDays.ValueInt64())
+	}
+
 	return body, nil
 }
 
@@ -35,6 +39,10 @@ func (m *SourceModel) ToUpdateSourceData(_ context.Context) (cm.UpdateSourceBody
 
 	if credentials := m.Credentials.ValueStringPointer(); credentials != nil {
 		body.Connection.Credentials = []byte(*credentials)
+	}
+
+	if !m.WarehouseWritebackRetentionInDays.IsNull() && !m.WarehouseWritebackRetentionInDays.IsUnknown() {
+		body.Connection.WarehouseWritebackRetentionInDays.SetTo(m.WarehouseWritebackRetentionInDays.ValueInt64())
 	}
 
 	return body, nil

@@ -27,6 +27,10 @@ func (m *BigQuerySourceModel) ToCreateSourceData(_ context.Context) (cm.CreateSo
 
 	body.Connection.Credentials = enc.Bytes()
 
+	if !m.WarehouseWritebackRetentionInDays.IsNull() && !m.WarehouseWritebackRetentionInDays.IsUnknown() {
+		body.Connection.WarehouseWritebackRetentionInDays.SetTo(m.WarehouseWritebackRetentionInDays.ValueInt64())
+	}
+
 	return body, nil
 }
 
@@ -39,6 +43,10 @@ func (m *BigQuerySourceModel) ToUpdateSourceData(_ context.Context) (cm.UpdateSo
 	m.Credentials.Value().Encode(&enc)
 
 	body.Connection.Credentials = enc.Bytes()
+
+	if !m.WarehouseWritebackRetentionInDays.IsNull() && !m.WarehouseWritebackRetentionInDays.IsUnknown() {
+		body.Connection.WarehouseWritebackRetentionInDays.SetTo(m.WarehouseWritebackRetentionInDays.ValueInt64())
+	}
 
 	return body, nil
 }
