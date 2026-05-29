@@ -1,6 +1,6 @@
 module github.com/cysp/terraform-provider-censusworkspace
 
-go 1.25.8
+go 1.26.3
 
 require (
 	github.com/go-faster/errors v0.7.1
