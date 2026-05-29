@@ -1,6 +1,6 @@
 resource "censusworkspace_source" "test" {
   type  = "big_query"
-  label = var.source_label
+  name = var.source_name
 
   credentials = jsonencode(var.source_credentials)
 }

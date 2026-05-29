@@ -1,7 +1,7 @@
 resource "censusworkspace_source" "test" {
   type = var.source_type
 
-  label = var.source_label
+  name = var.source_name
 
   credentials = jsonencode(var.source_credentials)
 }

@@ -1,5 +1,9 @@
 package censusmanagement
 
-func (o NilString) ValueStringPointer() *string {
-	return getValuePointer(o)
+func (o OptNilString) ValueStringPointer() *string {
+	if value, ok := o.Get(); ok {
+		return &value
+	}
+
+	return nil
 }

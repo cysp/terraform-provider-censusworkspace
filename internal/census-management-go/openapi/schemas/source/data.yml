@@ -16,7 +16,7 @@ SourceData:
       description: The sync engine type for this source.
     label:
       type: string
-      description: An optional label that can be assigned to the source for better categorization or identification.
+      description: Deprecated. Use name instead.
       nullable: true
     connection_details: {}
     created_at:
@@ -36,5 +36,4 @@ SourceData:
     - id
     - type
     - name
-    - label
     - created_at

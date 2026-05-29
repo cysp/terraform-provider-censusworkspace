@@ -1,4 +1,4 @@
-variable "source_label" {
+variable "source_name" {
   type    = string
   default = null
 }
