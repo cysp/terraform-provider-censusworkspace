@@ -26,6 +26,10 @@ func NewSourceModelFromResponse(_ context.Context, response cm.SourceData) (Sour
 		model.SyncEngine = types.StringValue(syncEngine)
 	}
 
+	if warehouseWritebackRetentionInDays, warehouseWritebackRetentionInDaysOk := response.WarehouseWritebackRetentionInDays.Get(); warehouseWritebackRetentionInDaysOk {
+		model.WarehouseWritebackRetentionInDays = types.Int64Value(warehouseWritebackRetentionInDays)
+	}
+
 	if response.ConnectionDetails != nil {
 		model.ConnectionDetails = jsontypes.NewNormalizedValue(string(response.ConnectionDetails))
 	}

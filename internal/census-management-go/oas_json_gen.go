@@ -608,14 +608,21 @@ func (s *CreateSourceBodyConnection) encodeFields(e *jx.Encoder) {
 			e.Raw(s.Credentials)
 		}
 	}
+	{
+		if s.WarehouseWritebackRetentionInDays.Set {
+			e.FieldStart("warehouse_writeback_retention_in_days")
+			s.WarehouseWritebackRetentionInDays.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfCreateSourceBodyConnection = [5]string{
+var jsonFieldsNameOfCreateSourceBodyConnection = [6]string{
 	0: "type",
 	1: "sync_engine",
 	2: "name",
 	3: "label",
 	4: "credentials",
+	5: "warehouse_writeback_retention_in_days",
 }
 
 // Decode decodes CreateSourceBodyConnection from json.
@@ -679,6 +686,16 @@ func (s *CreateSourceBodyConnection) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"credentials\"")
+			}
+		case "warehouse_writeback_retention_in_days":
+			if err := func() error {
+				s.WarehouseWritebackRetentionInDays.Reset()
+				if err := s.WarehouseWritebackRetentionInDays.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"warehouse_writeback_retention_in_days\"")
 			}
 		default:
 			return d.Skip()
@@ -1397,6 +1414,41 @@ func (s *IdResponseData) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes int64 as json.
+func (o OptInt64) Encode(e *jx.Encoder) {
+	if !o.Set {
+		return
+	}
+	e.Int64(int64(o.Value))
+}
+
+// Decode decodes int64 from json.
+func (o *OptInt64) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode OptInt64 to nil")
+	}
+	o.Set = true
+	v, err := d.Int64()
+	if err != nil {
+		return err
+	}
+	o.Value = int64(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s OptInt64) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *OptInt64) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes bool as json.
 func (o OptNilBool) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -1924,6 +1976,12 @@ func (s *SourceData) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
+		if s.WarehouseWritebackRetentionInDays.Set {
+			e.FieldStart("warehouse_writeback_retention_in_days")
+			s.WarehouseWritebackRetentionInDays.Encode(e)
+		}
+	}
+	{
 		e.FieldStart("created_at")
 		json.EncodeDateTime(e, s.CreatedAt)
 	}
@@ -1941,16 +1999,17 @@ func (s *SourceData) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfSourceData = [9]string{
+var jsonFieldsNameOfSourceData = [10]string{
 	0: "id",
 	1: "name",
 	2: "type",
 	3: "sync_engine",
 	4: "label",
 	5: "connection_details",
-	6: "created_at",
-	7: "last_test_succeeded",
-	8: "last_tested_at",
+	6: "warehouse_writeback_retention_in_days",
+	7: "created_at",
+	8: "last_test_succeeded",
+	9: "last_tested_at",
 }
 
 // Decode decodes SourceData from json.
@@ -2029,8 +2088,18 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"connection_details\"")
 			}
+		case "warehouse_writeback_retention_in_days":
+			if err := func() error {
+				s.WarehouseWritebackRetentionInDays.Reset()
+				if err := s.WarehouseWritebackRetentionInDays.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"warehouse_writeback_retention_in_days\"")
+			}
 		case "created_at":
-			requiredBitSet[0] |= 1 << 6
+			requiredBitSet[0] |= 1 << 7
 			if err := func() error {
 				v, err := json.DecodeDateTime(d)
 				s.CreatedAt = v
@@ -2071,7 +2140,7 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [2]uint8{
-		0b01000111,
+		0b10000111,
 		0b00000000,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
@@ -2818,12 +2887,19 @@ func (s *UpdateSourceBodyConnection) encodeFields(e *jx.Encoder) {
 			e.Raw(s.Credentials)
 		}
 	}
+	{
+		if s.WarehouseWritebackRetentionInDays.Set {
+			e.FieldStart("warehouse_writeback_retention_in_days")
+			s.WarehouseWritebackRetentionInDays.Encode(e)
+		}
+	}
 }
 
-var jsonFieldsNameOfUpdateSourceBodyConnection = [3]string{
+var jsonFieldsNameOfUpdateSourceBodyConnection = [4]string{
 	0: "name",
 	1: "label",
 	2: "credentials",
+	3: "warehouse_writeback_retention_in_days",
 }
 
 // Decode decodes UpdateSourceBodyConnection from json.
@@ -2864,6 +2940,16 @@ func (s *UpdateSourceBodyConnection) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"credentials\"")
+			}
+		case "warehouse_writeback_retention_in_days":
+			if err := func() error {
+				s.WarehouseWritebackRetentionInDays.Reset()
+				if err := s.WarehouseWritebackRetentionInDays.Decode(d); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"warehouse_writeback_retention_in_days\"")
 			}
 		default:
 			return d.Skip()

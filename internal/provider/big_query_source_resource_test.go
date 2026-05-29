@@ -79,12 +79,14 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
 					}),
+					"source_warehouse_writeback_retention_in_days": config.IntegerVariable(7),
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionCreate),
 						plancheck.ExpectUnknownValue("censusworkspace_big_query_source.test", tfjsonpath.New("id")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 					},
 					PostApplyPostRefresh: []plancheck.PlanCheck{
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
@@ -106,6 +108,7 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
 					}),
+					"source_warehouse_writeback_retention_in_days": config.IntegerVariable(7),
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
@@ -113,6 +116,7 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionNoop),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("id"), knownvalue.NotNull()),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
 					},
 					PostApplyPostRefresh: []plancheck.PlanCheck{
@@ -136,13 +140,35 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 							"client_email":   config.StringVariable("client-email"),
 						}),
 					}),
+					"source_warehouse_writeback_retention_in_days": config.IntegerVariable(7),
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionUpdate),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("id"), knownvalue.NotNull()),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source (updated)")),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 						plancheck.ExpectUnknownValue("censusworkspace_big_query_source.test", tfjsonpath.New("connection_details")),
+					},
+				},
+			},
+			{
+				ConfigDirectory: config.TestNameDirectory(),
+				ConfigVariables: config.Variables{
+					"source_name": config.StringVariable("Test Source (updated)"),
+					"source_credentials": config.ObjectVariable(map[string]config.Variable{
+						"project_id": config.StringVariable("project-id"),
+						"location":   config.StringVariable("US"),
+					}),
+					"source_warehouse_writeback_retention_in_days": config.IntegerVariable(14),
+				},
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionUpdate),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(14)),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(14)),
 					},
 				},
 			},

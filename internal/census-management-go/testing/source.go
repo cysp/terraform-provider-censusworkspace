@@ -20,6 +20,7 @@ func UpdateSourceWithCreateSourceBody(source *cm.SourceData, body cm.CreateSourc
 	source.Name = connection.Type
 	source.Type = connection.Type
 	source.SyncEngine.SetTo(connection.SyncEngine.Or("basic"))
+	source.WarehouseWritebackRetentionInDays = connection.WarehouseWritebackRetentionInDays
 
 	if name, nameOk := connection.Name.Get(); nameOk {
 		source.Name = name
@@ -45,6 +46,10 @@ func UpdateSourceWithUpdateSourceBody(source *cm.SourceData, body cm.UpdateSourc
 		source.Label.SetTo(label)
 	} else {
 		source.Label.SetToNull()
+	}
+
+	if warehouseWritebackRetentionInDays, warehouseWritebackRetentionInDaysOk := connection.WarehouseWritebackRetentionInDays.Get(); warehouseWritebackRetentionInDaysOk {
+		source.WarehouseWritebackRetentionInDays.SetTo(warehouseWritebackRetentionInDays)
 	}
 
 	if connection.Credentials != nil {

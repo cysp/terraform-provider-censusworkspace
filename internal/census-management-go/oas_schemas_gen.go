@@ -238,6 +238,9 @@ type CreateSourceBodyConnection struct {
 	Label OptNilString `json:"label"`
 	// Credentials that should be associated with this source (e.g. hostname, port).
 	Credentials jx.Raw `json:"credentials"`
+	// Number of days to retain warehouse writeback data. When set, automatically enables sync logs for
+	// this source.
+	WarehouseWritebackRetentionInDays OptInt64 `json:"warehouse_writeback_retention_in_days"`
 }
 
 // GetType returns the value of Type.
@@ -265,6 +268,11 @@ func (s *CreateSourceBodyConnection) GetCredentials() jx.Raw {
 	return s.Credentials
 }
 
+// GetWarehouseWritebackRetentionInDays returns the value of WarehouseWritebackRetentionInDays.
+func (s *CreateSourceBodyConnection) GetWarehouseWritebackRetentionInDays() OptInt64 {
+	return s.WarehouseWritebackRetentionInDays
+}
+
 // SetType sets the value of Type.
 func (s *CreateSourceBodyConnection) SetType(val string) {
 	s.Type = val
@@ -288,6 +296,11 @@ func (s *CreateSourceBodyConnection) SetLabel(val OptNilString) {
 // SetCredentials sets the value of Credentials.
 func (s *CreateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
+}
+
+// SetWarehouseWritebackRetentionInDays sets the value of WarehouseWritebackRetentionInDays.
+func (s *CreateSourceBodyConnection) SetWarehouseWritebackRetentionInDays(val OptInt64) {
+	s.WarehouseWritebackRetentionInDays = val
 }
 
 // Ref: #/DatasetData
@@ -583,6 +596,52 @@ func (s *IdResponseStatusCode) SetStatusCode(val int) {
 // SetResponse sets the value of Response.
 func (s *IdResponseStatusCode) SetResponse(val IdResponse) {
 	s.Response = val
+}
+
+// NewOptInt64 returns new OptInt64 with value set to v.
+func NewOptInt64(v int64) OptInt64 {
+	return OptInt64{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptInt64 is optional int64.
+type OptInt64 struct {
+	Value int64
+	Set   bool
+}
+
+// IsSet returns true if OptInt64 was set.
+func (o OptInt64) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptInt64) Reset() {
+	var v int64
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptInt64) SetTo(v int64) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptInt64) Get() (v int64, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptInt64) Or(d int64) int64 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
 }
 
 // NewOptNilBool returns new OptNilBool with value set to v.
@@ -1039,6 +1098,9 @@ type SourceData struct {
 	// Deprecated. Use name instead.
 	Label             OptNilString `json:"label"`
 	ConnectionDetails jx.Raw       `json:"connection_details"`
+	// Number of days to retain warehouse writeback data. When set, automatically enables sync logs for
+	// this source.
+	WarehouseWritebackRetentionInDays OptInt64 `json:"warehouse_writeback_retention_in_days"`
 	// The timestamp when the source was created.
 	CreatedAt time.Time `json:"created_at"`
 	// Indicates if the last connection test to this source was successful.
@@ -1075,6 +1137,11 @@ func (s *SourceData) GetLabel() OptNilString {
 // GetConnectionDetails returns the value of ConnectionDetails.
 func (s *SourceData) GetConnectionDetails() jx.Raw {
 	return s.ConnectionDetails
+}
+
+// GetWarehouseWritebackRetentionInDays returns the value of WarehouseWritebackRetentionInDays.
+func (s *SourceData) GetWarehouseWritebackRetentionInDays() OptInt64 {
+	return s.WarehouseWritebackRetentionInDays
 }
 
 // GetCreatedAt returns the value of CreatedAt.
@@ -1120,6 +1187,11 @@ func (s *SourceData) SetLabel(val OptNilString) {
 // SetConnectionDetails sets the value of ConnectionDetails.
 func (s *SourceData) SetConnectionDetails(val jx.Raw) {
 	s.ConnectionDetails = val
+}
+
+// SetWarehouseWritebackRetentionInDays sets the value of WarehouseWritebackRetentionInDays.
+func (s *SourceData) SetWarehouseWritebackRetentionInDays(val OptInt64) {
+	s.WarehouseWritebackRetentionInDays = val
 }
 
 // SetCreatedAt sets the value of CreatedAt.
@@ -1451,6 +1523,9 @@ type UpdateSourceBodyConnection struct {
 	Label OptNilString `json:"label"`
 	// Credentials that should be associated with this source (e.g. hostname, port).
 	Credentials jx.Raw `json:"credentials"`
+	// Number of days to retain warehouse writeback data. When set, automatically enables sync logs for
+	// this source.
+	WarehouseWritebackRetentionInDays OptInt64 `json:"warehouse_writeback_retention_in_days"`
 }
 
 // GetName returns the value of Name.
@@ -1468,6 +1543,11 @@ func (s *UpdateSourceBodyConnection) GetCredentials() jx.Raw {
 	return s.Credentials
 }
 
+// GetWarehouseWritebackRetentionInDays returns the value of WarehouseWritebackRetentionInDays.
+func (s *UpdateSourceBodyConnection) GetWarehouseWritebackRetentionInDays() OptInt64 {
+	return s.WarehouseWritebackRetentionInDays
+}
+
 // SetName sets the value of Name.
 func (s *UpdateSourceBodyConnection) SetName(val OptString) {
 	s.Name = val
@@ -1481,6 +1561,11 @@ func (s *UpdateSourceBodyConnection) SetLabel(val OptNilString) {
 // SetCredentials sets the value of Credentials.
 func (s *UpdateSourceBodyConnection) SetCredentials(val jx.Raw) {
 	s.Credentials = val
+}
+
+// SetWarehouseWritebackRetentionInDays sets the value of WarehouseWritebackRetentionInDays.
+func (s *UpdateSourceBodyConnection) SetWarehouseWritebackRetentionInDays(val OptInt64) {
+	s.WarehouseWritebackRetentionInDays = val
 }
 
 type WorkspaceApiKey struct {
