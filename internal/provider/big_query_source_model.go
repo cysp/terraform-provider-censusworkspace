@@ -27,6 +27,7 @@ type BigQuerySourceCredentialsServiceAccountKey struct {
 	ProjectID    types.String `tfsdk:"project_id"`
 	PrivateKeyID types.String `tfsdk:"private_key_id"`
 	PrivateKey   types.String `tfsdk:"private_key"`
+	PrivateKeyWO types.String `tfsdk:"private_key_wo"`
 	ClientEmail  types.String `tfsdk:"client_email"`
 	ClientID     types.String `tfsdk:"client_id"`
 }

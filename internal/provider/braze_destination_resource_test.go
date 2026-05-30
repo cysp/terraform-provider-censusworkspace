@@ -148,6 +148,70 @@ func TestAccBrazeDestinationResourceCreateUpdateDelete(t *testing.T) {
 }
 
 //nolint:paralleltest
+func TestAccBrazeDestinationResourceWriteOnlyCredentials(t *testing.T) {
+	server, err := cmt.NewCensusManagementServer()
+	require.NoError(t, err)
+
+	ProviderMockedResourceTest(t, server, resource.TestCase{
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "censusworkspace_braze_destination" "test" {
+  name = "Test Destination"
+
+  credentials = {
+    instance_url = "instance-url"
+    api_key      = "api-key"
+  }
+}
+`,
+			},
+			{
+				Config: `
+resource "censusworkspace_braze_destination" "test" {
+  name = "Test Destination"
+
+  credentials = {
+    instance_url = "instance-url"
+    api_key_wo   = "api-key"
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_braze_destination.test", plancheck.ResourceActionUpdate),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("credentials").AtMapKey("api_key"), knownvalue.Null()),
+					},
+				},
+			},
+			{
+				Config: `
+resource "censusworkspace_braze_destination" "test" {
+  name = "Test Destination"
+
+  credentials = {
+    instance_url = "instance-url"
+    api_key_wo   = "rotated-api-key"
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_braze_destination.test", plancheck.ResourceActionUpdate),
+						plancheck.ExpectUnknownValue("censusworkspace_braze_destination.test", tfjsonpath.New("connection_details")),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_braze_destination.test", tfjsonpath.New("credentials").AtMapKey("api_key"), knownvalue.Null()),
+					},
+				},
+			},
+		},
+	})
+}
+
+//nolint:paralleltest
 func TestAccBrazeDestinationResourceMovedFromDestination(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
 	require.NoError(t, err)

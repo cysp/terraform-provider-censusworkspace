@@ -47,14 +47,26 @@ func BrazeDestinationCredentialsResourceSchemaAttributes(_ context.Context) map[
 			Description: "Endpoint URL",
 		},
 		"api_key": schema.StringAttribute{
-			Required:    true,
+			Optional:    true,
 			Sensitive:   true,
 			Description: "API Key",
+		},
+		"api_key_wo": schema.StringAttribute{
+			Optional:    true,
+			Sensitive:   true,
+			WriteOnly:   true,
+			Description: "API Key. This value is not stored in Terraform plan or state. Changes are tracked using a private Argon2id verifier and trigger an update.",
 		},
 		"client_key": schema.StringAttribute{
 			Optional:    true,
 			Sensitive:   true,
 			Description: "Data Import Key (for Cohorts only)",
+		},
+		"client_key_wo": schema.StringAttribute{
+			Optional:    true,
+			Sensitive:   true,
+			WriteOnly:   true,
+			Description: "Data Import Key (for Cohorts only). This value is not stored in Terraform plan or state. Changes are tracked using a private Argon2id verifier and trigger an update.",
 		},
 	}
 }

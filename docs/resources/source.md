@@ -17,7 +17,7 @@ resource "censusworkspace_source" "test" {
   type        = "big_query"
   sync_engine = "advanced"
 
-  name = "BigQuery - project-id"
+  label = "BigQuery - project-id"
 
   credentials = jsonencode({
     project_id = "project-id"
@@ -31,7 +31,7 @@ resource "censusworkspace_source" "test" {
 
 ### Required
 
-- `name` (String) The name assigned to this source.
+- `label` (String) An optional label that can be assigned to the source for better categorization or identification.
 - `type` (String) The type of the data source. A valid type is the `service_name` of a source type returned from the `/source_types` endpoint, where the source type is marked as `creatable_via_api`.
 
 ### Optional
@@ -45,9 +45,9 @@ resource "censusworkspace_source" "test" {
 - `connection_details` (String) Detailed configuration and information for connecting to this source.
 - `created_at` (String) When the connection was created
 - `id` (String) The ID of this resource.
-- `label` (String, Deprecated) Deprecated. Use `name` for configuration. This read-only field reflects the API label when returned.
 - `last_test_succeeded` (Boolean) Indicates if the last connection test to this source was successful.
 - `last_tested_at` (String) Timestamp of when the last connection test was conducted on this source.
+- `name` (String) The name assigned to this source, typically a combination of type and location.
 
 ## Import
 

@@ -52,6 +52,12 @@ func BigQueryDestinationCredentialsResourceSchemaAttributes(_ context.Context) m
 			Optional:  true,
 			Sensitive: true,
 		},
+		"service_account_key_wo": schema.StringAttribute{
+			Optional:    true,
+			Sensitive:   true,
+			WriteOnly:   true,
+			Description: "Service account key. This value is not stored in Terraform plan or state. Changes are tracked using a private Argon2id verifier and trigger an update.",
+		},
 	}
 }
 

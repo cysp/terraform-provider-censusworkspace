@@ -591,12 +591,6 @@ func (s *CreateSourceBodyConnection) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.Name.Set {
-			e.FieldStart("name")
-			s.Name.Encode(e)
-		}
-	}
-	{
 		if s.Label.Set {
 			e.FieldStart("label")
 			s.Label.Encode(e)
@@ -616,13 +610,12 @@ func (s *CreateSourceBodyConnection) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfCreateSourceBodyConnection = [6]string{
+var jsonFieldsNameOfCreateSourceBodyConnection = [5]string{
 	0: "type",
 	1: "sync_engine",
-	2: "name",
-	3: "label",
-	4: "credentials",
-	5: "warehouse_writeback_retention_in_days",
+	2: "label",
+	3: "credentials",
+	4: "warehouse_writeback_retention_in_days",
 }
 
 // Decode decodes CreateSourceBodyConnection from json.
@@ -655,16 +648,6 @@ func (s *CreateSourceBodyConnection) Decode(d *jx.Decoder) error {
 				return nil
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"sync_engine\"")
-			}
-		case "name":
-			if err := func() error {
-				s.Name.Reset()
-				if err := s.Name.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"name\"")
 			}
 		case "label":
 			if err := func() error {
@@ -1414,6 +1397,52 @@ func (s *IdResponseData) UnmarshalJSON(data []byte) error {
 	return s.Decode(d)
 }
 
+// Encode encodes string as json.
+func (o NilString) Encode(e *jx.Encoder) {
+	if o.Null {
+		e.Null()
+		return
+	}
+	e.Str(string(o.Value))
+}
+
+// Decode decodes string from json.
+func (o *NilString) Decode(d *jx.Decoder) error {
+	if o == nil {
+		return errors.New("invalid: unable to decode NilString to nil")
+	}
+	if d.Next() == jx.Null {
+		if err := d.Null(); err != nil {
+			return err
+		}
+
+		var v string
+		o.Value = v
+		o.Null = true
+		return nil
+	}
+	o.Null = false
+	v, err := d.Str()
+	if err != nil {
+		return err
+	}
+	o.Value = string(v)
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s NilString) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *NilString) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
 // Encode encodes int64 as json.
 func (o OptInt64) Encode(e *jx.Encoder) {
 	if !o.Set {
@@ -1964,10 +1993,8 @@ func (s *SourceData) encodeFields(e *jx.Encoder) {
 		}
 	}
 	{
-		if s.Label.Set {
-			e.FieldStart("label")
-			s.Label.Encode(e)
-		}
+		e.FieldStart("label")
+		s.Label.Encode(e)
 	}
 	{
 		if len(s.ConnectionDetails) != 0 {
@@ -2068,8 +2095,8 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 				return errors.Wrap(err, "decode field \"sync_engine\"")
 			}
 		case "label":
+			requiredBitSet[0] |= 1 << 4
 			if err := func() error {
-				s.Label.Reset()
 				if err := s.Label.Decode(d); err != nil {
 					return err
 				}
@@ -2140,7 +2167,7 @@ func (s *SourceData) Decode(d *jx.Decoder) error {
 	// Validate required fields.
 	var failures []validate.FieldError
 	for i, mask := range [2]uint8{
-		0b10000111,
+		0b10010111,
 		0b00000000,
 	} {
 		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
@@ -2870,12 +2897,6 @@ func (s *UpdateSourceBodyConnection) Encode(e *jx.Encoder) {
 // encodeFields encodes fields.
 func (s *UpdateSourceBodyConnection) encodeFields(e *jx.Encoder) {
 	{
-		if s.Name.Set {
-			e.FieldStart("name")
-			s.Name.Encode(e)
-		}
-	}
-	{
 		if s.Label.Set {
 			e.FieldStart("label")
 			s.Label.Encode(e)
@@ -2895,11 +2916,10 @@ func (s *UpdateSourceBodyConnection) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfUpdateSourceBodyConnection = [4]string{
-	0: "name",
-	1: "label",
-	2: "credentials",
-	3: "warehouse_writeback_retention_in_days",
+var jsonFieldsNameOfUpdateSourceBodyConnection = [3]string{
+	0: "label",
+	1: "credentials",
+	2: "warehouse_writeback_retention_in_days",
 }
 
 // Decode decodes UpdateSourceBodyConnection from json.
@@ -2910,16 +2930,6 @@ func (s *UpdateSourceBodyConnection) Decode(d *jx.Decoder) error {
 
 	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
 		switch string(k) {
-		case "name":
-			if err := func() error {
-				s.Name.Reset()
-				if err := s.Name.Decode(d); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"name\"")
-			}
 		case "label":
 			if err := func() error {
 				s.Label.Reset()

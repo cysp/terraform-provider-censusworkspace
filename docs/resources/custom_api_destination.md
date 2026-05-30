@@ -63,13 +63,11 @@ Optional:
 <a id="nestedatt--credentials--custom_headers"></a>
 ### Nested Schema for `credentials.custom_headers`
 
-Required:
-
-- `value` (String)
-
 Optional:
 
 - `is_secret` (Boolean)
+- `value` (String)
+- `value_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Header value. This value is not stored in Terraform plan or state. Changes are tracked using a private Argon2id verifier and trigger an update.
 
 
 

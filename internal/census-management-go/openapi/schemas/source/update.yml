@@ -4,12 +4,9 @@ UpdateSourceBody:
     connection:
       type: object
       properties:
-        name:
-          type: string
-          description: The name assigned to this source.
         label:
           type: string
-          description: Deprecated. Use name instead.
+          description: An optional label that can be assigned to the source for better categorization or identification.
           nullable: true
         credentials:
           description: Credentials that should be associated with this source (e.g. hostname, port)

@@ -63,7 +63,13 @@ func CustomAPIDestinationCredentialsResourceSchemaAttributes(ctx context.Context
 func CustomAPIDestinationCredentialsCustomHeaderResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"value": schema.StringAttribute{
-			Required: true,
+			Optional: true,
+		},
+		"value_wo": schema.StringAttribute{
+			Optional:    true,
+			Sensitive:   true,
+			WriteOnly:   true,
+			Description: "Header value. This value is not stored in Terraform plan or state. Changes are tracked using a private Argon2id verifier and trigger an update.",
 		},
 		"is_secret": schema.BoolAttribute{
 			Optional: true,
@@ -94,9 +100,9 @@ func CustomAPIDestinationConnectionDetailsResourceSchemaAttributes(ctx context.C
 			Computed: true,
 			NestedObject: schema.NestedAttributeObject{
 				Attributes: CustomAPIDestinationConnectionDetailsCustomHeaderResourceSchemaAttributes(ctx),
-				CustomType: NewTypedObjectNull[CustomAPIDestinationCustomHeader]().CustomType(ctx),
+				CustomType: NewTypedObjectNull[CustomAPIDestinationConnectionDetailsCustomHeader]().CustomType(ctx),
 			},
-			CustomType: NewTypedMapNull[TypedObject[CustomAPIDestinationCustomHeader]]().CustomType(ctx),
+			CustomType: NewTypedMapNull[TypedObject[CustomAPIDestinationConnectionDetailsCustomHeader]]().CustomType(ctx),
 		},
 	}
 }

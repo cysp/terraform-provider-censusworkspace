@@ -15,11 +15,13 @@ import (
 )
 
 var (
-	_ resource.Resource                = (*bigQueryDestinationResource)(nil)
-	_ resource.ResourceWithConfigure   = (*bigQueryDestinationResource)(nil)
-	_ resource.ResourceWithIdentity    = (*bigQueryDestinationResource)(nil)
-	_ resource.ResourceWithImportState = (*bigQueryDestinationResource)(nil)
-	_ resource.ResourceWithMoveState   = (*bigQueryDestinationResource)(nil)
+	_ resource.Resource                   = (*bigQueryDestinationResource)(nil)
+	_ resource.ResourceWithConfigure      = (*bigQueryDestinationResource)(nil)
+	_ resource.ResourceWithIdentity       = (*bigQueryDestinationResource)(nil)
+	_ resource.ResourceWithImportState    = (*bigQueryDestinationResource)(nil)
+	_ resource.ResourceWithModifyPlan     = (*bigQueryDestinationResource)(nil)
+	_ resource.ResourceWithMoveState      = (*bigQueryDestinationResource)(nil)
+	_ resource.ResourceWithValidateConfig = (*bigQueryDestinationResource)(nil)
 )
 
 //nolint:ireturn
@@ -45,6 +47,24 @@ func (r *bigQueryDestinationResource) Configure(_ context.Context, req resource.
 
 func (r *bigQueryDestinationResource) IdentitySchema(ctx context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
 	resp.IdentitySchema = BigQueryDestinationResourceIdentitySchema(ctx)
+}
+
+func (r *bigQueryDestinationResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var config BigQueryDestinationModel
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	credentials := config.Credentials.Value()
+
+	validateStringCredential(&resp.Diagnostics, credentials.ServiceAccountKey, credentials.ServiceAccountKeyWO, path.Root("credentials").AtName("service_account_key"), path.Root("credentials").AtName("service_account_key_wo"))
+}
+
+func (r *bigQueryDestinationResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	modifyPlanForWriteOnlyCredentialChange(ctx, req, resp, bigQueryDestinationModelWithWriteOnlyCredentials, NewTypedObjectUnknown[BigQueryDestinationConnectionDetails]())
 }
 
 func (r *bigQueryDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
@@ -115,15 +135,23 @@ func (r *bigQueryDestinationResource) MoveState(ctx context.Context) []resource.
 
 //nolint:dupl
 func (r *bigQueryDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan BigQueryDestinationModel
+	var plan, config BigQueryDestinationModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	createDestinationRequest, createDestinationRequestDiags := plan.ToCreateDestinationData(ctx)
+	requestModel, writeOnlyValues, requestModelDiags := bigQueryDestinationModelWithWriteOnlyCredentials(plan, config)
+	resp.Diagnostics.Append(requestModelDiags...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	createDestinationRequest, createDestinationRequestDiags := requestModel.ToCreateDestinationData(ctx)
 	resp.Diagnostics.Append(createDestinationRequestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -133,7 +161,6 @@ func (r *bigQueryDestinationResource) Create(ctx context.Context, req resource.C
 	createDestinationResponse, createDestinationErr := r.providerData.client.CreateDestination(ctx, &createDestinationRequest)
 
 	tflog.Info(ctx, "destination.create", map[string]any{
-		"request":  createDestinationRequest,
 		"response": createDestinationResponse,
 		"err":      createDestinationErr,
 	})
@@ -165,13 +192,16 @@ func (r *bigQueryDestinationResource) Create(ctx context.Context, req resource.C
 		"err":      getDestinationErr,
 	})
 
+	if getDestinationResponse == nil {
+		resp.Diagnostics.AddError("Failed to read destination after create", detailFromError(getDestinationErr))
+
+		return
+	}
+
 	model, modelDiags := NewBigQueryDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
-	credentials := plan.Credentials.Value()
-	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
-
-	model.Credentials = NewTypedObject(credentials)
+	model = sanitizedBigQueryDestinationCredentials(model, plan, config, model.ConnectionDetails.Value())
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -179,6 +209,7 @@ func (r *bigQueryDestinationResource) Create(ctx context.Context, req resource.C
 
 	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	resp.Diagnostics.Append(writeWriteOnlyCredentialVerifiers(ctx, resp.Private, writeOnlyValues)...)
 }
 
 func (r *bigQueryDestinationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -235,10 +266,11 @@ func (r *bigQueryDestinationResource) Read(ctx context.Context, req resource.Rea
 }
 
 func (r *bigQueryDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var state, plan BigQueryDestinationModel
+	var state, plan, config BigQueryDestinationModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -248,7 +280,14 @@ func (r *bigQueryDestinationResource) Update(ctx context.Context, req resource.U
 		DestinationID: plan.ID.ValueString(),
 	}
 
-	updateDestinationRequest, updateDestinationRequestDiags := plan.ToUpdateDestinationData(ctx)
+	requestModel, writeOnlyValues, requestModelDiags := bigQueryDestinationModelWithWriteOnlyCredentials(plan, config)
+	resp.Diagnostics.Append(requestModelDiags...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	updateDestinationRequest, updateDestinationRequestDiags := requestModel.ToUpdateDestinationData(ctx)
 	resp.Diagnostics.Append(updateDestinationRequestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -259,7 +298,6 @@ func (r *bigQueryDestinationResource) Update(ctx context.Context, req resource.U
 
 	tflog.Info(ctx, "destination.update", map[string]any{
 		"params":   params,
-		"request":  updateDestinationRequest,
 		"response": updateDestinationResponse,
 		"err":      updateDestinationErr,
 	})
@@ -273,13 +311,11 @@ func (r *bigQueryDestinationResource) Update(ctx context.Context, req resource.U
 	model, modelDiags := NewBigQueryDestinationModelFromResponse(ctx, updateDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
-	credentials := plan.Credentials.Value()
-	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
-
-	model.Credentials = NewTypedObject(credentials)
+	model = sanitizedBigQueryDestinationCredentials(model, plan, config, model.ConnectionDetails.Value())
 
 	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	resp.Diagnostics.Append(writeWriteOnlyCredentialVerifiers(ctx, resp.Private, writeOnlyValues)...)
 }
 
 //nolint:dupl

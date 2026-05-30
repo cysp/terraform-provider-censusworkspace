@@ -16,7 +16,7 @@ SourceData:
       description: The sync engine type for this source.
     label:
       type: string
-      description: Deprecated. Use name instead.
+      description: An optional label that can be assigned to the source for better categorization or identification.
       nullable: true
     connection_details: {}
     warehouse_writeback_retention_in_days:
@@ -41,4 +41,5 @@ SourceData:
     - id
     - type
     - name
+    - label
     - created_at

@@ -50,6 +50,7 @@ Required:
 Optional:
 
 - `service_account_key` (String, Sensitive)
+- `service_account_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Service account key. This value is not stored in Terraform plan or state. Changes are tracked using a private Argon2id verifier and trigger an update.
 
 
 <a id="nestedatt--connection_details"></a>

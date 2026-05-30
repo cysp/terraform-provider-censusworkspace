@@ -33,13 +33,12 @@ func sourceBaseResourceSchemaAttributes(_ context.Context) map[string]schema.Att
 			},
 		},
 		"name": schema.StringAttribute{
-			Required:            true,
-			MarkdownDescription: "The name assigned to this source.",
+			Computed:            true,
+			MarkdownDescription: "The name assigned to this source, typically a combination of type and location.",
 		},
 		"label": schema.StringAttribute{
-			Computed:            true,
-			DeprecationMessage:  "Use name instead.",
-			MarkdownDescription: "Deprecated. Use `name` for configuration. This read-only field reflects the API label when returned.",
+			Required:            true,
+			MarkdownDescription: "An optional label that can be assigned to the source for better categorization or identification.",
 		},
 		"sync_engine": schema.StringAttribute{
 			Optional: true,
