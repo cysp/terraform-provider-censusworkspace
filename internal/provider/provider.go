@@ -75,14 +75,14 @@ func WithWorkspaceAPIKey(apiKey string) Option {
 
 func (p *Provider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manage a Census workspace.",
+		Description: "Manage resources in a Census workspace.",
 		Attributes: map[string]schema.Attribute{
 			"base_url": schema.StringAttribute{
-				Description: "The base URL associated with your Census organization's region. If not provided, it will default to the value of the CENSUS_BASE_URL environment variable or the provider's default base URL.",
+				Description: "Census API base URL for your organization's region. May also be set with CENSUS_BASE_URL. Defaults to the provider's default base URL.",
 				Optional:    true,
 			},
 			"workspace_api_key": schema.StringAttribute{
-				Description: "The API key for your Census workspace. If not provided, it will default to the value of the CENSUS_WORKSPACE_API_KEY environment variable.",
+				Description: "Census workspace API key used to authenticate provider requests. May also be set with CENSUS_WORKSPACE_API_KEY.",
 				Optional:    true,
 				Sensitive:   true,
 			},

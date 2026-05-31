@@ -3,12 +3,12 @@
 page_title: "censusworkspace Provider"
 subcategory: ""
 description: |-
-  Manage a Census workspace.
+  Manage resources in a Census workspace.
 ---
 
 # censusworkspace Provider
 
-Manage a Census workspace.
+Manage resources in a Census workspace.
 
 ## Example Usage
 
@@ -24,5 +24,5 @@ provider "censusworkspace" {
 
 ### Optional
 
-- `base_url` (String) The base URL associated with your Census organization's region. If not provided, it will default to the value of the CENSUS_BASE_URL environment variable or the provider's default base URL.
-- `workspace_api_key` (String, Sensitive) The API key for your Census workspace. If not provided, it will default to the value of the CENSUS_WORKSPACE_API_KEY environment variable.
+- `base_url` (String) Census API base URL for your organization's region. May also be set with CENSUS_BASE_URL. Defaults to the provider's default base URL.
+- `workspace_api_key` (String, Sensitive) Census workspace API key used to authenticate provider requests. May also be set with CENSUS_WORKSPACE_API_KEY.

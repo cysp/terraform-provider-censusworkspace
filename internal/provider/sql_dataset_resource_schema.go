@@ -28,6 +28,7 @@ func SQLDatasetResourceSchema(_ context.Context) schema.Schema {
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
+				MarkdownDescription: "Census identifier for this SQL dataset.",
 			},
 			"name": schema.StringAttribute{
 				Required:            true,
@@ -47,7 +48,7 @@ func SQLDatasetResourceSchema(_ context.Context) schema.Schema {
 			},
 			"description": schema.StringAttribute{
 				Optional:            true,
-				MarkdownDescription: "Description of the dataset.",
+				MarkdownDescription: "Human-readable description shown for this SQL dataset in Census.",
 			},
 		},
 	}

@@ -39,7 +39,7 @@ resource "censusworkspace_destination" "test" {
 ### Read-Only
 
 - `connection_details` (String) Connection details associated with this destination.
-- `id` (String) The ID of this resource.
+- `id` (String) Census identifier for this destination.
 
 ## Import
 

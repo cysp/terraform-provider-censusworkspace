@@ -28,25 +28,25 @@ resource "censusworkspace_big_query_destination" "test" {
 
 ### Required
 
-- `credentials` (Attributes) (see [below for nested schema](#nestedatt--credentials))
+- `credentials` (Attributes) BigQuery destination connection values to send to Census. (see [below for nested schema](#nestedatt--credentials))
 - `name` (String) The name of this destination.
 
 ### Read-Only
 
-- `connection_details` (Attributes) (see [below for nested schema](#nestedatt--connection_details))
-- `id` (String) The ID of this resource.
+- `connection_details` (Attributes) BigQuery destination connection details returned by Census. (see [below for nested schema](#nestedatt--connection_details))
+- `id` (String) Census identifier for this destination.
 
 <a id="nestedatt--credentials"></a>
 ### Nested Schema for `credentials`
 
 Required:
 
-- `location` (String)
-- `project_id` (String)
+- `location` (String) BigQuery location of the destination dataset.
+- `project_id` (String) Google Cloud project ID containing the BigQuery destination dataset.
 
 Optional:
 
-- `service_account_key` (String, Sensitive)
+- `service_account_key` (String, Sensitive) Service account key JSON used by Census to write to BigQuery.
 
 
 <a id="nestedatt--connection_details"></a>
@@ -54,10 +54,10 @@ Optional:
 
 Read-Only:
 
-- `location` (String)
-- `project_id` (String)
-- `service_account_email` (String)
-- `service_account_key` (String, Sensitive)
+- `location` (String) BigQuery location Census has stored for this BigQuery destination.
+- `project_id` (String) Google Cloud project ID Census has stored for this BigQuery destination.
+- `service_account_email` (String) Service account email Census uses for this BigQuery destination.
+- `service_account_key` (String, Sensitive) Service account key value returned by Census for this BigQuery destination, when available.
 
 ## Import
 

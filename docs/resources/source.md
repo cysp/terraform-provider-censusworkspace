@@ -43,8 +43,8 @@ resource "censusworkspace_source" "test" {
 ### Read-Only
 
 - `connection_details` (String) Detailed configuration and information for connecting to this source.
-- `id` (String) The ID of this resource.
-- `label` (String, Deprecated) Deprecated. Use `name` for configuration. This read-only field reflects the API label when returned.
+- `id` (String) Census identifier for this source.
+- `label` (String, Deprecated) Deprecated. Use `name` instead. This read-only field reflects the source label returned by the Census API.
 
 ## Import
 

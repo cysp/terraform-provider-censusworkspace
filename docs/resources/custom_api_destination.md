@@ -37,36 +37,36 @@ resource "censusworkspace_custom_api_destination" "this" {
 
 ### Required
 
-- `credentials` (Attributes) (see [below for nested schema](#nestedatt--credentials))
+- `credentials` (Attributes) Custom API destination connection values to send to Census. (see [below for nested schema](#nestedatt--credentials))
 - `name` (String) The name of this destination.
 
 ### Read-Only
 
-- `connection_details` (Attributes) (see [below for nested schema](#nestedatt--connection_details))
-- `id` (String) The ID of this resource.
+- `connection_details` (Attributes) Custom API destination connection details returned by Census. (see [below for nested schema](#nestedatt--connection_details))
+- `id` (String) Census identifier for this destination.
 
 <a id="nestedatt--credentials"></a>
 ### Nested Schema for `credentials`
 
 Required:
 
-- `api_version` (Number)
-- `webhook_url` (String)
+- `api_version` (Number) Custom Destination API version implemented by your endpoint.
+- `webhook_url` (String) Public webhook URL Census calls for Custom API destination syncs.
 
 Optional:
 
-- `custom_headers` (Attributes Map) (see [below for nested schema](#nestedatt--credentials--custom_headers))
+- `custom_headers` (Attributes Map) Additional HTTP headers Census sends to the Custom API webhook. (see [below for nested schema](#nestedatt--credentials--custom_headers))
 
 <a id="nestedatt--credentials--custom_headers"></a>
 ### Nested Schema for `credentials.custom_headers`
 
 Required:
 
-- `value` (String)
+- `value` (String) HTTP header value sent to the Custom API webhook.
 
 Optional:
 
-- `is_secret` (Boolean)
+- `is_secret` (Boolean) Whether Census should store this header value as a secret.
 
 
 
@@ -75,17 +75,17 @@ Optional:
 
 Read-Only:
 
-- `api_version` (Number)
-- `custom_headers` (Attributes Map) (see [below for nested schema](#nestedatt--connection_details--custom_headers))
-- `webhook_url` (String)
+- `api_version` (Number) Custom Destination API version Census has stored for this destination.
+- `custom_headers` (Attributes Map) Additional HTTP headers Census has stored for this Custom API webhook. (see [below for nested schema](#nestedatt--connection_details--custom_headers))
+- `webhook_url` (String) Public webhook URL Census has stored for this Custom API destination.
 
 <a id="nestedatt--connection_details--custom_headers"></a>
 ### Nested Schema for `connection_details.custom_headers`
 
 Read-Only:
 
-- `is_secret` (Boolean)
-- `value` (String)
+- `is_secret` (Boolean) Whether Census stores this header value as a secret.
+- `value` (String) HTTP header value returned by Census, or null when the header is secret.
 
 ## Import
 
