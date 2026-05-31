@@ -34,27 +34,28 @@ func BrazeDestinationResourceSchema(ctx context.Context) schema.Schema {
 //nolint:ireturn
 func BrazeDestinationCredentialsResourceSchema(ctx context.Context) schema.Attribute {
 	return schema.SingleNestedAttribute{
-		Attributes: BrazeDestinationCredentialsResourceSchemaAttributes(ctx),
-		CustomType: NewTypedObjectNull[BrazeDestinationCredentials]().CustomType(ctx),
-		Required:   true,
+		Attributes:          BrazeDestinationCredentialsResourceSchemaAttributes(ctx),
+		CustomType:          NewTypedObjectNull[BrazeDestinationCredentials]().CustomType(ctx),
+		Required:            true,
+		MarkdownDescription: "Braze destination connection values to send to Census.",
 	}
 }
 
 func BrazeDestinationCredentialsResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"instance_url": schema.StringAttribute{
-			Required:    true,
-			Description: "Endpoint URL",
+			Required:            true,
+			MarkdownDescription: "Braze REST API endpoint URL for the destination instance.",
 		},
 		"api_key": schema.StringAttribute{
-			Required:    true,
-			Sensitive:   true,
-			Description: "API Key",
+			Required:            true,
+			Sensitive:           true,
+			MarkdownDescription: "Braze REST API key Census uses to update users.",
 		},
 		"client_key": schema.StringAttribute{
-			Optional:    true,
-			Sensitive:   true,
-			Description: "Data Import Key (for Cohorts only)",
+			Optional:            true,
+			Sensitive:           true,
+			MarkdownDescription: "Braze Data Import Key used when syncing Cohorts.",
 		},
 	}
 }
@@ -62,17 +63,18 @@ func BrazeDestinationCredentialsResourceSchemaAttributes(_ context.Context) map[
 //nolint:ireturn
 func BrazeDestinationConnectionDetailsResourceSchema(ctx context.Context) schema.Attribute {
 	return schema.SingleNestedAttribute{
-		Attributes: BrazeDestinationConnectionDetailsResourceSchemaAttributes(ctx),
-		CustomType: NewTypedObjectNull[BrazeDestinationConnectionDetails]().CustomType(ctx),
-		Computed:   true,
+		Attributes:          BrazeDestinationConnectionDetailsResourceSchemaAttributes(ctx),
+		CustomType:          NewTypedObjectNull[BrazeDestinationConnectionDetails]().CustomType(ctx),
+		Computed:            true,
+		MarkdownDescription: "Braze destination connection details returned by Census.",
 	}
 }
 
 func BrazeDestinationConnectionDetailsResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"instance_url": schema.StringAttribute{
-			Computed:    true,
-			Description: "Endpoint URL",
+			Computed:            true,
+			MarkdownDescription: "Braze REST API endpoint URL Census has stored for this destination.",
 		},
 	}
 }

@@ -23,10 +23,10 @@ description: |-
 
 ### Optional
 
-- `description` (String) Description of the dataset.
+- `description` (String) Human-readable description shown for this SQL dataset in Census.
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
+- `id` (String) Census identifier for this SQL dataset.
 
 

@@ -21,6 +21,7 @@ func destinationBaseResourceSchemaAttributes(_ context.Context) map[string]schem
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.UseStateForUnknown(),
 			},
+			MarkdownDescription: "Census identifier for this destination.",
 		},
 		"name": schema.StringAttribute{
 			Required:            true,

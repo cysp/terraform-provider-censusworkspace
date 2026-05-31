@@ -17,25 +17,25 @@ description: |-
 
 ### Required
 
-- `credentials` (Attributes) (see [below for nested schema](#nestedatt--credentials))
+- `credentials` (Attributes) Braze destination connection values to send to Census. (see [below for nested schema](#nestedatt--credentials))
 - `name` (String) The name of this destination.
 
 ### Read-Only
 
-- `connection_details` (Attributes) (see [below for nested schema](#nestedatt--connection_details))
-- `id` (String) The ID of this resource.
+- `connection_details` (Attributes) Braze destination connection details returned by Census. (see [below for nested schema](#nestedatt--connection_details))
+- `id` (String) Census identifier for this destination.
 
 <a id="nestedatt--credentials"></a>
 ### Nested Schema for `credentials`
 
 Required:
 
-- `api_key` (String, Sensitive) API Key
-- `instance_url` (String) Endpoint URL
+- `api_key` (String, Sensitive) Braze REST API key Census uses to update users.
+- `instance_url` (String) Braze REST API endpoint URL for the destination instance.
 
 Optional:
 
-- `client_key` (String, Sensitive) Data Import Key (for Cohorts only)
+- `client_key` (String, Sensitive) Braze Data Import Key used when syncing Cohorts.
 
 
 <a id="nestedatt--connection_details"></a>
@@ -43,6 +43,6 @@ Optional:
 
 Read-Only:
 
-- `instance_url` (String) Endpoint URL
+- `instance_url` (String) Braze REST API endpoint URL Census has stored for this destination.
 
 

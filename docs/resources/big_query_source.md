@@ -30,7 +30,7 @@ resource "censusworkspace_big_query_source" "test" {
 
 ### Required
 
-- `credentials` (Attributes) (see [below for nested schema](#nestedatt--credentials))
+- `credentials` (Attributes) BigQuery source connection values to send to Census. (see [below for nested schema](#nestedatt--credentials))
 - `name` (String) The name assigned to this source.
 
 ### Optional
@@ -40,33 +40,33 @@ resource "censusworkspace_big_query_source" "test" {
 
 ### Read-Only
 
-- `connection_details` (Attributes) (see [below for nested schema](#nestedatt--connection_details))
-- `id` (String) The ID of this resource.
-- `label` (String, Deprecated) Deprecated. Use `name` for configuration. This read-only field reflects the API label when returned.
+- `connection_details` (Attributes) BigQuery source connection details returned by Census. (see [below for nested schema](#nestedatt--connection_details))
+- `id` (String) Census identifier for this source.
+- `label` (String, Deprecated) Deprecated. Use `name` instead. This read-only field reflects the source label returned by the Census API.
 
 <a id="nestedatt--credentials"></a>
 ### Nested Schema for `credentials`
 
 Required:
 
-- `location` (String)
-- `project_id` (String)
+- `location` (String) BigQuery location of the source data.
+- `project_id` (String) Google Cloud project ID containing the BigQuery source data.
 
 Optional:
 
-- `service_account_key` (Attributes) (see [below for nested schema](#nestedatt--credentials--service_account_key))
+- `service_account_key` (Attributes) Service account key JSON fields used by Census to read from BigQuery. (see [below for nested schema](#nestedatt--credentials--service_account_key))
 
 <a id="nestedatt--credentials--service_account_key"></a>
 ### Nested Schema for `credentials.service_account_key`
 
 Required:
 
-- `client_email` (String)
-- `client_id` (String)
-- `private_key` (String, Sensitive)
-- `private_key_id` (String)
-- `project_id` (String)
-- `type` (String)
+- `client_email` (String) Client email from the service account key JSON.
+- `client_id` (String) Client ID from the service account key JSON.
+- `private_key` (String, Sensitive) Private key from the service account key JSON.
+- `private_key_id` (String) Private key ID from the service account key JSON.
+- `project_id` (String) Google Cloud project ID from the service account key JSON.
+- `type` (String) Service account key type. Must be `service_account`.
 
 
 
@@ -75,9 +75,9 @@ Required:
 
 Read-Only:
 
-- `location` (String)
-- `project_id` (String)
-- `service_account` (String)
+- `location` (String) BigQuery location Census has stored for this BigQuery source.
+- `project_id` (String) Google Cloud project ID Census has stored for this BigQuery source.
+- `service_account` (String) Census-managed service account email address for this BigQuery source.
 
 ## Import
 

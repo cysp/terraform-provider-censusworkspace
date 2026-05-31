@@ -35,22 +35,26 @@ func CustomAPIDestinationResourceSchema(ctx context.Context) schema.Schema {
 //nolint:ireturn
 func CustomAPIDestinationCredentialsResourceSchema(ctx context.Context) schema.Attribute {
 	return schema.SingleNestedAttribute{
-		Attributes: CustomAPIDestinationCredentialsResourceSchemaAttributes(ctx),
-		CustomType: NewTypedObjectNull[CustomAPIDestinationCredentials]().CustomType(ctx),
-		Required:   true,
+		Attributes:          CustomAPIDestinationCredentialsResourceSchemaAttributes(ctx),
+		CustomType:          NewTypedObjectNull[CustomAPIDestinationCredentials]().CustomType(ctx),
+		Required:            true,
+		MarkdownDescription: "Custom API destination connection values to send to Census.",
 	}
 }
 
 func CustomAPIDestinationCredentialsResourceSchemaAttributes(ctx context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"api_version": schema.Int64Attribute{
-			Required: true,
+			Required:            true,
+			MarkdownDescription: "Custom Destination API version implemented by your endpoint.",
 		},
 		"webhook_url": schema.StringAttribute{
-			Required: true,
+			Required:            true,
+			MarkdownDescription: "Public webhook URL Census calls for Custom API destination syncs.",
 		},
 		"custom_headers": schema.MapNestedAttribute{
-			Optional: true,
+			Optional:            true,
+			MarkdownDescription: "Additional HTTP headers Census sends to the Custom API webhook.",
 			NestedObject: schema.NestedAttributeObject{
 				Attributes: CustomAPIDestinationCredentialsCustomHeaderResourceSchemaAttributes(ctx),
 				CustomType: NewTypedObjectNull[CustomAPIDestinationCustomHeader]().CustomType(ctx),
@@ -63,12 +67,14 @@ func CustomAPIDestinationCredentialsResourceSchemaAttributes(ctx context.Context
 func CustomAPIDestinationCredentialsCustomHeaderResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"value": schema.StringAttribute{
-			Required: true,
+			Required:            true,
+			MarkdownDescription: "HTTP header value sent to the Custom API webhook.",
 		},
 		"is_secret": schema.BoolAttribute{
-			Optional: true,
-			Computed: true,
-			Default:  booldefault.StaticBool(false),
+			Optional:            true,
+			Computed:            true,
+			Default:             booldefault.StaticBool(false),
+			MarkdownDescription: "Whether Census should store this header value as a secret.",
 		},
 	}
 }
@@ -76,22 +82,26 @@ func CustomAPIDestinationCredentialsCustomHeaderResourceSchemaAttributes(_ conte
 //nolint:ireturn
 func CustomAPIDestinationConnectionDetailsResourceSchema(ctx context.Context) schema.Attribute {
 	return schema.SingleNestedAttribute{
-		Attributes: CustomAPIDestinationConnectionDetailsResourceSchemaAttributes(ctx),
-		CustomType: NewTypedObjectNull[CustomAPIDestinationConnectionDetails]().CustomType(ctx),
-		Computed:   true,
+		Attributes:          CustomAPIDestinationConnectionDetailsResourceSchemaAttributes(ctx),
+		CustomType:          NewTypedObjectNull[CustomAPIDestinationConnectionDetails]().CustomType(ctx),
+		Computed:            true,
+		MarkdownDescription: "Custom API destination connection details returned by Census.",
 	}
 }
 
 func CustomAPIDestinationConnectionDetailsResourceSchemaAttributes(ctx context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"api_version": schema.Int64Attribute{
-			Computed: true,
+			Computed:            true,
+			MarkdownDescription: "Custom Destination API version Census has stored for this destination.",
 		},
 		"webhook_url": schema.StringAttribute{
-			Computed: true,
+			Computed:            true,
+			MarkdownDescription: "Public webhook URL Census has stored for this Custom API destination.",
 		},
 		"custom_headers": schema.MapNestedAttribute{
-			Computed: true,
+			Computed:            true,
+			MarkdownDescription: "Additional HTTP headers Census has stored for this Custom API webhook.",
 			NestedObject: schema.NestedAttributeObject{
 				Attributes: CustomAPIDestinationConnectionDetailsCustomHeaderResourceSchemaAttributes(ctx),
 				CustomType: NewTypedObjectNull[CustomAPIDestinationCustomHeader]().CustomType(ctx),
@@ -104,10 +114,12 @@ func CustomAPIDestinationConnectionDetailsResourceSchemaAttributes(ctx context.C
 func CustomAPIDestinationConnectionDetailsCustomHeaderResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"value": schema.StringAttribute{
-			Computed: true,
+			Computed:            true,
+			MarkdownDescription: "HTTP header value returned by Census, or null when the header is secret.",
 		},
 		"is_secret": schema.BoolAttribute{
-			Computed: true,
+			Computed:            true,
+			MarkdownDescription: "Whether Census stores this header value as a secret.",
 		},
 	}
 }

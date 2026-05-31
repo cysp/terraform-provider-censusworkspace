@@ -27,6 +27,7 @@ func sourceBaseResourceSchemaAttributes(_ context.Context) map[string]schema.Att
 			PlanModifiers: []planmodifier.String{
 				stringplanmodifier.UseStateForUnknown(),
 			},
+			MarkdownDescription: "Census identifier for this source.",
 		},
 		"name": schema.StringAttribute{
 			Required:            true,
@@ -35,7 +36,7 @@ func sourceBaseResourceSchemaAttributes(_ context.Context) map[string]schema.Att
 		"label": schema.StringAttribute{
 			Computed:            true,
 			DeprecationMessage:  "Use name instead.",
-			MarkdownDescription: "Deprecated. Use `name` for configuration. This read-only field reflects the API label when returned.",
+			MarkdownDescription: "Deprecated. Use `name` instead. This read-only field reflects the source label returned by the Census API.",
 		},
 		"sync_engine": schema.StringAttribute{
 			Optional: true,
