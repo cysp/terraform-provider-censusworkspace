@@ -18,6 +18,10 @@ type destinationModelBase struct {
 	LastTestSucceeded types.Bool        `tfsdk:"last_test_succeeded"`
 }
 
+func (m destinationModelBase) getID() types.String {
+	return m.ID
+}
+
 func destinationBaseResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"id": schema.StringAttribute{

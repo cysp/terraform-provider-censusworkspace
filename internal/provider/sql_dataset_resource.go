@@ -2,14 +2,12 @@ package provider
 
 import (
 	"context"
-	"errors"
-	"net/http"
-	"strconv"
+	"fmt"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var (
@@ -49,203 +47,87 @@ func (r *sqlDatasetResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 func (r *sqlDatasetResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan SQLDatasetModel
-
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	createDatasetRequest, createDatasetRequestDiags := plan.ToCreateDatasetBody(ctx)
-	resp.Diagnostics.Append(createDatasetRequestDiags...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	createDatasetResponse, createDatasetErr := r.providerData.client.CreateDataset(ctx, createDatasetRequest)
-
-	tflog.Info(ctx, "sql_dataset.create", map[string]any{
-		"request":  createDatasetRequest,
-		"response": createDatasetResponse,
-		"err":      createDatasetErr,
-	})
-
-	if createDatasetResponse == nil {
-		resp.Diagnostics.AddError("Failed to create dataset", detailFromError(createDatasetErr))
-
-		return
-	}
-
-	datasetID := createDatasetResponse.Response.Data.ID
-	datasetIDString := strconv.FormatInt(datasetID, 10)
-
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), datasetIDString)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	getDatasetParams := cm.GetDatasetParams{
-		DatasetID: datasetIDString,
-	}
-
-	getDatasetResponse, getDatasetErr := r.providerData.client.GetDataset(ctx, getDatasetParams)
-
-	tflog.Info(ctx, "sql_dataset.read", map[string]any{
-		"request":  getDatasetParams,
-		"response": getDatasetResponse,
-		"err":      getDatasetErr,
-	})
-
-	model, modelDiags := NewSQLDatasetModelFromResponse(ctx, path.Empty(), getDatasetResponse.Response.Data)
-	resp.Diagnostics.Append(modelDiags...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	r.managedResource().Create(ctx, req, resp)
 }
 
 func (r *sqlDatasetResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state SQLDatasetModel
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	params := cm.GetDatasetParams{
-		DatasetID: state.ID.ValueString(),
-	}
-
-	getDatasetResponse, getDatasetErr := r.providerData.client.GetDataset(ctx, params)
-
-	tflog.Info(ctx, "sql_dataset.read", map[string]any{
-		"params":   params,
-		"response": getDatasetResponse,
-		"err":      getDatasetErr,
-	})
-
-	if getDatasetResponse == nil {
-		var srsc *cm.StatusResponseStatusCode
-		if errors.As(getDatasetErr, &srsc) {
-			if srsc.StatusCode == http.StatusNotFound {
-				resp.Diagnostics.AddWarning("Failed to read dataset", srsc.Error())
-				resp.State.RemoveResource(ctx)
-
-				return
-			}
-		}
-
-		resp.Diagnostics.AddError("Failed to read dataset", detailFromError(getDatasetErr))
-
-		return
-	}
-
-	model, modelDiags := NewSQLDatasetModelFromResponse(ctx, path.Empty(), getDatasetResponse.Response.Data)
-	resp.Diagnostics.Append(modelDiags...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	r.managedResource().Read(ctx, req, resp)
 }
 
 func (r *sqlDatasetResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var state, plan SQLDatasetModel
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	params := cm.UpdateDatasetParams{
-		DatasetID: plan.ID.ValueString(),
-	}
-
-	updateDatasetRequest, updateDatasetRequestDiags := plan.ToUpdateDatasetBody(ctx)
-	resp.Diagnostics.Append(updateDatasetRequestDiags...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	updateDatasetResponse, updateDatasetErr := r.providerData.client.UpdateDataset(ctx, updateDatasetRequest, params)
-
-	tflog.Info(ctx, "sql_dataset.update", map[string]any{
-		"params":   params,
-		"request":  updateDatasetRequest,
-		"response": updateDatasetResponse,
-		"err":      updateDatasetErr,
-	})
-
-	if updateDatasetResponse == nil {
-		resp.Diagnostics.AddError("Failed to update dataset", detailFromError(updateDatasetErr))
-
-		return
-	}
-
-	model, modelDiags := NewSQLDatasetModelFromResponse(ctx, path.Empty(), updateDatasetResponse.Response.Data)
-	resp.Diagnostics.Append(modelDiags...)
-
-	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	r.managedResource().Update(ctx, req, resp)
 }
 
-//nolint:dupl
 func (r *sqlDatasetResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state SQLDatasetModel
+	r.managedResource().Delete(ctx, req, resp)
+}
 
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+func (r *sqlDatasetResource) managedResource() managedResource[SQLDatasetModel, cm.CreateDatasetBody, cm.UpdateDatasetBody, cm.DatasetData] {
+	return managedResource[SQLDatasetModel, cm.CreateDatasetBody, cm.UpdateDatasetBody, cm.DatasetData]{
+		readErrorTitle:    "Failed to read dataset",
+		createErrorTitle:  "Failed to create dataset",
+		updateErrorTitle:  "Failed to update dataset",
+		deleteErrorTitle:  "Failed to delete dataset",
+		deleteMissingText: "dataset not found",
+		createRequest: func(ctx context.Context, model SQLDatasetModel) (cm.CreateDatasetBody, diag.Diagnostics) {
+			return model.ToCreateDatasetBody(ctx)
+		},
+		updateRequest: func(ctx context.Context, model SQLDatasetModel) (cm.UpdateDatasetBody, diag.Diagnostics) {
+			return model.ToUpdateDatasetBody(ctx)
+		},
+		modelFromRead: func(ctx context.Context, data cm.DatasetData) (SQLDatasetModel, diag.Diagnostics) {
+			return NewSQLDatasetModelFromResponse(ctx, path.Empty(), data)
+		},
+		create: createResourceOperation[cm.CreateDatasetBody]{
+			name: "sql_dataset.create",
+			run: func(ctx context.Context, request cm.CreateDatasetBody) (int64, error) {
+				response, err := r.providerData.client.CreateDataset(ctx, request)
+				if err != nil {
+					return 0, fmt.Errorf("create dataset: %w", err)
+				}
 
-	if resp.Diagnostics.HasError() {
-		return
-	}
+				if response == nil {
+					return 0, responseMissing("sql_dataset.create")
+				}
 
-	params := cm.DeleteDatasetParams{
-		DatasetID: state.ID.ValueString(),
-	}
+				return response.Response.Data.ID, nil
+			},
+		},
+		read: resourceOperation[string, cm.DatasetData]{
+			name: "sql_dataset.read",
+			run: func(ctx context.Context, id string) (cm.DatasetData, error) {
+				response, err := r.providerData.client.GetDataset(ctx, cm.GetDatasetParams{DatasetID: id})
+				if err != nil {
+					return cm.DatasetData{}, fmt.Errorf("read dataset: %w", err)
+				}
 
-	deleteDatasetResponse, deleteDatasetErr := r.providerData.client.DeleteDataset(ctx, params)
+				if response == nil {
+					return cm.DatasetData{}, responseMissing("sql_dataset.read")
+				}
 
-	tflog.Info(ctx, "sql_dataset.delete", map[string]any{
-		"params":   params,
-		"response": deleteDatasetResponse,
-		"err":      deleteDatasetErr,
-	})
+				return response.Response.Data, nil
+			},
+		},
+		update: resourceOperation[updateResourceRequest[cm.UpdateDatasetBody], cm.DatasetData]{
+			name: "sql_dataset.update",
+			run: func(ctx context.Context, request updateResourceRequest[cm.UpdateDatasetBody]) (cm.DatasetData, error) {
+				response, err := r.providerData.client.UpdateDataset(ctx, request.request, cm.UpdateDatasetParams{DatasetID: request.id})
+				if err != nil {
+					return cm.DatasetData{}, fmt.Errorf("update dataset: %w", err)
+				}
 
-	var srsc *cm.StatusResponseStatusCode
-	if errors.As(deleteDatasetErr, &srsc) {
-		if srsc.StatusCode == http.StatusNotFound {
-			resp.Diagnostics.AddWarning("dataset not found", srsc.Error())
-			resp.State.RemoveResource(ctx)
+				if response == nil {
+					return cm.DatasetData{}, responseMissing("sql_dataset.update")
+				}
 
-			return
-		}
-	}
-
-	if deleteDatasetResponse == nil || deleteDatasetResponse.Response.Status.ResponseStatus != cm.ResponseStatusDeleted {
-		var detail string
-
-		if deleteDatasetResponse != nil {
-			detail = deleteDatasetResponse.Response.Message.Value
-		}
-
-		if detail == "" && deleteDatasetErr != nil {
-			detail = deleteDatasetErr.Error()
-		}
-
-		resp.Diagnostics.AddError("Failed to delete dataset", detail)
-
-		return
+				return response.Response.Data, nil
+			},
+		},
+		delete: deleteResourceOperation{
+			name: "sql_dataset.delete",
+			run: func(ctx context.Context, id string) (*cm.StatusResponseStatusCode, error) {
+				return r.providerData.client.DeleteDataset(ctx, cm.DeleteDatasetParams{DatasetID: id})
+			},
+		},
 	}
 }

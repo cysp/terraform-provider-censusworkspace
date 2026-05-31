@@ -1,16 +1,13 @@
-//nolint:dupl
 package provider
 
 import (
 	"context"
-	"errors"
-	"net/http"
-	"strconv"
+	"fmt"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var (
@@ -50,221 +47,106 @@ func (r *sourceResource) ImportState(ctx context.Context, req resource.ImportSta
 }
 
 func (r *sourceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan SourceModel
-
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	createSourceRequest, createSourceRequestDiags := plan.ToCreateSourceData(ctx)
-	resp.Diagnostics.Append(createSourceRequestDiags...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	createSourceResponse, createSourceErr := r.providerData.client.CreateSource(ctx, &createSourceRequest)
-
-	tflog.Info(ctx, "source.create", map[string]any{
-		"request":  createSourceRequest,
-		"response": createSourceResponse,
-		"err":      createSourceErr,
-	})
-
-	if createSourceResponse == nil {
-		resp.Diagnostics.AddError("Failed to create source", detailFromError(createSourceErr))
-
-		return
-	}
-
-	sourceID := createSourceResponse.Response.Data.ID
-	sourceIDString := strconv.FormatInt(sourceID, 10)
-
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), sourceIDString)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	getSourceParams := cm.GetSourceParams{
-		SourceID: sourceIDString,
-	}
-
-	getSourceResponse, getSourceErr := r.providerData.client.GetSource(ctx, getSourceParams)
-
-	tflog.Info(ctx, "source.read", map[string]any{
-		"request":  getSourceParams,
-		"response": getSourceResponse,
-		"err":      getSourceErr,
-	})
-
-	model, modelDiags := NewSourceModelFromResponse(ctx, getSourceResponse.Response.Data)
-	resp.Diagnostics.Append(modelDiags...)
-
-	if model.SyncEngine.IsNull() && !plan.SyncEngine.IsUnknown() {
-		model.SyncEngine = plan.SyncEngine
-	}
-
-	model.Credentials = plan.Credentials
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	r.managedResource().Create(ctx, req, resp)
 }
 
 func (r *sourceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state SourceModel
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	params := cm.GetSourceParams{
-		SourceID: state.ID.ValueString(),
-	}
-
-	getSourceResponse, getSourceErr := r.providerData.client.GetSource(ctx, params)
-
-	tflog.Info(ctx, "source.read", map[string]any{
-		"params":   params,
-		"response": getSourceResponse,
-		"err":      getSourceErr,
-	})
-
-	if getSourceResponse == nil {
-		var srsc *cm.StatusResponseStatusCode
-		if errors.As(getSourceErr, &srsc) {
-			if srsc.StatusCode == http.StatusNotFound {
-				resp.Diagnostics.AddWarning("Failed to read source", srsc.Error())
-				resp.State.RemoveResource(ctx)
-
-				return
-			}
-		}
-
-		resp.Diagnostics.AddError("Failed to read source", detailFromError(getSourceErr))
-
-		return
-	}
-
-	model, modelDiags := NewSourceModelFromResponse(ctx, getSourceResponse.Response.Data)
-	resp.Diagnostics.Append(modelDiags...)
-
-	if model.SyncEngine.IsNull() && !state.SyncEngine.IsUnknown() {
-		model.SyncEngine = state.SyncEngine
-	}
-
-	model.Credentials = state.Credentials
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	r.managedResource().Read(ctx, req, resp)
 }
 
 func (r *sourceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var state, plan SourceModel
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	params := cm.UpdateSourceParams{
-		SourceID: plan.ID.ValueString(),
-	}
-
-	updateSourceRequest, updateSourceRequestDiags := plan.ToUpdateSourceData(ctx)
-	resp.Diagnostics.Append(updateSourceRequestDiags...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	updateSourceResponse, updateSourceErr := r.providerData.client.UpdateSource(ctx, &updateSourceRequest, params)
-
-	tflog.Info(ctx, "source.update", map[string]any{
-		"params":   params,
-		"request":  updateSourceRequest,
-		"response": updateSourceResponse,
-		"err":      updateSourceErr,
-	})
-
-	if updateSourceResponse == nil {
-		resp.Diagnostics.AddError("Failed to update source", detailFromError(updateSourceErr))
-
-		return
-	}
-
-	model, modelDiags := NewSourceModelFromResponse(ctx, updateSourceResponse.Response.Data)
-	resp.Diagnostics.Append(modelDiags...)
-
-	if model.SyncEngine.IsNull() && !state.SyncEngine.IsUnknown() {
-		model.SyncEngine = state.SyncEngine
-	}
-
-	model.Credentials = plan.Credentials
-
-	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	r.managedResource().Update(ctx, req, resp)
 }
 
-//nolint:dupl
 func (r *sourceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state SourceModel
+	r.managedResource().Delete(ctx, req, resp)
+}
 
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+func (r *sourceResource) managedResource() managedResource[SourceModel, cm.CreateSourceBody, cm.UpdateSourceBody, cm.SourceData] {
+	return managedResource[SourceModel, cm.CreateSourceBody, cm.UpdateSourceBody, cm.SourceData]{
+		readErrorTitle:    "Failed to read source",
+		createErrorTitle:  "Failed to create source",
+		updateErrorTitle:  "Failed to update source",
+		deleteErrorTitle:  "Failed to delete source",
+		deleteMissingText: "Source not found",
+		createRequest: func(ctx context.Context, model SourceModel) (cm.CreateSourceBody, diag.Diagnostics) {
+			return model.ToCreateSourceData(ctx)
+		},
+		updateRequest: func(ctx context.Context, model SourceModel) (cm.UpdateSourceBody, diag.Diagnostics) {
+			return model.ToUpdateSourceData(ctx)
+		},
+		modelFromRead: NewSourceModelFromResponse,
+		afterCreateRead: func(plan SourceModel, model *SourceModel) {
+			if model.SyncEngine.IsNull() && !plan.SyncEngine.IsUnknown() {
+				model.SyncEngine = plan.SyncEngine
+			}
 
-	if resp.Diagnostics.HasError() {
-		return
-	}
+			model.Credentials = plan.Credentials
+		},
+		afterRead: func(state SourceModel, model *SourceModel) {
+			if model.SyncEngine.IsNull() && !state.SyncEngine.IsUnknown() {
+				model.SyncEngine = state.SyncEngine
+			}
 
-	params := cm.DeleteSourceParams{
-		SourceID: state.ID.ValueString(),
-	}
+			model.Credentials = state.Credentials
+		},
+		afterUpdate: func(state SourceModel, plan SourceModel, model *SourceModel) {
+			if model.SyncEngine.IsNull() && !state.SyncEngine.IsUnknown() {
+				model.SyncEngine = state.SyncEngine
+			}
 
-	deleteSourceResponse, deleteSourceErr := r.providerData.client.DeleteSource(ctx, params)
+			model.Credentials = plan.Credentials
+		},
+		create: createResourceOperation[cm.CreateSourceBody]{
+			name: "source.create",
+			run: func(ctx context.Context, request cm.CreateSourceBody) (int64, error) {
+				response, err := r.providerData.client.CreateSource(ctx, &request)
+				if err != nil {
+					return 0, fmt.Errorf("create source: %w", err)
+				}
 
-	tflog.Info(ctx, "source.delete", map[string]any{
-		"params":   params,
-		"response": deleteSourceResponse,
-		"err":      deleteSourceErr,
-	})
+				if response == nil {
+					return 0, responseMissing("source.create")
+				}
 
-	var srsc *cm.StatusResponseStatusCode
-	if errors.As(deleteSourceErr, &srsc) {
-		if srsc.StatusCode == http.StatusNotFound {
-			resp.Diagnostics.AddWarning("Source not found", srsc.Error())
-			resp.State.RemoveResource(ctx)
+				return response.Response.Data.ID, nil
+			},
+		},
+		read: resourceOperation[string, cm.SourceData]{
+			name: "source.read",
+			run: func(ctx context.Context, id string) (cm.SourceData, error) {
+				response, err := r.providerData.client.GetSource(ctx, cm.GetSourceParams{SourceID: id})
+				if err != nil {
+					return cm.SourceData{}, fmt.Errorf("read source: %w", err)
+				}
 
-			return
-		}
-	}
+				if response == nil {
+					return cm.SourceData{}, responseMissing("source.read")
+				}
 
-	if deleteSourceResponse == nil || deleteSourceResponse.Response.Status.ResponseStatus != cm.ResponseStatusDeleted {
-		var detail string
+				return response.Response.Data, nil
+			},
+		},
+		update: resourceOperation[updateResourceRequest[cm.UpdateSourceBody], cm.SourceData]{
+			name: "source.update",
+			run: func(ctx context.Context, request updateResourceRequest[cm.UpdateSourceBody]) (cm.SourceData, error) {
+				response, err := r.providerData.client.UpdateSource(ctx, &request.request, cm.UpdateSourceParams{SourceID: request.id})
+				if err != nil {
+					return cm.SourceData{}, fmt.Errorf("update source: %w", err)
+				}
 
-		if deleteSourceResponse != nil {
-			detail = deleteSourceResponse.Response.Message.Value
-		}
+				if response == nil {
+					return cm.SourceData{}, responseMissing("source.update")
+				}
 
-		if detail == "" && deleteSourceErr != nil {
-			detail = deleteSourceErr.Error()
-		}
-
-		resp.Diagnostics.AddError("Failed to delete source", detail)
-
-		return
+				return response.Response.Data, nil
+			},
+		},
+		delete: deleteResourceOperation{
+			name: "source.delete",
+			run: func(ctx context.Context, id string) (*cm.StatusResponseStatusCode, error) {
+				return r.providerData.client.DeleteSource(ctx, cm.DeleteSourceParams{SourceID: id})
+			},
+		},
 	}
 }

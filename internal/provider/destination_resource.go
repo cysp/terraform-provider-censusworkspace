@@ -1,16 +1,13 @@
-//nolint:dupl
 package provider
 
 import (
 	"context"
-	"errors"
-	"net/http"
-	"strconv"
+	"fmt"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var (
@@ -54,209 +51,94 @@ func (r *destinationResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 func (r *destinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan DestinationModel
-
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	createDestinationRequest, createDestinationRequestDiags := plan.ToCreateDestinationData(ctx)
-	resp.Diagnostics.Append(createDestinationRequestDiags...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	createDestinationResponse, createDestinationErr := r.providerData.client.CreateDestination(ctx, &createDestinationRequest)
-
-	tflog.Info(ctx, "destination.create", map[string]any{
-		"request":  createDestinationRequest,
-		"response": createDestinationResponse,
-		"err":      createDestinationErr,
-	})
-
-	if createDestinationResponse == nil {
-		resp.Diagnostics.AddError("Failed to create destination", detailFromError(createDestinationErr))
-
-		return
-	}
-
-	destinationID := createDestinationResponse.Response.Data.ID
-	destinationIDString := strconv.FormatInt(destinationID, 10)
-
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), destinationIDString)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	getDestinationParams := cm.GetDestinationParams{
-		DestinationID: destinationIDString,
-	}
-
-	getDestinationResponse, getDestinationErr := r.providerData.client.GetDestination(ctx, getDestinationParams)
-
-	tflog.Info(ctx, "destination.read", map[string]any{
-		"request":  getDestinationParams,
-		"response": getDestinationResponse,
-		"err":      getDestinationErr,
-	})
-
-	model, modelDiags := NewDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
-	resp.Diagnostics.Append(modelDiags...)
-
-	model.Credentials = plan.Credentials
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	r.managedResource().Create(ctx, req, resp)
 }
 
 func (r *destinationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state DestinationModel
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	params := cm.GetDestinationParams{
-		DestinationID: state.ID.ValueString(),
-	}
-
-	getDestinationResponse, getDestinationErr := r.providerData.client.GetDestination(ctx, params)
-
-	tflog.Info(ctx, "destination.read", map[string]any{
-		"params":   params,
-		"response": getDestinationResponse,
-		"err":      getDestinationErr,
-	})
-
-	if getDestinationResponse == nil {
-		var srsc *cm.StatusResponseStatusCode
-		if errors.As(getDestinationErr, &srsc) {
-			if srsc.StatusCode == http.StatusNotFound {
-				resp.Diagnostics.AddWarning("Failed to read destination", srsc.Error())
-				resp.State.RemoveResource(ctx)
-
-				return
-			}
-		}
-
-		resp.Diagnostics.AddError("Failed to read destination", detailFromError(getDestinationErr))
-
-		return
-	}
-
-	model, modelDiags := NewDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
-	resp.Diagnostics.Append(modelDiags...)
-
-	model.Credentials = state.Credentials
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	r.managedResource().Read(ctx, req, resp)
 }
 
 func (r *destinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var state, plan DestinationModel
-
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
-	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	params := cm.UpdateDestinationParams{
-		DestinationID: plan.ID.ValueString(),
-	}
-
-	updateDestinationRequest, updateDestinationRequestDiags := plan.ToUpdateDestinationData(ctx)
-	resp.Diagnostics.Append(updateDestinationRequestDiags...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	updateDestinationResponse, updateDestinationErr := r.providerData.client.UpdateDestination(ctx, &updateDestinationRequest, params)
-
-	tflog.Info(ctx, "destination.update", map[string]any{
-		"params":   params,
-		"request":  updateDestinationRequest,
-		"response": updateDestinationResponse,
-		"err":      updateDestinationErr,
-	})
-
-	if updateDestinationResponse == nil {
-		resp.Diagnostics.AddError("Failed to update destination", detailFromError(updateDestinationErr))
-
-		return
-	}
-
-	model, modelDiags := NewDestinationModelFromResponse(ctx, updateDestinationResponse.Response.Data)
-	resp.Diagnostics.Append(modelDiags...)
-
-	model.Credentials = plan.Credentials
-
-	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
-	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	r.managedResource().Update(ctx, req, resp)
 }
 
-//nolint:dupl
 func (r *destinationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state DestinationModel
+	r.managedResource().Delete(ctx, req, resp)
+}
 
-	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+func (r *destinationResource) managedResource() managedResource[DestinationModel, cm.CreateDestinationBody, cm.UpdateDestinationBody, cm.DestinationData] {
+	return managedResource[DestinationModel, cm.CreateDestinationBody, cm.UpdateDestinationBody, cm.DestinationData]{
+		readErrorTitle:    "Failed to read destination",
+		createErrorTitle:  "Failed to create destination",
+		updateErrorTitle:  "Failed to update destination",
+		deleteErrorTitle:  "Failed to delete destination",
+		deleteMissingText: "Destination not found",
+		createRequest: func(ctx context.Context, model DestinationModel) (cm.CreateDestinationBody, diag.Diagnostics) {
+			return model.ToCreateDestinationData(ctx)
+		},
+		updateRequest: func(ctx context.Context, model DestinationModel) (cm.UpdateDestinationBody, diag.Diagnostics) {
+			return model.ToUpdateDestinationData(ctx)
+		},
+		modelFromRead: NewDestinationModelFromResponse,
+		afterCreateRead: func(plan DestinationModel, model *DestinationModel) {
+			model.Credentials = plan.Credentials
+		},
+		afterRead: func(state DestinationModel, model *DestinationModel) {
+			model.Credentials = state.Credentials
+		},
+		afterUpdate: func(_ DestinationModel, plan DestinationModel, model *DestinationModel) {
+			model.Credentials = plan.Credentials
+		},
+		create: createResourceOperation[cm.CreateDestinationBody]{
+			name: "destination.create",
+			run: func(ctx context.Context, request cm.CreateDestinationBody) (int64, error) {
+				response, err := r.providerData.client.CreateDestination(ctx, &request)
+				if err != nil {
+					return 0, fmt.Errorf("create destination: %w", err)
+				}
 
-	if resp.Diagnostics.HasError() {
-		return
-	}
+				if response == nil {
+					return 0, responseMissing("destination.create")
+				}
 
-	params := cm.DeleteDestinationParams{
-		DestinationID: state.ID.ValueString(),
-	}
+				return response.Response.Data.ID, nil
+			},
+		},
+		read: resourceOperation[string, cm.DestinationData]{
+			name: "destination.read",
+			run: func(ctx context.Context, id string) (cm.DestinationData, error) {
+				response, err := r.providerData.client.GetDestination(ctx, cm.GetDestinationParams{DestinationID: id})
+				if err != nil {
+					return cm.DestinationData{}, fmt.Errorf("read destination: %w", err)
+				}
 
-	deleteDestinationResponse, deleteDestinationErr := r.providerData.client.DeleteDestination(ctx, params)
+				if response == nil {
+					return cm.DestinationData{}, responseMissing("destination.read")
+				}
 
-	tflog.Info(ctx, "destination.delete", map[string]any{
-		"params":   params,
-		"response": deleteDestinationResponse,
-		"err":      deleteDestinationErr,
-	})
+				return response.Response.Data, nil
+			},
+		},
+		update: resourceOperation[updateResourceRequest[cm.UpdateDestinationBody], cm.DestinationData]{
+			name: "destination.update",
+			run: func(ctx context.Context, request updateResourceRequest[cm.UpdateDestinationBody]) (cm.DestinationData, error) {
+				response, err := r.providerData.client.UpdateDestination(ctx, &request.request, cm.UpdateDestinationParams{DestinationID: request.id})
+				if err != nil {
+					return cm.DestinationData{}, fmt.Errorf("update destination: %w", err)
+				}
 
-	var srsc *cm.StatusResponseStatusCode
-	if errors.As(deleteDestinationErr, &srsc) {
-		if srsc.StatusCode == http.StatusNotFound {
-			resp.Diagnostics.AddWarning("Destination not found", srsc.Error())
-			resp.State.RemoveResource(ctx)
+				if response == nil {
+					return cm.DestinationData{}, responseMissing("destination.update")
+				}
 
-			return
-		}
-	}
-
-	if deleteDestinationResponse == nil || deleteDestinationResponse.Response.Status.ResponseStatus != cm.ResponseStatusDeleted {
-		var detail string
-
-		if deleteDestinationResponse != nil {
-			detail = deleteDestinationResponse.Response.Message.Value
-		}
-
-		if detail == "" && deleteDestinationErr != nil {
-			detail = deleteDestinationErr.Error()
-		}
-
-		resp.Diagnostics.AddError("Failed to delete destination", detail)
-
-		return
+				return response.Response.Data, nil
+			},
+		},
+		delete: deleteResourceOperation{
+			name: "destination.delete",
+			run: func(ctx context.Context, id string) (*cm.StatusResponseStatusCode, error) {
+				return r.providerData.client.DeleteDestination(ctx, cm.DeleteDestinationParams{DestinationID: id})
+			},
+		},
 	}
 }

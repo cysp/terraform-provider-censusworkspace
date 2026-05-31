@@ -20,6 +20,10 @@ type sourceModelBase struct {
 	LastTestSucceeded types.Bool        `tfsdk:"last_test_succeeded"`
 }
 
+func (m sourceModelBase) getID() types.String {
+	return m.ID
+}
+
 func sourceBaseResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"id": schema.StringAttribute{

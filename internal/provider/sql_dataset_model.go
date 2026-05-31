@@ -5,6 +5,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+//nolint:recvcheck
 type SQLDatasetModel struct {
 	ID          types.String      `tfsdk:"id"`
 	Name        types.String      `tfsdk:"name"`
@@ -13,4 +14,8 @@ type SQLDatasetModel struct {
 	Description types.String      `tfsdk:"description"`
 	CreatedAt   timetypes.RFC3339 `tfsdk:"created_at"`
 	UpdatedAt   timetypes.RFC3339 `tfsdk:"updated_at"`
+}
+
+func (m SQLDatasetModel) getID() types.String {
+	return m.ID
 }
