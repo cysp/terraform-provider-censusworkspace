@@ -19,10 +19,17 @@ func NewCustomAPIDestinationModelFromResponse(ctx context.Context, response cm.D
 
 	model := CustomAPIDestinationModel{
 		destinationModelBase: destinationModelBase{
-			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
-			Name:      types.StringValue(response.Name),
-			CreatedAt: timetypes.NewRFC3339TimeValue(response.CreatedAt),
+			ID:                types.StringValue(strconv.FormatInt(response.ID, 10)),
+			Name:              types.StringValue(response.Name),
+			CreatedAt:         timetypes.NewRFC3339Null(),
+			LastTestedAt:      timetypes.NewRFC3339Null(),
+			LastTestSucceeded: types.BoolNull(),
 		},
+		ConnectionDetails: NewTypedObjectNull[CustomAPIDestinationConnectionDetails](),
+	}
+
+	if !response.CreatedAt.IsZero() {
+		model.CreatedAt = timetypes.NewRFC3339TimeValue(response.CreatedAt)
 	}
 
 	if response.ConnectionDetails != nil {

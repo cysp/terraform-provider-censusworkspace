@@ -154,6 +154,102 @@ func TestAccCustomAPIDestinationResourceCreateUpdateDelete(t *testing.T) {
 	})
 }
 
+//nolint:paralleltest
+func TestAccCustomAPIDestinationResourceWriteOnlyHeaders(t *testing.T) {
+	server, err := cmt.NewCensusManagementServer()
+	require.NoError(t, err)
+
+	ProviderMockedResourceTest(t, server, resource.TestCase{
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "censusworkspace_custom_api_destination" "test" {
+  name = "Test Destination"
+
+  credentials = {
+    api_version = 1
+    webhook_url = "https://example.org/census-destination"
+    custom_headers = {
+      "x-client-id" = {
+        value     = "client-123"
+        is_secret = false
+      }
+      "x-\"secret\"\\key" = {
+        value     = "secret"
+        is_secret = true
+      }
+    }
+  }
+}
+`,
+			},
+			{
+				Config: `
+resource "censusworkspace_custom_api_destination" "test" {
+  name = "Test Destination"
+
+  credentials = {
+    api_version = 1
+    webhook_url = "https://example.org/census-destination"
+    custom_headers = {
+      "x-client-id" = {
+        value     = "client-123"
+        is_secret = false
+      }
+      "x-\"secret\"\\key" = {
+        value_wo  = "secret"
+        is_secret = true
+      }
+    }
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_custom_api_destination.test", plancheck.ResourceActionUpdate),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("credentials").AtMapKey("custom_headers").AtMapKey(`x-"secret"\key`).AtMapKey("value"), knownvalue.Null()),
+						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("credentials").AtMapKey("custom_headers").AtMapKey("x-client-id").AtMapKey("value"), knownvalue.StringExact("client-123")),
+					},
+				},
+			},
+			{
+				Config: `
+resource "censusworkspace_custom_api_destination" "test" {
+  name = "Test Destination"
+
+  credentials = {
+    api_version = 1
+    webhook_url = "https://example.org/census-destination"
+    custom_headers = {
+      "x-client-id" = {
+        value     = "client-123"
+        is_secret = false
+      }
+      "x-\"secret\"\\key" = {
+        value_wo  = "rotated-secret"
+        is_secret = true
+      }
+    }
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_custom_api_destination.test", plancheck.ResourceActionUpdate),
+						plancheck.ExpectUnknownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("connection_details")),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("credentials").AtMapKey("custom_headers").AtMapKey(`x-"secret"\key`).AtMapKey("value"), knownvalue.Null()),
+						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("credentials").AtMapKey("custom_headers").AtMapKey("x-client-id").AtMapKey("value"), knownvalue.StringExact("client-123")),
+					},
+				},
+			},
+		},
+	})
+}
+
 //nolint:dupl,paralleltest
 func TestAccCustomAPIDestinationResourceMovedFromDestination(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()

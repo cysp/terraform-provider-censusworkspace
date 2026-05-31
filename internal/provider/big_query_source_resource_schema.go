@@ -74,7 +74,13 @@ func BigQuerySourceCredentialsServiceAccountKeyResourceSchemaAttributes(_ contex
 		},
 		"private_key": schema.StringAttribute{
 			Sensitive: true,
-			Required:  true,
+			Optional:  true,
+		},
+		"private_key_wo": schema.StringAttribute{
+			WriteOnly:   true,
+			Optional:    true,
+			Sensitive:   true,
+			Description: "Private key. This value is not stored in Terraform plan or state. Changes are tracked using a private Argon2id verifier and trigger an update.",
 		},
 		"client_email": schema.StringAttribute{
 			Required: true,

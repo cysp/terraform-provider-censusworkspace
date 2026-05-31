@@ -19,7 +19,12 @@ func (m *SourceModel) ToCreateSourceData(_ context.Context) (cm.CreateSourceBody
 		body.Connection.SyncEngine.SetTo(syncEngine)
 	}
 
-	body.Connection.Name.SetTo(m.Name.ValueString())
+	label := m.Label.ValueString()
+	if label != "" {
+		body.Connection.Label.SetTo(label)
+	} else {
+		body.Connection.Label.SetToNull()
+	}
 
 	if credentials := m.Credentials.ValueStringPointer(); credentials != nil {
 		body.Connection.Credentials = []byte(*credentials)
@@ -35,7 +40,12 @@ func (m *SourceModel) ToCreateSourceData(_ context.Context) (cm.CreateSourceBody
 func (m *SourceModel) ToUpdateSourceData(_ context.Context) (cm.UpdateSourceBody, diag.Diagnostics) {
 	body := cm.UpdateSourceBody{}
 
-	body.Connection.Name.SetTo(m.Name.ValueString())
+	label := m.Label.ValueString()
+	if label != "" {
+		body.Connection.Label.SetTo(label)
+	} else {
+		body.Connection.Label.SetToNull()
+	}
 
 	if credentials := m.Credentials.ValueStringPointer(); credentials != nil {
 		body.Connection.Credentials = []byte(*credentials)

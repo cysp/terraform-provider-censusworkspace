@@ -1,5 +1,5 @@
 resource "censusworkspace_big_query_source" "test" {
-  name = var.source_name
+  label = var.source_label
 
   credentials = var.source_credentials
 

@@ -22,10 +22,6 @@ func UpdateSourceWithCreateSourceBody(source *cm.SourceData, body cm.CreateSourc
 	source.SyncEngine.SetTo(connection.SyncEngine.Or("basic"))
 	source.WarehouseWritebackRetentionInDays = connection.WarehouseWritebackRetentionInDays
 
-	if name, nameOk := connection.Name.Get(); nameOk {
-		source.Name = name
-	}
-
 	if label, labelOk := connection.Label.Get(); labelOk {
 		source.Label.SetTo(label)
 	} else {
@@ -37,10 +33,6 @@ func UpdateSourceWithCreateSourceBody(source *cm.SourceData, body cm.CreateSourc
 
 func UpdateSourceWithUpdateSourceBody(source *cm.SourceData, body cm.UpdateSourceBody) {
 	connection := body.Connection
-
-	if name, nameOk := connection.Name.Get(); nameOk {
-		source.Name = name
-	}
 
 	if label, labelOk := connection.Label.Get(); labelOk {
 		source.Label.SetTo(label)

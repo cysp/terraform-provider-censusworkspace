@@ -14,11 +14,13 @@ import (
 )
 
 var (
-	_ resource.Resource                = (*customAPIDestinationResource)(nil)
-	_ resource.ResourceWithConfigure   = (*customAPIDestinationResource)(nil)
-	_ resource.ResourceWithIdentity    = (*customAPIDestinationResource)(nil)
-	_ resource.ResourceWithImportState = (*customAPIDestinationResource)(nil)
-	_ resource.ResourceWithMoveState   = (*customAPIDestinationResource)(nil)
+	_ resource.Resource                   = (*customAPIDestinationResource)(nil)
+	_ resource.ResourceWithConfigure      = (*customAPIDestinationResource)(nil)
+	_ resource.ResourceWithIdentity       = (*customAPIDestinationResource)(nil)
+	_ resource.ResourceWithImportState    = (*customAPIDestinationResource)(nil)
+	_ resource.ResourceWithModifyPlan     = (*customAPIDestinationResource)(nil)
+	_ resource.ResourceWithMoveState      = (*customAPIDestinationResource)(nil)
+	_ resource.ResourceWithValidateConfig = (*customAPIDestinationResource)(nil)
 )
 
 //nolint:ireturn
@@ -44,6 +46,48 @@ func (r *customAPIDestinationResource) Configure(_ context.Context, req resource
 
 func (r *customAPIDestinationResource) IdentitySchema(ctx context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
 	resp.IdentitySchema = CustomAPIDestinationResourceIdentitySchema(ctx)
+}
+
+func (r *customAPIDestinationResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var config CustomAPIDestinationModel
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	resp.Diagnostics.Append(hydrateCustomAPIHeaderWriteOnlyValues(ctx, req.Config, &config)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	credentials := config.Credentials.Value()
+	if credentials.CustomHeaders.IsNull() || credentials.CustomHeaders.IsUnknown() {
+		return
+	}
+
+	for key, header := range credentials.CustomHeaders.Elements() {
+		headerValue := header.Value()
+		validateStringCredential(&resp.Diagnostics, headerValue.Value, headerValue.ValueWO, customAPIHeaderValuePath(key), customAPIHeaderValueWOPath(key))
+	}
+}
+
+func (r *customAPIDestinationResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if req.State.Raw.IsNull() || req.Plan.Raw.IsNull() {
+		return
+	}
+
+	var plan, config CustomAPIDestinationModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	resp.Diagnostics.Append(hydrateCustomAPIHeaderWriteOnlyValues(ctx, req.Config, &config)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	_, values, modelDiags := customAPIDestinationModelWithWriteOnlyCredentials(plan, config)
+	resp.Diagnostics.Append(modelDiags...)
+
+	markWriteOnlyCredentialChange(ctx, req, resp, values, NewTypedObjectUnknown[CustomAPIDestinationConnectionDetails]())
 }
 
 func (r *customAPIDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
@@ -116,9 +160,9 @@ func (r *customAPIDestinationResource) MoveState(ctx context.Context) []resource
 					}
 
 					if destinationConnectionDetails.CustomHeaders != nil {
-						customAPIDestinationConnectionDetailsCustomHeaders := make(map[string]TypedObject[CustomAPIDestinationCustomHeader], 0)
+						customAPIDestinationConnectionDetailsCustomHeaders := make(map[string]TypedObject[CustomAPIDestinationConnectionDetailsCustomHeader], 0)
 						for key, value := range destinationConnectionDetails.CustomHeaders {
-							customAPIDestinationConnectionDetailsCustomHeaders[key] = NewTypedObject(CustomAPIDestinationCustomHeader{
+							customAPIDestinationConnectionDetailsCustomHeaders[key] = NewTypedObject(CustomAPIDestinationConnectionDetailsCustomHeader{
 								Value:    types.StringPointerValue(value.Value),
 								IsSecret: types.BoolPointerValue(value.IsSecret),
 							})
@@ -142,17 +186,25 @@ func (r *customAPIDestinationResource) MoveState(ctx context.Context) []resource
 	}
 }
 
-//nolint:dupl
 func (r *customAPIDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan CustomAPIDestinationModel
+	var plan, config CustomAPIDestinationModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	resp.Diagnostics.Append(hydrateCustomAPIHeaderWriteOnlyValues(ctx, req.Config, &config)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	createDestinationRequest, createDestinationRequestDiags := plan.ToCreateDestinationData(ctx)
+	requestModel, writeOnlyValues, requestModelDiags := customAPIDestinationModelWithWriteOnlyCredentials(plan, config)
+	resp.Diagnostics.Append(requestModelDiags...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	createDestinationRequest, createDestinationRequestDiags := requestModel.ToCreateDestinationData(ctx)
 	resp.Diagnostics.Append(createDestinationRequestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -162,7 +214,6 @@ func (r *customAPIDestinationResource) Create(ctx context.Context, req resource.
 	createDestinationResponse, createDestinationErr := r.providerData.client.CreateDestination(ctx, &createDestinationRequest)
 
 	tflog.Info(ctx, "destination.create", map[string]any{
-		"request":  createDestinationRequest,
 		"response": createDestinationResponse,
 		"err":      createDestinationErr,
 	})
@@ -194,13 +245,16 @@ func (r *customAPIDestinationResource) Create(ctx context.Context, req resource.
 		"err":      getDestinationErr,
 	})
 
+	if getDestinationResponse == nil {
+		resp.Diagnostics.AddError("Failed to read destination after create", detailFromError(getDestinationErr))
+
+		return
+	}
+
 	model, modelDiags := NewCustomAPIDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
-	credentials := plan.Credentials.Value()
-	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
-
-	model.Credentials = NewTypedObject(credentials)
+	model = sanitizedCustomAPIDestinationCredentials(model, plan, config, model.ConnectionDetails.Value(), writeOnlyValues)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -208,6 +262,7 @@ func (r *customAPIDestinationResource) Create(ctx context.Context, req resource.
 
 	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	resp.Diagnostics.Append(writeWriteOnlyCredentialVerifiers(ctx, resp.Private, writeOnlyValues)...)
 }
 
 func (r *customAPIDestinationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -250,10 +305,12 @@ func (r *customAPIDestinationResource) Read(ctx context.Context, req resource.Re
 	model, modelDiags := NewCustomAPIDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
+	connectionDetails := sanitizedCustomAPIConnectionDetails(model.ConnectionDetails.Value(), state.Credentials.Value().CustomHeaders, nil)
 	credentials := state.Credentials.Value()
-	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
+	credentials.UpdateWithConnectionDetails(connectionDetails)
 
 	model.Credentials = NewTypedObject(credentials)
+	model.ConnectionDetails = NewTypedObject(connectionDetails)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -264,10 +321,12 @@ func (r *customAPIDestinationResource) Read(ctx context.Context, req resource.Re
 }
 
 func (r *customAPIDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var state, plan CustomAPIDestinationModel
+	var state, plan, config CustomAPIDestinationModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	resp.Diagnostics.Append(hydrateCustomAPIHeaderWriteOnlyValues(ctx, req.Config, &config)...)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -277,7 +336,14 @@ func (r *customAPIDestinationResource) Update(ctx context.Context, req resource.
 		DestinationID: plan.ID.ValueString(),
 	}
 
-	updateDestinationRequest, updateDestinationRequestDiags := plan.ToUpdateDestinationData(ctx)
+	requestModel, writeOnlyValues, requestModelDiags := customAPIDestinationModelWithWriteOnlyCredentials(plan, config)
+	resp.Diagnostics.Append(requestModelDiags...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	updateDestinationRequest, updateDestinationRequestDiags := requestModel.ToUpdateDestinationData(ctx)
 	resp.Diagnostics.Append(updateDestinationRequestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -288,7 +354,6 @@ func (r *customAPIDestinationResource) Update(ctx context.Context, req resource.
 
 	tflog.Info(ctx, "destination.update", map[string]any{
 		"params":   params,
-		"request":  updateDestinationRequest,
 		"response": updateDestinationResponse,
 		"err":      updateDestinationErr,
 	})
@@ -302,13 +367,11 @@ func (r *customAPIDestinationResource) Update(ctx context.Context, req resource.
 	model, modelDiags := NewCustomAPIDestinationModelFromResponse(ctx, updateDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
-	credentials := plan.Credentials.Value()
-	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
-
-	model.Credentials = NewTypedObject(credentials)
+	model = sanitizedCustomAPIDestinationCredentials(model, plan, config, model.ConnectionDetails.Value(), writeOnlyValues)
 
 	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	resp.Diagnostics.Append(writeWriteOnlyCredentialVerifiers(ctx, resp.Private, writeOnlyValues)...)
 }
 
 //nolint:dupl

@@ -2,7 +2,7 @@ variable "source_type" {
   type = string
 }
 
-variable "source_name" {
+variable "source_label" {
   type    = string
   default = null
 }

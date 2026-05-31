@@ -5,7 +5,7 @@ func (c *CustomAPIDestinationCredentials) UpdateWithConnectionDetails(connection
 	c.WebhookURL = connectionDetails.WebhookURL
 
 	if connectionDetails.CustomHeaders.IsNull() || connectionDetails.CustomHeaders.IsUnknown() {
-		c.CustomHeaders = connectionDetails.CustomHeaders
+		c.CustomHeaders = NewTypedMapNull[TypedObject[CustomAPIDestinationCustomHeader]]()
 	} else {
 		existingCustomHeaders := c.CustomHeaders.Elements()
 
@@ -14,7 +14,11 @@ func (c *CustomAPIDestinationCredentials) UpdateWithConnectionDetails(connection
 		for key, value := range connectionDetails.CustomHeaders.Elements() {
 			existingHeader, existingHeaderOk := existingCustomHeaders[key]
 
-			customHeader := value.Value()
+			connectionDetailsHeader := value.Value()
+			customHeader := CustomAPIDestinationCustomHeader{
+				Value:    connectionDetailsHeader.Value,
+				IsSecret: connectionDetailsHeader.IsSecret,
+			}
 
 			if customHeader.Value.IsNull() && existingHeaderOk {
 				customHeader.Value = existingHeader.Value().Value

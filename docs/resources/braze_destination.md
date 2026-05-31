@@ -33,12 +33,14 @@ description: |-
 
 Required:
 
-- `api_key` (String, Sensitive) API Key
 - `instance_url` (String) Endpoint URL
 
 Optional:
 
+- `api_key` (String, Sensitive) API Key
+- `api_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) API Key. This value is not stored in Terraform plan or state. Changes are tracked using a private Argon2id verifier and trigger an update.
 - `client_key` (String, Sensitive) Data Import Key (for Cohorts only)
+- `client_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Data Import Key (for Cohorts only). This value is not stored in Terraform plan or state. Changes are tracked using a private Argon2id verifier and trigger an update.
 
 
 <a id="nestedatt--connection_details"></a>
