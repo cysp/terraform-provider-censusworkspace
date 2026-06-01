@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 
-	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
@@ -14,13 +13,11 @@ import (
 )
 
 type sourceModelBase struct {
-	ID                                types.String      `tfsdk:"id"`
-	Name                              types.String      `tfsdk:"name"`
-	Label                             types.String      `tfsdk:"label"`
-	SyncEngine                        types.String      `tfsdk:"sync_engine"`
-	WarehouseWritebackRetentionInDays types.Int64       `tfsdk:"warehouse_writeback_retention_in_days"`
-	LastTestedAt                      timetypes.RFC3339 `tfsdk:"last_tested_at"`
-	LastTestSucceeded                 types.Bool        `tfsdk:"last_test_succeeded"`
+	ID                                types.String `tfsdk:"id"`
+	Name                              types.String `tfsdk:"name"`
+	Label                             types.String `tfsdk:"label"`
+	SyncEngine                        types.String `tfsdk:"sync_engine"`
+	WarehouseWritebackRetentionInDays types.Int64  `tfsdk:"warehouse_writeback_retention_in_days"`
 }
 
 func sourceBaseResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
@@ -59,15 +56,6 @@ func sourceBaseResourceSchemaAttributes(_ context.Context) map[string]schema.Att
 				int64planmodifier.UseStateForUnknown(),
 			},
 			MarkdownDescription: "Number of days to retain warehouse writeback data. When set, automatically enables sync logs for this source.",
-		},
-		"last_tested_at": schema.StringAttribute{
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-			MarkdownDescription: "Timestamp of when the last connection test was conducted on this source.",
-		},
-		"last_test_succeeded": schema.BoolAttribute{
-			Computed:            true,
-			MarkdownDescription: "Indicates if the last connection test to this source was successful.",
 		},
 	}
 }
