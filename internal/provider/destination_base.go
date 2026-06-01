@@ -13,7 +13,6 @@ import (
 type destinationModelBase struct {
 	ID                types.String      `tfsdk:"id"`
 	Name              types.String      `tfsdk:"name"`
-	CreatedAt         timetypes.RFC3339 `tfsdk:"created_at"`
 	LastTestedAt      timetypes.RFC3339 `tfsdk:"last_tested_at"`
 	LastTestSucceeded types.Bool        `tfsdk:"last_test_succeeded"`
 }
@@ -29,11 +28,6 @@ func destinationBaseResourceSchemaAttributes(_ context.Context) map[string]schem
 		"name": schema.StringAttribute{
 			Required:            true,
 			MarkdownDescription: "The name of this destination.",
-		},
-		"created_at": schema.StringAttribute{
-			CustomType:          timetypes.RFC3339Type{},
-			Computed:            true,
-			MarkdownDescription: "When the connection was created",
 		},
 		"last_tested_at": schema.StringAttribute{
 			CustomType:          timetypes.RFC3339Type{},
