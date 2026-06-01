@@ -359,7 +359,6 @@ func testProtocol6SourceResourceReadAcceptsExistingLabelState(
 	resourceState["label"] = tftypes.NewValue(tftypes.String, "Legacy Label")
 	resourceState["sync_engine"] = tftypes.NewValue(tftypes.String, nil)
 	resourceState["warehouse_writeback_retention_in_days"] = tftypes.NewValue(tftypes.Number, nil)
-	resourceState["created_at"] = tftypes.NewValue(tftypes.String, nil)
 
 	currentState, err := tfprotov6.NewDynamicValue(sourceType, tftypes.NewValue(sourceType, resourceState))
 	require.NoError(t, err)

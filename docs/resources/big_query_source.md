@@ -41,7 +41,6 @@ resource "censusworkspace_big_query_source" "test" {
 ### Read-Only
 
 - `connection_details` (Attributes) (see [below for nested schema](#nestedatt--connection_details))
-- `created_at` (String) When the connection was created
 - `id` (String) The ID of this resource.
 - `label` (String, Deprecated) Deprecated. Use `name` for configuration. This read-only field reflects the API label when returned.
 - `last_test_succeeded` (Boolean) Indicates if the last connection test to this source was successful.

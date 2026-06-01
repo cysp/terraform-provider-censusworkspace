@@ -18,10 +18,9 @@ func NewBigQuerySourceModelFromResponse(ctx context.Context, response cm.SourceD
 
 	model := BigQuerySourceModel{
 		sourceModelBase: sourceModelBase{
-			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
-			Name:      types.StringValue(response.Name),
-			Label:     types.StringPointerValue(response.Label.ValueStringPointer()),
-			CreatedAt: timetypes.NewRFC3339TimeValue(response.CreatedAt),
+			ID:    types.StringValue(strconv.FormatInt(response.ID, 10)),
+			Name:  types.StringValue(response.Name),
+			Label: types.StringPointerValue(response.Label.ValueStringPointer()),
 		},
 	}
 

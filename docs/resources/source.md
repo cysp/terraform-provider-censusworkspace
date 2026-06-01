@@ -43,7 +43,6 @@ resource "censusworkspace_source" "test" {
 ### Read-Only
 
 - `connection_details` (String) Detailed configuration and information for connecting to this source.
-- `created_at` (String) When the connection was created
 - `id` (String) The ID of this resource.
 - `label` (String, Deprecated) Deprecated. Use `name` for configuration. This read-only field reflects the API label when returned.
 - `last_test_succeeded` (Boolean) Indicates if the last connection test to this source was successful.
