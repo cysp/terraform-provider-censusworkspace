@@ -3,7 +3,6 @@ package provider
 import (
 	"context"
 
-	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/resource/identityschema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
@@ -49,16 +48,6 @@ func SQLDatasetResourceSchema(_ context.Context) schema.Schema {
 			"description": schema.StringAttribute{
 				Optional:            true,
 				MarkdownDescription: "Description of the dataset.",
-			},
-			"created_at": schema.StringAttribute{
-				CustomType:          timetypes.RFC3339Type{},
-				Computed:            true,
-				MarkdownDescription: "Timestamp when the dataset was created.",
-			},
-			"updated_at": schema.StringAttribute{
-				CustomType:          timetypes.RFC3339Type{},
-				Computed:            true,
-				MarkdownDescription: "Timestamp when the dataset was last updated.",
 			},
 		},
 	}
