@@ -14,10 +14,9 @@ import (
 func NewSourceModelFromResponse(_ context.Context, response cm.SourceData) (SourceModel, diag.Diagnostics) {
 	model := SourceModel{
 		sourceModelBase: sourceModelBase{
-			ID:        types.StringValue(strconv.FormatInt(response.ID, 10)),
-			Name:      types.StringValue(response.Name),
-			Label:     types.StringPointerValue(response.Label.ValueStringPointer()),
-			CreatedAt: timetypes.NewRFC3339TimeValue(response.CreatedAt),
+			ID:    types.StringValue(strconv.FormatInt(response.ID, 10)),
+			Name:  types.StringValue(response.Name),
+			Label: types.StringPointerValue(response.Label.ValueStringPointer()),
 		},
 		Type: types.StringValue(response.Type),
 	}
