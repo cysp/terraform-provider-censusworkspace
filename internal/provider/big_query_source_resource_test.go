@@ -4,7 +4,6 @@ import (
 	"regexp"
 	"strconv"
 	"testing"
-	"time"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 	cmt "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/testing"
@@ -88,19 +87,9 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
-					},
 				},
 			},
 			{
-				PreConfig: func() {
-					source := server.Handler().Sources["1"]
-					if source != nil {
-						source.LastTestSucceeded.SetTo(false)
-						source.LastTestedAt.SetTo(time.Unix(0, 0))
-					}
-				},
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
 					"source_name": config.StringVariable("Test Source"),
@@ -118,9 +107,6 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Bool(false)),
 					},
 				},
 			},
@@ -176,7 +162,7 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 	})
 }
 
-//nolint:dupl,paralleltest
+//nolint:paralleltest
 func TestAccBigQuerySourceResourceMovedFromSource(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
 	require.NoError(t, err)
@@ -200,9 +186,6 @@ func TestAccBigQuerySourceResourceMovedFromSource(t *testing.T) {
 						plancheck.ExpectUnknownValue("censusworkspace_source.test", tfjsonpath.New("id")),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
 					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
-					},
 				},
 			},
 			{
@@ -219,9 +202,6 @@ func TestAccBigQuerySourceResourceMovedFromSource(t *testing.T) {
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("location"), knownvalue.StringExact("US")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("service_account_key"), knownvalue.Null()),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},
@@ -261,9 +241,6 @@ func TestAccBigQuerySourceResourceMovedFromSourceWithServiceAccountKey(t *testin
 						plancheck.ExpectUnknownValue("censusworkspace_source.test", tfjsonpath.New("id")),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
 					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
-					},
 				},
 			},
 			{
@@ -281,9 +258,6 @@ func TestAccBigQuerySourceResourceMovedFromSourceWithServiceAccountKey(t *testin
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("service_account_key").AtMapKey("private_key_id"), knownvalue.StringExact("private-key-id")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("service_account_key").AtMapKey("client_email"), knownvalue.StringExact("client-email")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},

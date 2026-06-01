@@ -5,7 +5,6 @@ import (
 	"regexp"
 	"strconv"
 	"testing"
-	"time"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 	cmt "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/testing"
@@ -92,19 +91,9 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
-					},
 				},
 			},
 			{
-				PreConfig: func() {
-					source := server.Handler().Sources["1"]
-					if source != nil {
-						source.LastTestSucceeded.SetTo(false)
-						source.LastTestedAt.SetTo(time.Unix(0, 0))
-					}
-				},
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
 					"source_type": config.StringVariable("big_query"),
@@ -123,9 +112,6 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Bool(false)),
 					},
 				},
 			},
@@ -187,9 +173,6 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectUnknownValue("censusworkspace_source.test", tfjsonpath.New("id")),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source (replaced)")),
 						plancheck.ExpectUnknownValue("censusworkspace_source.test", tfjsonpath.New("connection_details")),
-					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},
@@ -272,11 +255,9 @@ func TestAccSourceResourceSyncEngineAppearing(t *testing.T) {
 //nolint:paralleltest
 func TestProtocol6SourceResourceReadAcceptsExistingLabelState(t *testing.T) {
 	testProtocol6SourceResourceReadAcceptsExistingLabelState(t, "censusworkspace_source", map[string]tftypes.Value{
-		"type":                tftypes.NewValue(tftypes.String, "big_query"),
-		"credentials":         tftypes.NewValue(tftypes.String, `{"project_id":"project-id","location":"US"}`),
-		"connection_details":  tftypes.NewValue(tftypes.String, nil),
-		"last_tested_at":      tftypes.NewValue(tftypes.String, nil),
-		"last_test_succeeded": tftypes.NewValue(tftypes.Bool, nil),
+		"type":               tftypes.NewValue(tftypes.String, "big_query"),
+		"credentials":        tftypes.NewValue(tftypes.String, `{"project_id":"project-id","location":"US"}`),
+		"connection_details": tftypes.NewValue(tftypes.String, nil),
 	})
 }
 
@@ -306,8 +287,6 @@ func TestProtocol6BigQuerySourceResourceReadAcceptsExistingLabelState(t *testing
 			"location":        tftypes.String,
 			"service_account": tftypes.String,
 		}}, nil),
-		"last_tested_at":      tftypes.NewValue(tftypes.String, nil),
-		"last_test_succeeded": tftypes.NewValue(tftypes.Bool, nil),
 	})
 }
 

@@ -43,8 +43,6 @@ resource "censusworkspace_big_query_source" "test" {
 - `connection_details` (Attributes) (see [below for nested schema](#nestedatt--connection_details))
 - `id` (String) The ID of this resource.
 - `label` (String, Deprecated) Deprecated. Use `name` for configuration. This read-only field reflects the API label when returned.
-- `last_test_succeeded` (Boolean) Indicates if the last connection test to this source was successful.
-- `last_tested_at` (String) Timestamp of when the last connection test was conducted on this source.
 
 <a id="nestedatt--credentials"></a>
 ### Nested Schema for `credentials`
