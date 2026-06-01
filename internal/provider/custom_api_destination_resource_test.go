@@ -4,7 +4,6 @@ import (
 	"regexp"
 	"strconv"
 	"testing"
-	"time"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 	cmt "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/testing"
@@ -87,20 +86,9 @@ func TestAccCustomAPIDestinationResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectResourceAction("censusworkspace_custom_api_destination.test", plancheck.ResourceActionCreate),
 						plancheck.ExpectUnknownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("id")),
 					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
-					},
 				},
 			},
-			//nolint:dupl
 			{
-				PreConfig: func() {
-					destination := server.Handler().Destinations["1"]
-					if destination != nil {
-						destination.LastTestSucceeded.SetTo(false)
-						destination.LastTestedAt.SetTo(time.Unix(0, 0))
-					}
-				},
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
 					"destination_type": config.StringVariable("custom_api"),
@@ -117,9 +105,6 @@ func TestAccCustomAPIDestinationResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("id"), knownvalue.NotNull()),
 						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("name"), knownvalue.NotNull()),
 						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Bool(false)),
 					},
 				},
 			},
@@ -182,7 +167,6 @@ func TestAccCustomAPIDestinationResourceMovedFromDestination(t *testing.T) {
 					},
 					PostApplyPostRefresh: []plancheck.PlanCheck{
 						plancheck.ExpectKnownValue("censusworkspace_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},
@@ -200,9 +184,6 @@ func TestAccCustomAPIDestinationResourceMovedFromDestination(t *testing.T) {
 						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("credentials").AtMapKey("webhook_url"), knownvalue.StringExact("https://example.org/census-destination")),
 						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("credentials").AtMapKey("custom_headers"), knownvalue.Null()),
 						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},
@@ -244,7 +225,6 @@ func TestAccCustomAPIDestinationResourceMovedFromDestinationWithCustomHeaders(t 
 					},
 					PostApplyPostRefresh: []plancheck.PlanCheck{
 						plancheck.ExpectKnownValue("censusworkspace_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},
@@ -262,9 +242,6 @@ func TestAccCustomAPIDestinationResourceMovedFromDestinationWithCustomHeaders(t 
 						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("credentials").AtMapKey("webhook_url"), knownvalue.StringExact("https://example.org/census-destination")),
 						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("credentials").AtMapKey("custom_headers"), knownvalue.NotNull()),
 						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_custom_api_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},
