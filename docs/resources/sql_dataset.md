@@ -27,8 +27,6 @@ description: |-
 
 ### Read-Only
 
-- `created_at` (String) Timestamp when the dataset was created.
 - `id` (String) The ID of this resource.
-- `updated_at` (String) Timestamp when the dataset was last updated.
 
 
