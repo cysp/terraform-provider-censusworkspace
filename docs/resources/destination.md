@@ -40,8 +40,6 @@ resource "censusworkspace_destination" "test" {
 
 - `connection_details` (String) Connection details associated with this destination.
 - `id` (String) The ID of this resource.
-- `last_test_succeeded` (Boolean) Indicates if the last connection test to this destination was successful.
-- `last_tested_at` (String) Timestamp of when the last connection test was conducted on this destination.
 
 ## Import
 

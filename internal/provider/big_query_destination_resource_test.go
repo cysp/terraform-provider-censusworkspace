@@ -4,7 +4,6 @@ import (
 	"regexp"
 	"strconv"
 	"testing"
-	"time"
 
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 	cmt "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go/testing"
@@ -87,20 +86,10 @@ func TestAccBigQueryDestinationResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectResourceAction("censusworkspace_big_query_destination.test", plancheck.ResourceActionCreate),
 						plancheck.ExpectUnknownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("id")),
 					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
-					},
 				},
 			},
 			//nolint:dupl
 			{
-				PreConfig: func() {
-					destination := server.Handler().Destinations["1"]
-					if destination != nil {
-						destination.LastTestSucceeded.SetTo(false)
-						destination.LastTestedAt.SetTo(time.Unix(0, 0))
-					}
-				},
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
 					"destination_type": config.StringVariable("big_query"),
@@ -117,9 +106,6 @@ func TestAccBigQueryDestinationResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("id"), knownvalue.NotNull()),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("name"), knownvalue.NotNull()),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Bool(false)),
 					},
 				},
 			},
@@ -175,7 +161,6 @@ func TestAccBigQueryDestinationResourceMovedFromDestination(t *testing.T) {
 					},
 					PostApplyPostRefresh: []plancheck.PlanCheck{
 						plancheck.ExpectKnownValue("censusworkspace_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},
@@ -193,9 +178,6 @@ func TestAccBigQueryDestinationResourceMovedFromDestination(t *testing.T) {
 						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("credentials").AtMapKey("location"), knownvalue.StringExact("location")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("credentials").AtMapKey("service_account_key"), knownvalue.Null()),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
-					},
-					PostApplyPostRefresh: []plancheck.PlanCheck{
-						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("last_test_succeeded"), knownvalue.Null()),
 					},
 				},
 			},

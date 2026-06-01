@@ -24,8 +24,6 @@ description: |-
 
 - `connection_details` (Attributes) (see [below for nested schema](#nestedatt--connection_details))
 - `id` (String) The ID of this resource.
-- `last_test_succeeded` (Boolean) Indicates if the last connection test to this destination was successful.
-- `last_tested_at` (String) Timestamp of when the last connection test was conducted on this destination.
 
 <a id="nestedatt--credentials"></a>
 ### Nested Schema for `credentials`
@@ -46,4 +44,5 @@ Optional:
 Read-Only:
 
 - `instance_url` (String) Endpoint URL
+
 
