@@ -60,13 +60,11 @@ Optional:
 <a id="nestedatt--credentials--custom_headers"></a>
 ### Nested Schema for `credentials.custom_headers`
 
-Required:
-
-- `value` (String) HTTP header value sent to the Custom API webhook.
-
 Optional:
 
 - `is_secret` (Boolean) Whether Census should store this header value as a secret.
+- `value` (String) HTTP header value sent to the Custom API webhook. Configure exactly one of `value` or `value_wo` for each header.
+- `value_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) HTTP header value sent to the Custom API webhook. Configure exactly one of `value` or `value_wo` for each header.
 
 
 
