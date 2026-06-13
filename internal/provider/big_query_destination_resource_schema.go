@@ -54,7 +54,13 @@ func BigQueryDestinationCredentialsResourceSchemaAttributes(_ context.Context) m
 		"service_account_key": schema.StringAttribute{
 			Optional:            true,
 			Sensitive:           true,
-			MarkdownDescription: "Service account key JSON used by Census to write to BigQuery.",
+			MarkdownDescription: "Service account key JSON used by Census to write to BigQuery. Configure at most one of `service_account_key` or `service_account_key_wo`.",
+		},
+		"service_account_key_wo": schema.StringAttribute{
+			Optional:            true,
+			Sensitive:           true,
+			WriteOnly:           true,
+			MarkdownDescription: "Service account key JSON used by Census to write to BigQuery. Configure at most one of `service_account_key` or `service_account_key_wo`.",
 		},
 	}
 }

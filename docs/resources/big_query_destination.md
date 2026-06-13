@@ -46,7 +46,8 @@ Required:
 
 Optional:
 
-- `service_account_key` (String, Sensitive) Service account key JSON used by Census to write to BigQuery.
+- `service_account_key` (String, Sensitive) Service account key JSON used by Census to write to BigQuery. Configure at most one of `service_account_key` or `service_account_key_wo`.
+- `service_account_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Service account key JSON used by Census to write to BigQuery. Configure at most one of `service_account_key` or `service_account_key_wo`.
 
 
 <a id="nestedatt--connection_details"></a>
