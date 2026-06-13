@@ -133,6 +133,117 @@ func TestAccBigQueryDestinationResourceCreateUpdateDelete(t *testing.T) {
 	})
 }
 
+//nolint:paralleltest
+func TestAccBigQueryDestinationResourceWriteOnlyCredentials(t *testing.T) {
+	server, err := cmt.NewCensusManagementServer()
+	require.NoError(t, err)
+
+	ProviderMockedResourceTest(t, server, resource.TestCase{
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "censusworkspace_big_query_destination" "test" {
+  name = "Test Destination"
+
+  credentials = {
+    project_id           = "project-id"
+    location             = "location"
+    service_account_key  = "service-account-key"
+  }
+}
+`,
+			},
+			{
+				Config: `
+resource "censusworkspace_big_query_destination" "test" {
+  name = "Test Destination"
+
+  credentials = {
+    project_id             = "project-id"
+    location               = "location"
+    service_account_key_wo = "service-account-key"
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_big_query_destination.test", plancheck.ResourceActionUpdate),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("credentials").AtMapKey("service_account_key"), knownvalue.Null()),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("connection_details").AtMapKey("service_account_key"), knownvalue.Null()),
+					},
+				},
+			},
+			{
+				Config: `
+resource "censusworkspace_big_query_destination" "test" {
+  name = "Test Destination"
+
+  credentials = {
+    project_id             = "project-id"
+    location               = "location"
+    service_account_key_wo = "rotated-service-account-key"
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_big_query_destination.test", plancheck.ResourceActionUpdate),
+						plancheck.ExpectUnknownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("connection_details")),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("credentials").AtMapKey("service_account_key"), knownvalue.Null()),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("connection_details").AtMapKey("service_account_key"), knownvalue.Null()),
+					},
+				},
+			},
+			{
+				Config: `
+resource "censusworkspace_big_query_destination" "test" {
+  name = "Test Destination"
+
+  credentials = {
+    project_id             = "project-id"
+    location               = "location"
+    service_account_key_wo = "rotated-service-account-key"
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectEmptyPlan(),
+						plancheck.ExpectResourceAction("censusworkspace_big_query_destination.test", plancheck.ResourceActionNoop),
+					},
+				},
+			},
+			{
+				Config: `
+resource "censusworkspace_big_query_destination" "test" {
+  name = "Test Destination (updated)"
+
+  credentials = {
+    project_id             = "project-id"
+    location               = "location"
+    service_account_key_wo = "rotated-service-account-key"
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_big_query_destination.test", plancheck.ResourceActionUpdate),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Destination (updated)")),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("credentials").AtMapKey("service_account_key"), knownvalue.Null()),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_destination.test", tfjsonpath.New("connection_details").AtMapKey("service_account_key"), knownvalue.Null()),
+					},
+				},
+			},
+		},
+	})
+}
+
 //nolint:dupl,paralleltest
 func TestAccBigQueryDestinationResourceMovedFromDestination(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
