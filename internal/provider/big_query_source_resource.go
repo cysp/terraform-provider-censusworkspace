@@ -15,11 +15,13 @@ import (
 )
 
 var (
-	_ resource.Resource                = (*bigQuerySourceResource)(nil)
-	_ resource.ResourceWithConfigure   = (*bigQuerySourceResource)(nil)
-	_ resource.ResourceWithIdentity    = (*bigQuerySourceResource)(nil)
-	_ resource.ResourceWithImportState = (*bigQuerySourceResource)(nil)
-	_ resource.ResourceWithMoveState   = (*bigQuerySourceResource)(nil)
+	_ resource.Resource                   = (*bigQuerySourceResource)(nil)
+	_ resource.ResourceWithConfigure      = (*bigQuerySourceResource)(nil)
+	_ resource.ResourceWithIdentity       = (*bigQuerySourceResource)(nil)
+	_ resource.ResourceWithImportState    = (*bigQuerySourceResource)(nil)
+	_ resource.ResourceWithModifyPlan     = (*bigQuerySourceResource)(nil)
+	_ resource.ResourceWithMoveState      = (*bigQuerySourceResource)(nil)
+	_ resource.ResourceWithValidateConfig = (*bigQuerySourceResource)(nil)
 )
 
 //nolint:ireturn
@@ -45,6 +47,39 @@ func (r *bigQuerySourceResource) Configure(_ context.Context, req resource.Confi
 
 func (r *bigQuerySourceResource) IdentitySchema(ctx context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
 	resp.IdentitySchema = BigQuerySourceResourceIdentitySchema(ctx)
+}
+
+func (r *bigQuerySourceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var config BigQuerySourceModel
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if config.Credentials.IsUnknown() {
+		return
+	}
+
+	credentials := config.Credentials.Value()
+
+	serviceAccountKey, ok := credentials.ServiceAccountKey.GetValue()
+	if !ok {
+		return
+	}
+
+	validateRequiredStringCredential(
+		&resp.Diagnostics,
+		serviceAccountKey.PrivateKey,
+		serviceAccountKey.PrivateKeyWO,
+		path.Root("credentials").AtName("service_account_key").AtName("private_key"),
+		path.Root("credentials").AtName("service_account_key").AtName("private_key_wo"),
+	)
+}
+
+func (r *bigQuerySourceResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	modifyPlanForWriteOnlyCredentialChange(ctx, req, resp, bigQuerySourceModelWithWriteOnlyCredentials, NewTypedObjectUnknown[BigQuerySourceConnectionDetails]())
 }
 
 func (r *bigQuerySourceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
@@ -133,15 +168,24 @@ func (r *bigQuerySourceResource) MoveState(ctx context.Context) []resource.State
 }
 
 func (r *bigQuerySourceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan BigQuerySourceModel
+	var plan, config BigQuerySourceModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	createSourceRequest, createSourceRequestDiags := plan.ToCreateSourceData(ctx)
+	requestModel, writeOnlyValues, requestModelDiags := bigQuerySourceModelWithWriteOnlyCredentials(plan, config)
+	resp.Diagnostics.Append(requestModelDiags...)
+	resp.Diagnostics.Append(validateWriteOnlyCredentialValuesKnown(writeOnlyValues)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	createSourceRequest, createSourceRequestDiags := requestModel.ToCreateSourceData(ctx)
 	resp.Diagnostics.Append(createSourceRequestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -151,9 +195,7 @@ func (r *bigQuerySourceResource) Create(ctx context.Context, req resource.Create
 	createSourceResponse, createSourceErr := r.providerData.client.CreateSource(ctx, &createSourceRequest)
 
 	tflog.Info(ctx, "source.create", map[string]any{
-		"request":  createSourceRequest,
-		"response": createSourceResponse,
-		"err":      createSourceErr,
+		"err": createSourceErr,
 	})
 
 	if createSourceResponse == nil {
@@ -178,10 +220,15 @@ func (r *bigQuerySourceResource) Create(ctx context.Context, req resource.Create
 	getSourceResponse, getSourceErr := r.providerData.client.GetSource(ctx, getSourceParams)
 
 	tflog.Info(ctx, "source.read", map[string]any{
-		"request":  getSourceParams,
-		"response": getSourceResponse,
-		"err":      getSourceErr,
+		"request": getSourceParams,
+		"err":     getSourceErr,
 	})
+
+	if getSourceResponse == nil {
+		resp.Diagnostics.AddError("Failed to read source after create", detailFromError(getSourceErr))
+
+		return
+	}
 
 	model, modelDiags := NewBigQuerySourceModelFromResponse(ctx, getSourceResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
@@ -190,10 +237,7 @@ func (r *bigQuerySourceResource) Create(ctx context.Context, req resource.Create
 		model.SyncEngine = plan.SyncEngine
 	}
 
-	credentials := plan.Credentials.Value()
-	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
-
-	model.Credentials = NewTypedObject(credentials)
+	model = sanitizedBigQuerySourceCredentials(model, plan, config, model.ConnectionDetails.Value())
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -201,6 +245,7 @@ func (r *bigQuerySourceResource) Create(ctx context.Context, req resource.Create
 
 	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	resp.Diagnostics.Append(writeWriteOnlyCredentialVerifiers(ctx, resp.Private, writeOnlyValues)...)
 }
 
 func (r *bigQuerySourceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -219,9 +264,8 @@ func (r *bigQuerySourceResource) Read(ctx context.Context, req resource.ReadRequ
 	getSourceResponse, getSourceErr := r.providerData.client.GetSource(ctx, params)
 
 	tflog.Info(ctx, "source.read", map[string]any{
-		"params":   params,
-		"response": getSourceResponse,
-		"err":      getSourceErr,
+		"params": params,
+		"err":    getSourceErr,
 	})
 
 	if getSourceResponse == nil {
@@ -261,10 +305,11 @@ func (r *bigQuerySourceResource) Read(ctx context.Context, req resource.ReadRequ
 }
 
 func (r *bigQuerySourceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var state, plan BigQuerySourceModel
+	var state, plan, config BigQuerySourceModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -274,7 +319,15 @@ func (r *bigQuerySourceResource) Update(ctx context.Context, req resource.Update
 		SourceID: plan.ID.ValueString(),
 	}
 
-	updateSourceRequest, updateSourceRequestDiags := plan.ToUpdateSourceData(ctx)
+	requestModel, writeOnlyValues, requestModelDiags := bigQuerySourceModelWithWriteOnlyCredentials(plan, config)
+	resp.Diagnostics.Append(requestModelDiags...)
+	resp.Diagnostics.Append(validateWriteOnlyCredentialValuesKnown(writeOnlyValues)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	updateSourceRequest, updateSourceRequestDiags := requestModel.ToUpdateSourceData(ctx)
 	resp.Diagnostics.Append(updateSourceRequestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -284,10 +337,8 @@ func (r *bigQuerySourceResource) Update(ctx context.Context, req resource.Update
 	updateSourceResponse, updateSourceErr := r.providerData.client.UpdateSource(ctx, &updateSourceRequest, params)
 
 	tflog.Info(ctx, "source.update", map[string]any{
-		"params":   params,
-		"request":  updateSourceRequest,
-		"response": updateSourceResponse,
-		"err":      updateSourceErr,
+		"params": params,
+		"err":    updateSourceErr,
 	})
 
 	if updateSourceResponse == nil {
@@ -303,13 +354,11 @@ func (r *bigQuerySourceResource) Update(ctx context.Context, req resource.Update
 		model.SyncEngine = state.SyncEngine
 	}
 
-	credentials := plan.Credentials.Value()
-	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
-
-	model.Credentials = NewTypedObject(credentials)
+	model = sanitizedBigQuerySourceCredentials(model, plan, config, model.ConnectionDetails.Value())
 
 	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	resp.Diagnostics.Append(writeWriteOnlyCredentialVerifiers(ctx, resp.Private, writeOnlyValues)...)
 }
 
 func (r *bigQuerySourceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -328,9 +377,8 @@ func (r *bigQuerySourceResource) Delete(ctx context.Context, req resource.Delete
 	deleteSourceResponse, deleteSourceErr := r.providerData.client.DeleteSource(ctx, params)
 
 	tflog.Info(ctx, "source.delete", map[string]any{
-		"params":   params,
-		"response": deleteSourceResponse,
-		"err":      deleteSourceErr,
+		"params": params,
+		"err":    deleteSourceErr,
 	})
 
 	var srsc *cm.StatusResponseStatusCode

@@ -81,8 +81,14 @@ func BigQuerySourceCredentialsServiceAccountKeyResourceSchemaAttributes(_ contex
 		},
 		"private_key": schema.StringAttribute{
 			Sensitive:           true,
-			Required:            true,
-			MarkdownDescription: "Private key from the service account key JSON.",
+			Optional:            true,
+			MarkdownDescription: "Private key from the service account key JSON. Configure exactly one of `private_key` or `private_key_wo` when `service_account_key` is configured.",
+		},
+		"private_key_wo": schema.StringAttribute{
+			WriteOnly:           true,
+			Optional:            true,
+			Sensitive:           true,
+			MarkdownDescription: "Private key from the service account key JSON. Configure exactly one of `private_key` or `private_key_wo` when `service_account_key` is configured.",
 		},
 		"client_email": schema.StringAttribute{
 			Required:            true,
