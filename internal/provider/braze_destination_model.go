@@ -19,7 +19,9 @@ type BrazeDestinationModel struct {
 type BrazeDestinationCredentials struct {
 	InstanceURL types.String `tfsdk:"instance_url"`
 	APIKey      types.String `tfsdk:"api_key"`
+	APIKeyWO    types.String `tfsdk:"api_key_wo"`
 	ClientKey   types.String `tfsdk:"client_key"`
+	ClientKeyWO types.String `tfsdk:"client_key_wo"`
 }
 
 type BrazeDestinationConnectionDetails struct {

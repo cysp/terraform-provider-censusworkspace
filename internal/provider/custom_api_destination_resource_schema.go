@@ -67,8 +67,14 @@ func CustomAPIDestinationCredentialsResourceSchemaAttributes(ctx context.Context
 func CustomAPIDestinationCredentialsCustomHeaderResourceSchemaAttributes(_ context.Context) map[string]schema.Attribute {
 	return map[string]schema.Attribute{
 		"value": schema.StringAttribute{
-			Required:            true,
-			MarkdownDescription: "HTTP header value sent to the Custom API webhook.",
+			Optional:            true,
+			MarkdownDescription: "HTTP header value sent to the Custom API webhook. Configure exactly one of `value` or `value_wo` for each header.",
+		},
+		"value_wo": schema.StringAttribute{
+			Optional:            true,
+			Sensitive:           true,
+			WriteOnly:           true,
+			MarkdownDescription: "HTTP header value sent to the Custom API webhook. Configure exactly one of `value` or `value_wo` for each header.",
 		},
 		"is_secret": schema.BoolAttribute{
 			Optional:            true,
@@ -104,9 +110,9 @@ func CustomAPIDestinationConnectionDetailsResourceSchemaAttributes(ctx context.C
 			MarkdownDescription: "Additional HTTP headers Census has stored for this Custom API webhook.",
 			NestedObject: schema.NestedAttributeObject{
 				Attributes: CustomAPIDestinationConnectionDetailsCustomHeaderResourceSchemaAttributes(ctx),
-				CustomType: NewTypedObjectNull[CustomAPIDestinationCustomHeader]().CustomType(ctx),
+				CustomType: NewTypedObjectNull[CustomAPIDestinationConnectionDetailsCustomHeader]().CustomType(ctx),
 			},
-			CustomType: NewTypedMapNull[TypedObject[CustomAPIDestinationCustomHeader]]().CustomType(ctx),
+			CustomType: NewTypedMapNull[TypedObject[CustomAPIDestinationConnectionDetailsCustomHeader]]().CustomType(ctx),
 		},
 	}
 }
