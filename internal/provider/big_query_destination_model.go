@@ -17,9 +17,10 @@ type BigQueryDestinationModel struct {
 
 //nolint:recvcheck
 type BigQueryDestinationCredentials struct {
-	ProjectID         types.String `tfsdk:"project_id"`
-	Location          types.String `tfsdk:"location"`
-	ServiceAccountKey types.String `tfsdk:"service_account_key"`
+	ProjectID           types.String `tfsdk:"project_id"`
+	Location            types.String `tfsdk:"location"`
+	ServiceAccountKey   types.String `tfsdk:"service_account_key"`
+	ServiceAccountKeyWO types.String `tfsdk:"service_account_key_wo"`
 }
 
 type BigQueryDestinationConnectionDetails struct {
