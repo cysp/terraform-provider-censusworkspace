@@ -163,6 +163,180 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 }
 
 //nolint:paralleltest
+func TestAccBigQuerySourceResourceWriteOnlyCredentials(t *testing.T) {
+	server, err := cmt.NewCensusManagementServer()
+	require.NoError(t, err)
+
+	ProviderMockedResourceTest(t, server, resource.TestCase{
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "censusworkspace_big_query_source" "test" {
+  name = "Test Source"
+
+  credentials = {
+    project_id = "project-id"
+    location   = "US"
+    service_account_key = {
+      type           = "service_account"
+      project_id     = "project-id"
+      private_key_id = "private-key-id"
+      private_key    = "private-key"
+      client_id      = "client-id"
+      client_email   = "client-email"
+    }
+  }
+}
+`,
+			},
+			{
+				Config: `
+resource "censusworkspace_big_query_source" "test" {
+  name = "Test Source"
+
+  credentials = {
+    project_id = "project-id"
+    location   = "US"
+    service_account_key = {
+      type           = "service_account"
+      project_id     = "project-id"
+      private_key_id = "private-key-id"
+      private_key_wo = "private-key"
+      client_id      = "client-id"
+      client_email   = "client-email"
+    }
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionUpdate),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("service_account_key").AtMapKey("private_key"), knownvalue.Null()),
+					},
+				},
+			},
+			{
+				Config: `
+resource "censusworkspace_big_query_source" "test" {
+  name = "Test Source"
+
+  credentials = {
+    project_id = "project-id"
+    location   = "US"
+    service_account_key = {
+      type           = "service_account"
+      project_id     = "project-id"
+      private_key_id = "private-key-id"
+      private_key_wo = "rotated-private-key"
+      client_id      = "client-id"
+      client_email   = "client-email"
+    }
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionUpdate),
+						plancheck.ExpectUnknownValue("censusworkspace_big_query_source.test", tfjsonpath.New("connection_details")),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("service_account_key").AtMapKey("private_key"), knownvalue.Null()),
+					},
+				},
+			},
+			{
+				Config: `
+resource "censusworkspace_big_query_source" "test" {
+  name = "Test Source"
+
+  credentials = {
+    project_id = "project-id"
+    location   = "US"
+    service_account_key = {
+      type           = "service_account"
+      project_id     = "project-id"
+      private_key_id = "private-key-id"
+      private_key_wo = "rotated-private-key"
+      client_id      = "client-id"
+      client_email   = "client-email"
+    }
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectEmptyPlan(),
+						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionNoop),
+					},
+				},
+			},
+			{
+				Config: `
+resource "censusworkspace_big_query_source" "test" {
+  name = "Test Source (updated)"
+
+  credentials = {
+    project_id = "project-id"
+    location   = "US"
+    service_account_key = {
+      type           = "service_account"
+      project_id     = "project-id"
+      private_key_id = "private-key-id"
+      private_key_wo = "rotated-private-key"
+      client_id      = "client-id"
+      client_email   = "client-email"
+    }
+  }
+}
+`,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionUpdate),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source (updated)")),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("service_account_key").AtMapKey("private_key"), knownvalue.Null()),
+					},
+				},
+			},
+		},
+	})
+}
+
+//nolint:paralleltest
+func TestAccBigQuerySourceResourceMissingServiceAccountPrivateKey(t *testing.T) {
+	server, err := cmt.NewCensusManagementServer()
+	require.NoError(t, err)
+
+	ProviderMockedResourceTest(t, server, resource.TestCase{
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "censusworkspace_big_query_source" "test" {
+  name = "Test Source"
+
+  credentials = {
+    project_id = "project-id"
+    location   = "US"
+    service_account_key = {
+      type           = "service_account"
+      project_id     = "project-id"
+      private_key_id = "private-key-id"
+      client_id      = "client-id"
+      client_email   = "client-email"
+    }
+  }
+}
+`,
+				ExpectError: regexp.MustCompile(`One of credentials\.service_account_key\.private_key or\s+credentials\.service_account_key\.private_key_wo must be configured`),
+			},
+		},
+	})
+}
+
+//nolint:paralleltest
 func TestAccBigQuerySourceResourceMovedFromSource(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
 	require.NoError(t, err)

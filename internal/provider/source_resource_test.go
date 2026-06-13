@@ -268,6 +268,7 @@ func TestProtocol6BigQuerySourceResourceReadAcceptsExistingLabelState(t *testing
 		"project_id":     tftypes.String,
 		"private_key_id": tftypes.String,
 		"private_key":    tftypes.String,
+		"private_key_wo": tftypes.String,
 		"client_id":      tftypes.String,
 		"client_email":   tftypes.String,
 	}}
