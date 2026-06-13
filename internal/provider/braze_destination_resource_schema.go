@@ -48,14 +48,26 @@ func BrazeDestinationCredentialsResourceSchemaAttributes(_ context.Context) map[
 			MarkdownDescription: "Braze REST API endpoint URL for the destination instance.",
 		},
 		"api_key": schema.StringAttribute{
-			Required:            true,
+			Optional:            true,
 			Sensitive:           true,
-			MarkdownDescription: "Braze REST API key Census uses to update users.",
+			MarkdownDescription: "Braze REST API key Census uses to update users. Configure exactly one of `api_key` or `api_key_wo`.",
+		},
+		"api_key_wo": schema.StringAttribute{
+			Optional:            true,
+			Sensitive:           true,
+			WriteOnly:           true,
+			MarkdownDescription: "Braze REST API key Census uses to update users. Configure exactly one of `api_key` or `api_key_wo`.",
 		},
 		"client_key": schema.StringAttribute{
 			Optional:            true,
 			Sensitive:           true,
-			MarkdownDescription: "Braze Data Import Key used when syncing Cohorts.",
+			MarkdownDescription: "Braze Data Import Key used when syncing Cohorts. Configure at most one of `client_key` or `client_key_wo`.",
+		},
+		"client_key_wo": schema.StringAttribute{
+			Optional:            true,
+			Sensitive:           true,
+			WriteOnly:           true,
+			MarkdownDescription: "Braze Data Import Key used when syncing Cohorts. Configure at most one of `client_key` or `client_key_wo`.",
 		},
 	}
 }
