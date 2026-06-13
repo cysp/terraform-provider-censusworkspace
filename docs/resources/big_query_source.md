@@ -63,10 +63,14 @@ Required:
 
 - `client_email` (String) Client email from the service account key JSON.
 - `client_id` (String) Client ID from the service account key JSON.
-- `private_key` (String, Sensitive) Private key from the service account key JSON.
 - `private_key_id` (String) Private key ID from the service account key JSON.
 - `project_id` (String) Google Cloud project ID from the service account key JSON.
 - `type` (String) Service account key type. Must be `service_account`.
+
+Optional:
+
+- `private_key` (String, Sensitive) Private key from the service account key JSON. Configure exactly one of `private_key` or `private_key_wo` when `service_account_key` is configured.
+- `private_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Private key from the service account key JSON. Configure exactly one of `private_key` or `private_key_wo` when `service_account_key` is configured.
 
 
 
