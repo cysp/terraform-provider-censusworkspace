@@ -30,12 +30,14 @@ description: |-
 
 Required:
 
-- `api_key` (String, Sensitive) Braze REST API key Census uses to update users.
 - `instance_url` (String) Braze REST API endpoint URL for the destination instance.
 
 Optional:
 
-- `client_key` (String, Sensitive) Braze Data Import Key used when syncing Cohorts.
+- `api_key` (String, Sensitive) Braze REST API key Census uses to update users. Configure exactly one of `api_key` or `api_key_wo`.
+- `api_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Braze REST API key Census uses to update users. Configure exactly one of `api_key` or `api_key_wo`.
+- `client_key` (String, Sensitive) Braze Data Import Key used when syncing Cohorts. Configure at most one of `client_key` or `client_key_wo`.
+- `client_key_wo` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Braze Data Import Key used when syncing Cohorts. Configure at most one of `client_key` or `client_key_wo`.
 
 
 <a id="nestedatt--connection_details"></a>

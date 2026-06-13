@@ -15,11 +15,13 @@ import (
 )
 
 var (
-	_ resource.Resource                = (*brazeDestinationResource)(nil)
-	_ resource.ResourceWithConfigure   = (*brazeDestinationResource)(nil)
-	_ resource.ResourceWithIdentity    = (*brazeDestinationResource)(nil)
-	_ resource.ResourceWithImportState = (*brazeDestinationResource)(nil)
-	_ resource.ResourceWithMoveState   = (*brazeDestinationResource)(nil)
+	_ resource.Resource                   = (*brazeDestinationResource)(nil)
+	_ resource.ResourceWithConfigure      = (*brazeDestinationResource)(nil)
+	_ resource.ResourceWithIdentity       = (*brazeDestinationResource)(nil)
+	_ resource.ResourceWithImportState    = (*brazeDestinationResource)(nil)
+	_ resource.ResourceWithModifyPlan     = (*brazeDestinationResource)(nil)
+	_ resource.ResourceWithMoveState      = (*brazeDestinationResource)(nil)
+	_ resource.ResourceWithValidateConfig = (*brazeDestinationResource)(nil)
 )
 
 //nolint:ireturn
@@ -45,6 +47,43 @@ func (r *brazeDestinationResource) Configure(_ context.Context, req resource.Con
 
 func (r *brazeDestinationResource) IdentitySchema(ctx context.Context, _ resource.IdentitySchemaRequest, resp *resource.IdentitySchemaResponse) {
 	resp.IdentitySchema = BrazeDestinationResourceIdentitySchema(ctx)
+}
+
+func (r *brazeDestinationResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var config BrazeDestinationModel
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if config.Credentials.IsUnknown() {
+		return
+	}
+
+	apiKeyPath := path.Root("credentials").AtName("api_key")
+	apiKeyWOPath := path.Root("credentials").AtName("api_key_wo")
+	clientKeyPath := path.Root("credentials").AtName("client_key")
+	clientKeyWOPath := path.Root("credentials").AtName("client_key_wo")
+
+	var apiKey, apiKeyWO, clientKey, clientKeyWO types.String
+
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, apiKeyPath, &apiKey)...)
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, apiKeyWOPath, &apiKeyWO)...)
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, clientKeyPath, &clientKey)...)
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, clientKeyWOPath, &clientKeyWO)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	validateRequiredStringCredential(&resp.Diagnostics, apiKey, apiKeyWO, apiKeyPath, apiKeyWOPath)
+	validateStringCredential(&resp.Diagnostics, clientKey, clientKeyWO, clientKeyPath, clientKeyWOPath)
+}
+
+func (r *brazeDestinationResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	modifyPlanForWriteOnlyCredentialChange(ctx, req, resp, brazeDestinationModelWithWriteOnlyCredentials, NewTypedObjectUnknown[BrazeDestinationConnectionDetails]())
 }
 
 func (r *brazeDestinationResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
@@ -109,15 +148,24 @@ func (r *brazeDestinationResource) MoveState(ctx context.Context) []resource.Sta
 
 //nolint:dupl
 func (r *brazeDestinationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan BrazeDestinationModel
+	var plan, config BrazeDestinationModel
 
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	createDestinationRequest, createDestinationRequestDiags := plan.ToCreateDestinationData(ctx)
+	requestModel, writeOnlyValues, requestModelDiags := brazeDestinationModelWithWriteOnlyCredentials(plan, config)
+	resp.Diagnostics.Append(requestModelDiags...)
+	resp.Diagnostics.Append(validateWriteOnlyCredentialValuesKnown(writeOnlyValues)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	createDestinationRequest, createDestinationRequestDiags := requestModel.ToCreateDestinationData(ctx)
 	resp.Diagnostics.Append(createDestinationRequestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -127,9 +175,7 @@ func (r *brazeDestinationResource) Create(ctx context.Context, req resource.Crea
 	createDestinationResponse, createDestinationErr := r.providerData.client.CreateDestination(ctx, &createDestinationRequest)
 
 	tflog.Info(ctx, "destination.create", map[string]any{
-		"request":  createDestinationRequest,
-		"response": createDestinationResponse,
-		"err":      createDestinationErr,
+		"err": createDestinationErr,
 	})
 
 	if createDestinationResponse == nil {
@@ -154,18 +200,20 @@ func (r *brazeDestinationResource) Create(ctx context.Context, req resource.Crea
 	getDestinationResponse, getDestinationErr := r.providerData.client.GetDestination(ctx, getDestinationParams)
 
 	tflog.Info(ctx, "destination.read", map[string]any{
-		"request":  getDestinationParams,
-		"response": getDestinationResponse,
-		"err":      getDestinationErr,
+		"request": getDestinationParams,
+		"err":     getDestinationErr,
 	})
+
+	if getDestinationResponse == nil {
+		resp.Diagnostics.AddError("Failed to read destination after create", detailFromError(getDestinationErr))
+
+		return
+	}
 
 	model, modelDiags := NewBrazeDestinationModelFromResponse(ctx, getDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
-	credentials := plan.Credentials.Value()
-	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
-
-	model.Credentials = NewTypedObject(credentials)
+	model = sanitizedBrazeDestinationCredentials(model, plan, config, model.ConnectionDetails.Value())
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -173,6 +221,7 @@ func (r *brazeDestinationResource) Create(ctx context.Context, req resource.Crea
 
 	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	resp.Diagnostics.Append(writeWriteOnlyCredentialVerifiers(ctx, resp.Private, writeOnlyValues)...)
 }
 
 func (r *brazeDestinationResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
@@ -191,9 +240,8 @@ func (r *brazeDestinationResource) Read(ctx context.Context, req resource.ReadRe
 	getDestinationResponse, getDestinationErr := r.providerData.client.GetDestination(ctx, params)
 
 	tflog.Info(ctx, "destination.read", map[string]any{
-		"params":   params,
-		"response": getDestinationResponse,
-		"err":      getDestinationErr,
+		"params": params,
+		"err":    getDestinationErr,
 	})
 
 	if getDestinationResponse == nil {
@@ -229,10 +277,11 @@ func (r *brazeDestinationResource) Read(ctx context.Context, req resource.ReadRe
 }
 
 func (r *brazeDestinationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var state, plan BrazeDestinationModel
+	var state, plan, config BrazeDestinationModel
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -242,7 +291,15 @@ func (r *brazeDestinationResource) Update(ctx context.Context, req resource.Upda
 		DestinationID: plan.ID.ValueString(),
 	}
 
-	updateDestinationRequest, updateDestinationRequestDiags := plan.ToUpdateDestinationData(ctx)
+	requestModel, writeOnlyValues, requestModelDiags := brazeDestinationModelWithWriteOnlyCredentials(plan, config)
+	resp.Diagnostics.Append(requestModelDiags...)
+	resp.Diagnostics.Append(validateWriteOnlyCredentialValuesKnown(writeOnlyValues)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	updateDestinationRequest, updateDestinationRequestDiags := requestModel.ToUpdateDestinationData(ctx)
 	resp.Diagnostics.Append(updateDestinationRequestDiags...)
 
 	if resp.Diagnostics.HasError() {
@@ -252,10 +309,8 @@ func (r *brazeDestinationResource) Update(ctx context.Context, req resource.Upda
 	updateDestinationResponse, updateDestinationErr := r.providerData.client.UpdateDestination(ctx, &updateDestinationRequest, params)
 
 	tflog.Info(ctx, "destination.update", map[string]any{
-		"params":   params,
-		"request":  updateDestinationRequest,
-		"response": updateDestinationResponse,
-		"err":      updateDestinationErr,
+		"params": params,
+		"err":    updateDestinationErr,
 	})
 
 	if updateDestinationResponse == nil {
@@ -267,13 +322,11 @@ func (r *brazeDestinationResource) Update(ctx context.Context, req resource.Upda
 	model, modelDiags := NewBrazeDestinationModelFromResponse(ctx, updateDestinationResponse.Response.Data)
 	resp.Diagnostics.Append(modelDiags...)
 
-	credentials := plan.Credentials.Value()
-	credentials.UpdateWithConnectionDetails(model.ConnectionDetails.Value())
-
-	model.Credentials = NewTypedObject(credentials)
+	model = sanitizedBrazeDestinationCredentials(model, plan, config, model.ConnectionDetails.Value())
 
 	resp.Diagnostics.Append(resp.Identity.SetAttribute(ctx, path.Root("id"), model.ID)...)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
+	resp.Diagnostics.Append(writeWriteOnlyCredentialVerifiers(ctx, resp.Private, writeOnlyValues)...)
 }
 
 //nolint:dupl
@@ -293,9 +346,8 @@ func (r *brazeDestinationResource) Delete(ctx context.Context, req resource.Dele
 	deleteDestinationResponse, deleteDestinationErr := r.providerData.client.DeleteDestination(ctx, params)
 
 	tflog.Info(ctx, "destination.delete", map[string]any{
-		"params":   params,
-		"response": deleteDestinationResponse,
-		"err":      deleteDestinationErr,
+		"params": params,
+		"err":    deleteDestinationErr,
 	})
 
 	var srsc *cm.StatusResponseStatusCode
