@@ -46,7 +46,7 @@ func (cd *CustomAPIDestinationConnectionDetails) Decode(dec *jx.Decoder) error {
 	})
 }
 
-func DecodeConnectionDetailsCustomHeadersMap(dec *jx.Decoder, value *TypedMap[TypedObject[CustomAPIDestinationCustomHeader]]) error {
+func DecodeConnectionDetailsCustomHeadersMap(dec *jx.Decoder, value *TypedMap[TypedObject[CustomAPIDestinationConnectionDetailsCustomHeader]]) error {
 	if dec.Next() == jx.Null {
 		err := dec.Null()
 		if err != nil {
@@ -54,15 +54,15 @@ func DecodeConnectionDetailsCustomHeadersMap(dec *jx.Decoder, value *TypedMap[Ty
 			return err
 		}
 
-		*value = NewTypedMapNull[TypedObject[CustomAPIDestinationCustomHeader]]()
+		*value = NewTypedMapNull[TypedObject[CustomAPIDestinationConnectionDetailsCustomHeader]]()
 
 		return nil
 	}
 
-	customHeaders := make(map[string]TypedObject[CustomAPIDestinationCustomHeader], 0)
+	customHeaders := make(map[string]TypedObject[CustomAPIDestinationConnectionDetailsCustomHeader], 0)
 
 	customHeadersDecodeErr := dec.Obj(func(d *jx.Decoder, key string) error {
-		customHeader := CustomAPIDestinationCustomHeader{}
+		customHeader := CustomAPIDestinationConnectionDetailsCustomHeader{}
 
 		customHeaderDecodeErr := customHeader.Decode(d)
 		if customHeaderDecodeErr != nil {
@@ -83,7 +83,7 @@ func DecodeConnectionDetailsCustomHeadersMap(dec *jx.Decoder, value *TypedMap[Ty
 	return nil
 }
 
-func (ch *CustomAPIDestinationCustomHeader) Decode(dec *jx.Decoder) error {
+func (ch *CustomAPIDestinationConnectionDetailsCustomHeader) Decode(dec *jx.Decoder) error {
 	//nolint:wrapcheck
 	return dec.Obj(func(dec *jx.Decoder, key string) error {
 		switch key {

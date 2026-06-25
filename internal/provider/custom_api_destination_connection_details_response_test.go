@@ -36,7 +36,7 @@ func TestNewCustomAPIDestinationConnectionDetailsFromResponse(t *testing.T) {
 			expected: NewTypedObject(CustomAPIDestinationConnectionDetails{
 				APIVersion:    types.Int64Value(1),
 				WebhookURL:    types.StringValue("https://example.org/census-destination"),
-				CustomHeaders: NewTypedMapNull[TypedObject[CustomAPIDestinationCustomHeader]](),
+				CustomHeaders: NewTypedMapNull[TypedObject[CustomAPIDestinationConnectionDetailsCustomHeader]](),
 			}),
 		},
 		"webhook_url, custom_headers": {
@@ -44,8 +44,8 @@ func TestNewCustomAPIDestinationConnectionDetailsFromResponse(t *testing.T) {
 			expected: NewTypedObject(CustomAPIDestinationConnectionDetails{
 				APIVersion: types.Int64Value(1),
 				WebhookURL: types.StringValue("https://example.org/census-destination"),
-				CustomHeaders: NewTypedMap(map[string]TypedObject[CustomAPIDestinationCustomHeader]{
-					"x-client-id": NewTypedObject(CustomAPIDestinationCustomHeader{
+				CustomHeaders: NewTypedMap(map[string]TypedObject[CustomAPIDestinationConnectionDetailsCustomHeader]{
+					"x-client-id": NewTypedObject(CustomAPIDestinationConnectionDetailsCustomHeader{
 						Value:    types.StringValue("client-id"),
 						IsSecret: types.BoolNull(),
 					}),
@@ -57,12 +57,12 @@ func TestNewCustomAPIDestinationConnectionDetailsFromResponse(t *testing.T) {
 			expected: NewTypedObject(CustomAPIDestinationConnectionDetails{
 				APIVersion: types.Int64Value(1),
 				WebhookURL: types.StringValue("https://example.org/census-destination"),
-				CustomHeaders: NewTypedMap(map[string]TypedObject[CustomAPIDestinationCustomHeader]{
-					"x-client-id": NewTypedObject(CustomAPIDestinationCustomHeader{
+				CustomHeaders: NewTypedMap(map[string]TypedObject[CustomAPIDestinationConnectionDetailsCustomHeader]{
+					"x-client-id": NewTypedObject(CustomAPIDestinationConnectionDetailsCustomHeader{
 						Value:    types.StringValue("client-id"),
 						IsSecret: types.BoolValue(false),
 					}),
-					"x-client-secret": NewTypedObject(CustomAPIDestinationCustomHeader{
+					"x-client-secret": NewTypedObject(CustomAPIDestinationConnectionDetailsCustomHeader{
 						Value:    types.StringNull(),
 						IsSecret: types.BoolValue(true),
 					}),
