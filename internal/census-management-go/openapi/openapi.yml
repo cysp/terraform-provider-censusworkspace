@@ -134,6 +134,17 @@ paths:
           $ref: "./responses/status.yml#/statusResponse"
         default:
           $ref: "./responses/status.yml#/statusResponse"
+  /api/v1/datasets/{dataset_id}/refresh_columns:
+    parameters:
+      - $ref: "#/components/parameters/dataset_id"
+    post:
+      operationId: refreshDatasetColumns
+      summary: Refresh a dataset's columns
+      responses:
+        2XX:
+          $ref: "./responses/dataset.yml#/refreshKeyResponse"
+        default:
+          $ref: "./responses/status.yml#/statusResponse"
   /api/v1/destinations:
     post:
       operationId: createDestination
