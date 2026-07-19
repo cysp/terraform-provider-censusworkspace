@@ -1,3 +1,3 @@
 resource "censusworkspace_big_query_source" "test" {
-  name = "Test Source"
+  name = "Test_Source"
 }

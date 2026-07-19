@@ -1,6 +1,7 @@
 package testing
 
 import (
+	"github.com/cysp/terraform-provider-censusworkspace/internal/census"
 	cm "github.com/cysp/terraform-provider-censusworkspace/internal/census-management-go"
 )
 
@@ -39,7 +40,7 @@ func UpdateSourceWithUpdateSourceBody(source *cm.SourceData, body cm.UpdateSourc
 	connection := body.Connection
 
 	if name, nameOk := connection.Name.Get(); nameOk {
-		source.Name = name
+		source.Name = census.CanonicalizeSourceName(name)
 	}
 
 	if label, labelOk := connection.Label.Get(); labelOk {
