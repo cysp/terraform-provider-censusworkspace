@@ -1,7 +1,7 @@
 resource "censusworkspace_big_query_source" "test" {
   sync_engine = "advanced"
 
-  name = "BigQuery - project-id"
+  name = "bigquery_project_id"
 
   credentials = {
     project_id = "project-id"

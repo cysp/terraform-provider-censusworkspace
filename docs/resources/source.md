@@ -17,7 +17,7 @@ resource "censusworkspace_source" "test" {
   type        = "big_query"
   sync_engine = "advanced"
 
-  name = "BigQuery - project-id"
+  name = "bigquery_project_id"
 
   credentials = jsonencode({
     project_id = "project-id"
@@ -31,7 +31,7 @@ resource "censusworkspace_source" "test" {
 
 ### Required
 
-- `name` (String) The name assigned to this source.
+- `name` (String) The canonical name assigned to this source. Use underscores instead of spaces or hyphens.
 - `type` (String) The type of the data source. A valid type is the `service_name` of a source type returned from the `/source_types` endpoint, where the source type is marked as `creatable_via_api`.
 
 ### Optional

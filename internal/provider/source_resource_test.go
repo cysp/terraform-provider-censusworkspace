@@ -32,7 +32,7 @@ func TestAccSourceResourceImport(t *testing.T) {
 
 	server.Handler().Sources[testSourceIDString] = &cm.SourceData{
 		ID:   testSourceID,
-		Name: "Test Source",
+		Name: "Test_Source",
 	}
 
 	ProviderMockedResourceTest(t, server, resource.TestCase{
@@ -77,7 +77,7 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
 					"source_type": config.StringVariable("big_query"),
-					"source_name": config.StringVariable("Test Source"),
+					"source_name": config.StringVariable("Test_Source"),
 					"source_credentials": config.MapVariable(map[string]config.Variable{
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
@@ -88,7 +88,7 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("censusworkspace_source.test", plancheck.ResourceActionCreate),
 						plancheck.ExpectUnknownValue("censusworkspace_source.test", tfjsonpath.New("id")),
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
+						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test_Source")),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 					},
 				},
@@ -97,7 +97,7 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
 					"source_type": config.StringVariable("big_query"),
-					"source_name": config.StringVariable("Test Source"),
+					"source_name": config.StringVariable("Test_Source"),
 					"source_credentials": config.MapVariable(map[string]config.Variable{
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
@@ -109,7 +109,7 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectEmptyPlan(),
 						plancheck.ExpectResourceAction("censusworkspace_source.test", plancheck.ResourceActionNoop),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("id"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
+						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test_Source")),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
 					},
@@ -119,7 +119,7 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
 					"source_type": config.StringVariable("big_query"),
-					"source_name": config.StringVariable("Test Source (updated)"),
+					"source_name": config.StringVariable("Test_Source_updated"),
 					"source_credentials": config.MapVariable(map[string]config.Variable{
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
@@ -130,9 +130,12 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("censusworkspace_source.test", plancheck.ResourceActionUpdate),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("id"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source (updated)")),
+						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test_Source_updated")),
 						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 						plancheck.ExpectUnknownValue("censusworkspace_source.test", tfjsonpath.New("connection_details")),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test_Source_updated")),
 					},
 				},
 			},
@@ -140,7 +143,26 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
 					"source_type": config.StringVariable("big_query"),
-					"source_name": config.StringVariable("Test Source (updated)"),
+					"source_name": config.StringVariable("Test_Source_updated"),
+					"source_credentials": config.MapVariable(map[string]config.Variable{
+						"project_id": config.StringVariable("project-id"),
+						"location":   config.StringVariable("US"),
+					}),
+					"source_warehouse_writeback_retention_in_days": config.IntegerVariable(7),
+				},
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectEmptyPlan(),
+						plancheck.ExpectResourceAction("censusworkspace_source.test", plancheck.ResourceActionNoop),
+						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test_Source_updated")),
+					},
+				},
+			},
+			{
+				ConfigDirectory: config.TestNameDirectory(),
+				ConfigVariables: config.Variables{
+					"source_type": config.StringVariable("big_query"),
+					"source_name": config.StringVariable("Test_Source_updated"),
 					"source_credentials": config.MapVariable(map[string]config.Variable{
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
@@ -161,7 +183,7 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
 					"source_type": config.StringVariable("pub_sub"),
-					"source_name": config.StringVariable("Test Source (replaced)"),
+					"source_name": config.StringVariable("Test_Source_replaced"),
 					"source_credentials": config.MapVariable(map[string]config.Variable{
 						"project_id": config.StringVariable("project-id"),
 					}),
@@ -171,7 +193,7 @@ func TestAccSourceResourceCreateUpdateDelete(t *testing.T) {
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("censusworkspace_source.test", plancheck.ResourceActionReplace),
 						plancheck.ExpectUnknownValue("censusworkspace_source.test", tfjsonpath.New("id")),
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source (replaced)")),
+						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test_Source_replaced")),
 						plancheck.ExpectUnknownValue("censusworkspace_source.test", tfjsonpath.New("connection_details")),
 					},
 				},
@@ -194,9 +216,9 @@ func TestAccSourceResourceSyncEngineAppearing(t *testing.T) {
 
 	testSource := cm.SourceData{
 		ID:    testSourceID,
-		Name:  "Test Source",
+		Name:  "Test_Source",
 		Type:  "big_query",
-		Label: cm.NewOptNilString("Test Source"),
+		Label: cm.NewOptNilString("Test_Source"),
 	}
 
 	server.Handler().Sources[testSourceIDString] = &testSource
@@ -305,7 +327,7 @@ func testProtocol6SourceResourceReadAcceptsExistingLabelState(
 
 	server.Handler().Sources[testSourceIDString] = &cm.SourceData{
 		ID:    testSourceID,
-		Name:  "Test Source",
+		Name:  "Test_Source",
 		Type:  "big_query",
 		Label: cm.NewOptNilString("Remote Label"),
 	}
@@ -334,7 +356,7 @@ func testProtocol6SourceResourceReadAcceptsExistingLabelState(
 	sourceType := sourceSchema.ValueType()
 
 	resourceState["id"] = tftypes.NewValue(tftypes.String, testSourceIDString)
-	resourceState["name"] = tftypes.NewValue(tftypes.String, "Test Source")
+	resourceState["name"] = tftypes.NewValue(tftypes.String, "Test_Source")
 	resourceState["label"] = tftypes.NewValue(tftypes.String, "Legacy Label")
 	resourceState["sync_engine"] = tftypes.NewValue(tftypes.String, nil)
 	resourceState["warehouse_writeback_retention_in_days"] = tftypes.NewValue(tftypes.Number, nil)

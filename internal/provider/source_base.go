@@ -30,8 +30,11 @@ func sourceBaseResourceSchemaAttributes(_ context.Context) map[string]schema.Att
 			MarkdownDescription: "Census identifier for this source.",
 		},
 		"name": schema.StringAttribute{
-			Required:            true,
-			MarkdownDescription: "The name assigned to this source.",
+			Required: true,
+			Validators: []validator.String{
+				canonicalSourceNameValidator{},
+			},
+			MarkdownDescription: "The canonical name assigned to this source. Use underscores instead of spaces or hyphens.",
 		},
 		"label": schema.StringAttribute{
 			Computed:            true,

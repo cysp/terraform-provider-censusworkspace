@@ -29,7 +29,7 @@ func TestAccBigQuerySourceResourceImport(t *testing.T) {
 
 	server.Handler().Sources[testSourceIDString] = &cm.SourceData{
 		ID:   testSourceID,
-		Name: "Test Source",
+		Name: "Test_Source",
 	}
 
 	ProviderMockedResourceTest(t, server, resource.TestCase{
@@ -73,7 +73,7 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 			{
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
-					"source_name": config.StringVariable("Test Source"),
+					"source_name": config.StringVariable("bigquery_xxx_census_dev"),
 					"source_credentials": config.ObjectVariable(map[string]config.Variable{
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
@@ -84,7 +84,7 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionCreate),
 						plancheck.ExpectUnknownValue("censusworkspace_big_query_source.test", tfjsonpath.New("id")),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("bigquery_xxx_census_dev")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 					},
 				},
@@ -92,7 +92,7 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 			{
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
-					"source_name": config.StringVariable("Test Source"),
+					"source_name": config.StringVariable("bigquery_xxx_census_dev"),
 					"source_credentials": config.ObjectVariable(map[string]config.Variable{
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
@@ -104,7 +104,7 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 						plancheck.ExpectEmptyPlan(),
 						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionNoop),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("id"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("bigquery_xxx_census_dev")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("connection_details"), knownvalue.NotNull()),
 					},
@@ -113,7 +113,7 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 			{
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
-					"source_name": config.StringVariable("Test Source (updated)"),
+					"source_name": config.StringVariable("bigquery_xxx_census_prod"),
 					"source_credentials": config.ObjectVariable(map[string]config.Variable{
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
@@ -132,16 +132,45 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionUpdate),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("id"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source (updated)")),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("bigquery_xxx_census_prod")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("warehouse_writeback_retention_in_days"), knownvalue.Int64Exact(7)),
 						plancheck.ExpectUnknownValue("censusworkspace_big_query_source.test", tfjsonpath.New("connection_details")),
+					},
+					PostApplyPostRefresh: []plancheck.PlanCheck{
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("bigquery_xxx_census_prod")),
 					},
 				},
 			},
 			{
 				ConfigDirectory: config.TestNameDirectory(),
 				ConfigVariables: config.Variables{
-					"source_name": config.StringVariable("Test Source (updated)"),
+					"source_name": config.StringVariable("bigquery_xxx_census_prod"),
+					"source_credentials": config.ObjectVariable(map[string]config.Variable{
+						"project_id": config.StringVariable("project-id"),
+						"location":   config.StringVariable("US"),
+						"service_account_key": config.ObjectVariable(map[string]config.Variable{
+							"type":           config.StringVariable("service_account"),
+							"project_id":     config.StringVariable("project-id"),
+							"private_key_id": config.StringVariable("private-key-id"),
+							"private_key":    config.StringVariable("private-key"),
+							"client_id":      config.StringVariable("client-id"),
+							"client_email":   config.StringVariable("client-email"),
+						}),
+					}),
+					"source_warehouse_writeback_retention_in_days": config.IntegerVariable(7),
+				},
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectEmptyPlan(),
+						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionNoop),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("bigquery_xxx_census_prod")),
+					},
+				},
+			},
+			{
+				ConfigDirectory: config.TestNameDirectory(),
+				ConfigVariables: config.Variables{
+					"source_name": config.StringVariable("bigquery_xxx_census_prod"),
 					"source_credentials": config.ObjectVariable(map[string]config.Variable{
 						"project_id": config.StringVariable("project-id"),
 						"location":   config.StringVariable("US"),
@@ -163,12 +192,61 @@ func TestAccBigQuerySourceResourceCreateUpdateDelete(t *testing.T) {
 }
 
 //nolint:paralleltest
+func TestAccBigQuerySourceResourceRejectsNonCanonicalName(t *testing.T) {
+	server, err := cmt.NewCensusManagementServer()
+	require.NoError(t, err)
+
+	const canonicalConfig = `
+resource "censusworkspace_big_query_source" "test" {
+  name = "bigquery_xxx_census_dev"
+
+  credentials = {
+    project_id = "project-id"
+    location   = "US"
+  }
+}
+`
+
+	const nonCanonicalConfig = `
+resource "censusworkspace_big_query_source" "test" {
+  name = "bigquery - xxx-census-dev"
+
+  credentials = {
+    project_id = "project-id"
+    location   = "US"
+  }
+}
+`
+
+	ProviderMockedResourceTest(t, server, resource.TestCase{
+		Steps: []resource.TestStep{
+			{
+				Config: canonicalConfig,
+			},
+			{
+				Config:      nonCanonicalConfig,
+				ExpectError: regexp.MustCompile(`Source names must use underscores`),
+			},
+			{
+				Config: canonicalConfig,
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectEmptyPlan(),
+						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionNoop),
+					},
+				},
+			},
+		},
+	})
+}
+
+//nolint:paralleltest
 func TestAccBigQuerySourceResourceMovedFromSource(t *testing.T) {
 	server, err := cmt.NewCensusManagementServer()
 	require.NoError(t, err)
 
 	configVariables := config.Variables{
-		"source_name": config.StringVariable("Test Source"),
+		"source_name": config.StringVariable("Test_Source"),
 		"source_credentials": config.ObjectVariable(map[string]config.Variable{
 			"project_id": config.StringVariable("project-id"),
 			"location":   config.StringVariable("US"),
@@ -184,7 +262,7 @@ func TestAccBigQuerySourceResourceMovedFromSource(t *testing.T) {
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("censusworkspace_source.test", plancheck.ResourceActionCreate),
 						plancheck.ExpectUnknownValue("censusworkspace_source.test", tfjsonpath.New("id")),
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
+						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test_Source")),
 					},
 				},
 			},
@@ -197,7 +275,7 @@ func TestAccBigQuerySourceResourceMovedFromSource(t *testing.T) {
 						plancheck.ExpectEmptyPlan(),
 						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionNoop),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("id"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test_Source")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("project_id"), knownvalue.StringExact("project-id")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("location"), knownvalue.StringExact("US")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("service_account_key"), knownvalue.Null()),
@@ -215,7 +293,7 @@ func TestAccBigQuerySourceResourceMovedFromSourceWithServiceAccountKey(t *testin
 	require.NoError(t, err)
 
 	configVariables := config.Variables{
-		"source_name": config.StringVariable("Test Source"),
+		"source_name": config.StringVariable("Test_Source"),
 		"source_credentials": config.ObjectVariable(map[string]config.Variable{
 			"project_id": config.StringVariable("project-id"),
 			"location":   config.StringVariable("US"),
@@ -239,7 +317,7 @@ func TestAccBigQuerySourceResourceMovedFromSourceWithServiceAccountKey(t *testin
 					PreApply: []plancheck.PlanCheck{
 						plancheck.ExpectResourceAction("censusworkspace_source.test", plancheck.ResourceActionCreate),
 						plancheck.ExpectUnknownValue("censusworkspace_source.test", tfjsonpath.New("id")),
-						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
+						plancheck.ExpectKnownValue("censusworkspace_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test_Source")),
 					},
 				},
 			},
@@ -252,7 +330,7 @@ func TestAccBigQuerySourceResourceMovedFromSourceWithServiceAccountKey(t *testin
 						plancheck.ExpectEmptyPlan(),
 						plancheck.ExpectResourceAction("censusworkspace_big_query_source.test", plancheck.ResourceActionNoop),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("id"), knownvalue.NotNull()),
-						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test Source")),
+						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("name"), knownvalue.StringExact("Test_Source")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("project_id"), knownvalue.StringExact("project-id")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("location"), knownvalue.StringExact("US")),
 						plancheck.ExpectKnownValue("censusworkspace_big_query_source.test", tfjsonpath.New("credentials").AtMapKey("service_account_key").AtMapKey("private_key_id"), knownvalue.StringExact("private-key-id")),

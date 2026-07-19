@@ -16,7 +16,7 @@ description: |-
 resource "censusworkspace_big_query_source" "test" {
   sync_engine = "advanced"
 
-  name = "BigQuery - project-id"
+  name = "bigquery_project_id"
 
   credentials = {
     project_id = "project-id"
@@ -31,7 +31,7 @@ resource "censusworkspace_big_query_source" "test" {
 ### Required
 
 - `credentials` (Attributes) BigQuery source connection values to send to Census. (see [below for nested schema](#nestedatt--credentials))
-- `name` (String) The name assigned to this source.
+- `name` (String) The canonical name assigned to this source. Use underscores instead of spaces or hyphens.
 
 ### Optional
 
