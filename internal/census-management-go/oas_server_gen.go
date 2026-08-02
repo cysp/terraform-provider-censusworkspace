@@ -66,6 +66,12 @@ type Handler interface {
 	//
 	// GET /api/v1/sources/{source_id}
 	GetSource(ctx context.Context, params GetSourceParams) (*SourceResponseStatusCode, error)
+	// RefreshDatasetColumns implements refreshDatasetColumns operation.
+	//
+	// Refresh a dataset's columns.
+	//
+	// POST /api/v1/datasets/{dataset_id}/refresh_columns
+	RefreshDatasetColumns(ctx context.Context, params RefreshDatasetColumnsParams) (*RefreshKeyResponseStatusCode, error)
 	// UpdateDataset implements updateDataset operation.
 	//
 	// Update dataset.

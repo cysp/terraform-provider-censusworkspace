@@ -9,8 +9,9 @@ import (
 type Handler struct {
 	mu sync.Mutex
 
-	Datasets      map[string]*cm.DatasetData
-	datasetIDLast int64
+	Datasets              map[string]*cm.DatasetData
+	datasetIDLast         int64
+	datasetRefreshKeyLast int64
 
 	Destinations      map[string]*cm.DestinationData
 	destinationIDLast int64
