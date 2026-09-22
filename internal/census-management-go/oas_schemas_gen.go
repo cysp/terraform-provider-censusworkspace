@@ -17,7 +17,8 @@ func (s *StatusResponseStatusCode) Error() string {
 // Ref: #/CreateDatasetBody
 // CreateDatasetBody represents sum type.
 type CreateDatasetBody struct {
-	Type                 CreateDatasetBodyType // switch on this field
+	// Type selects the active sum variant, switch on this field.
+	Type                 CreateDatasetBodyType
 	CreateSQLDatasetBody CreateSQLDatasetBody
 }
 
@@ -77,8 +78,8 @@ type CreateDestinationBodyServiceConnection struct {
 	Type string `json:"type"`
 	// The name of this destination.
 	Name string `json:"name"`
-	// The credentials needed to create each type of connection. These can be found in the GET
-	// /connectors API for most destinations.
+	// The credentials needed to create each type of connection. These can be found in the GET /connectors
+	// API for most destinations.
 	Credentials jx.Raw `json:"credentials"`
 }
 
@@ -306,7 +307,8 @@ func (s *CreateSourceBodyConnection) SetWarehouseWritebackRetentionInDays(val Op
 // Ref: #/DatasetData
 // DatasetData represents sum type.
 type DatasetData struct {
-	Type           DatasetDataType // switch on this field
+	// Type selects the active sum variant, switch on this field.
+	Type           DatasetDataType
 	SQLDatasetData SQLDatasetData
 }
 
@@ -688,6 +690,11 @@ func (o *OptNilBool) SetToNull() {
 	o.Value = v
 }
 
+// IsEmpty returns true if the field was omitted from the payload (not Set and not Null).
+func (o OptNilBool) IsEmpty() bool {
+	return !o.Set && !o.Null
+}
+
 // Get returns value and boolean that denotes whether value was set.
 func (o OptNilBool) Get() (v bool, ok bool) {
 	if o.Null {
@@ -751,6 +758,11 @@ func (o *OptNilDateTime) SetToNull() {
 	o.Value = v
 }
 
+// IsEmpty returns true if the field was omitted from the payload (not Set and not Null).
+func (o OptNilDateTime) IsEmpty() bool {
+	return !o.Set && !o.Null
+}
+
 // Get returns value and boolean that denotes whether value was set.
 func (o OptNilDateTime) Get() (v time.Time, ok bool) {
 	if o.Null {
@@ -812,6 +824,11 @@ func (o *OptNilString) SetToNull() {
 	o.Null = true
 	var v string
 	o.Value = v
+}
+
+// IsEmpty returns true if the field was omitted from the payload (not Set and not Null).
+func (o OptNilString) IsEmpty() bool {
+	return !o.Set && !o.Null
 }
 
 // Get returns value and boolean that denotes whether value was set.
@@ -1287,7 +1304,8 @@ func (s *StatusResponse) SetMessage(val OptString) {
 
 // StatusResponseStatus represents sum type.
 type StatusResponseStatus struct {
-	Type           StatusResponseStatusType // switch on this field
+	// Type selects the active sum variant, switch on this field.
+	Type           StatusResponseStatusType
 	ResponseStatus ResponseStatus
 	Int            int
 }
@@ -1380,7 +1398,8 @@ func (s *StatusResponseStatusCode) SetResponse(val StatusResponse) {
 // Ref: #/UpdateDatasetBody
 // UpdateDatasetBody represents sum type.
 type UpdateDatasetBody struct {
-	Type                 UpdateDatasetBodyType // switch on this field
+	// Type selects the active sum variant, switch on this field.
+	Type                 UpdateDatasetBodyType
 	UpdateSQLDatasetBody UpdateSQLDatasetBody
 }
 
@@ -1436,8 +1455,8 @@ func (s *UpdateDestinationBody) SetServiceConnection(val UpdateDestinationBodySe
 type UpdateDestinationBodyServiceConnection struct {
 	// The name of this destination.
 	Name OptString `json:"name"`
-	// The credentials needed to create each type of connection. These can be found in the GET
-	// /connectors API for most destinations.
+	// The credentials needed to create each type of connection. These can be found in the GET /connectors
+	// API for most destinations.
 	Credentials jx.Raw `json:"credentials"`
 }
 
