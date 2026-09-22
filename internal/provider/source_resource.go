@@ -139,8 +139,7 @@ func (r *sourceResource) Read(ctx context.Context, req resource.ReadRequest, res
 	})
 
 	if getSourceResponse == nil {
-		var srsc *cm.StatusResponseStatusCode
-		if errors.As(getSourceErr, &srsc) {
+		if srsc, ok := errors.AsType[*cm.StatusResponseStatusCode](getSourceErr); ok {
 			if srsc.StatusCode == http.StatusNotFound {
 				resp.Diagnostics.AddWarning("Failed to read source", srsc.Error())
 				resp.State.RemoveResource(ctx)
@@ -242,8 +241,7 @@ func (r *sourceResource) Delete(ctx context.Context, req resource.DeleteRequest,
 		"err":      deleteSourceErr,
 	})
 
-	var srsc *cm.StatusResponseStatusCode
-	if errors.As(deleteSourceErr, &srsc) {
+	if srsc, ok := errors.AsType[*cm.StatusResponseStatusCode](deleteSourceErr); ok {
 		if srsc.StatusCode == http.StatusNotFound {
 			resp.Diagnostics.AddWarning("Source not found", srsc.Error())
 			resp.State.RemoveResource(ctx)
