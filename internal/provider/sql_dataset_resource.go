@@ -132,8 +132,7 @@ func (r *sqlDatasetResource) Read(ctx context.Context, req resource.ReadRequest,
 	})
 
 	if getDatasetResponse == nil {
-		var srsc *cm.StatusResponseStatusCode
-		if errors.As(getDatasetErr, &srsc) {
+		if srsc, ok := errors.AsType[*cm.StatusResponseStatusCode](getDatasetErr); ok {
 			if srsc.StatusCode == http.StatusNotFound {
 				resp.Diagnostics.AddWarning("Failed to read dataset", srsc.Error())
 				resp.State.RemoveResource(ctx)
@@ -223,8 +222,7 @@ func (r *sqlDatasetResource) Delete(ctx context.Context, req resource.DeleteRequ
 		"err":      deleteDatasetErr,
 	})
 
-	var srsc *cm.StatusResponseStatusCode
-	if errors.As(deleteDatasetErr, &srsc) {
+	if srsc, ok := errors.AsType[*cm.StatusResponseStatusCode](deleteDatasetErr); ok {
 		if srsc.StatusCode == http.StatusNotFound {
 			resp.Diagnostics.AddWarning("dataset not found", srsc.Error())
 			resp.State.RemoveResource(ctx)

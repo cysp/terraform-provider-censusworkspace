@@ -9,8 +9,7 @@ import (
 )
 
 func (h *Handler) NewError(_ context.Context, err error) *cm.StatusResponseStatusCode {
-	var sce statusCodeError
-	if errors.As(err, &sce) {
+	if sce, ok := errors.AsType[statusCodeError](err); ok {
 		return &cm.StatusResponseStatusCode{
 			StatusCode: sce.StatusCode,
 			Response: cm.StatusResponse{

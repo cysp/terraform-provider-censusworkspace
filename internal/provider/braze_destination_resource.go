@@ -245,8 +245,7 @@ func (r *brazeDestinationResource) Read(ctx context.Context, req resource.ReadRe
 	})
 
 	if getDestinationResponse == nil {
-		var srsc *cm.StatusResponseStatusCode
-		if errors.As(getDestinationErr, &srsc) {
+		if srsc, ok := errors.AsType[*cm.StatusResponseStatusCode](getDestinationErr); ok {
 			if srsc.StatusCode == http.StatusNotFound {
 				resp.Diagnostics.AddWarning("Failed to read destination", srsc.Error())
 				resp.State.RemoveResource(ctx)
@@ -350,8 +349,7 @@ func (r *brazeDestinationResource) Delete(ctx context.Context, req resource.Dele
 		"err":    deleteDestinationErr,
 	})
 
-	var srsc *cm.StatusResponseStatusCode
-	if errors.As(deleteDestinationErr, &srsc) {
+	if srsc, ok := errors.AsType[*cm.StatusResponseStatusCode](deleteDestinationErr); ok {
 		if srsc.StatusCode == http.StatusNotFound {
 			resp.Diagnostics.AddWarning("Destination not found", srsc.Error())
 			resp.State.RemoveResource(ctx)
