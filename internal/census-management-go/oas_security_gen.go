@@ -34,19 +34,20 @@ func findAuthorization(h http.Header, prefix string) (string, bool) {
 
 // operationRolesWorkspaceApiKey is a private map storing roles per operation.
 var operationRolesWorkspaceApiKey = map[string][]string{
-	CreateDatasetOperation:     []string{},
-	CreateDestinationOperation: []string{},
-	CreateSourceOperation:      []string{},
-	DeleteDatasetOperation:     []string{},
-	DeleteDestinationOperation: []string{},
-	DeleteSourceOperation:      []string{},
-	GetApiV1Operation:          []string{},
-	GetDatasetOperation:        []string{},
-	GetDestinationOperation:    []string{},
-	GetSourceOperation:         []string{},
-	UpdateDatasetOperation:     []string{},
-	UpdateDestinationOperation: []string{},
-	UpdateSourceOperation:      []string{},
+	CreateDatasetOperation:         []string{},
+	CreateDestinationOperation:     []string{},
+	CreateSourceOperation:          []string{},
+	DeleteDatasetOperation:         []string{},
+	DeleteDestinationOperation:     []string{},
+	DeleteSourceOperation:          []string{},
+	GetApiV1Operation:              []string{},
+	GetDatasetOperation:            []string{},
+	GetDestinationOperation:        []string{},
+	GetSourceOperation:             []string{},
+	RefreshDatasetColumnsOperation: []string{},
+	UpdateDatasetOperation:         []string{},
+	UpdateDestinationOperation:     []string{},
+	UpdateSourceOperation:          []string{},
 }
 
 // GetRolesForWorkspaceApiKey returns the required roles for the given operation.

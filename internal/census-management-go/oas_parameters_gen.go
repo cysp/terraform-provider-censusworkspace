@@ -404,6 +404,71 @@ func decodeGetSourceParams(args [1]string, argsEscaped bool, r *http.Request) (p
 	return params, nil
 }
 
+// RefreshDatasetColumnsParams is parameters of refreshDatasetColumns operation.
+type RefreshDatasetColumnsParams struct {
+	DatasetID string
+}
+
+func unpackRefreshDatasetColumnsParams(packed middleware.Parameters) (params RefreshDatasetColumnsParams) {
+	{
+		key := middleware.ParameterKey{
+			Name: "dataset_id",
+			In:   "path",
+		}
+		params.DatasetID = packed[key].(string)
+	}
+	return params
+}
+
+func decodeRefreshDatasetColumnsParams(args [1]string, argsEscaped bool, r *http.Request) (params RefreshDatasetColumnsParams, _ error) {
+	// Decode path: dataset_id.
+	if err := func() error {
+		param := args[0]
+		if argsEscaped {
+			unescaped, err := url.PathUnescape(args[0])
+			if err != nil {
+				return errors.Wrap(err, "unescape path")
+			}
+			param = unescaped
+		}
+		if len(param) > 0 {
+			d := uri.NewPathDecoder(uri.PathDecoderConfig{
+				Param:   "dataset_id",
+				Value:   param,
+				Style:   uri.PathStyleSimple,
+				Explode: false,
+			})
+
+			if err := func() error {
+				val, err := d.DecodeValue()
+				if err != nil {
+					return err
+				}
+
+				c, err := conv.ToString(val)
+				if err != nil {
+					return err
+				}
+
+				params.DatasetID = c
+				return nil
+			}(); err != nil {
+				return err
+			}
+		} else {
+			return validate.ErrFieldRequired
+		}
+		return nil
+	}(); err != nil {
+		return params, &ogenerrors.DecodeParamError{
+			Name: "dataset_id",
+			In:   "path",
+			Err:  err,
+		}
+	}
+	return params, nil
+}
+
 // UpdateDatasetParams is parameters of updateDataset operation.
 type UpdateDatasetParams struct {
 	DatasetID string

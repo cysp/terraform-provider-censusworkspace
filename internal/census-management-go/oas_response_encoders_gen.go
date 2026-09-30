@@ -278,6 +278,27 @@ func encodeGetSourceResponse(response *SourceResponseStatusCode, w http.Response
 	return nil
 }
 
+func encodeRefreshDatasetColumnsResponse(response *RefreshKeyResponseStatusCode, w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	code := response.StatusCode
+	if code == 0 {
+		// Set default status code.
+		code = http.StatusOK
+	}
+	w.WriteHeader(code)
+
+	e := new(jx.Encoder)
+	response.Response.Encode(e)
+	if _, err := e.WriteTo(w); err != nil {
+		return errors.Wrap(err, "write")
+	}
+
+	if code >= http.StatusInternalServerError {
+		return errors.Wrapf(ht.ErrInternalServerErrorResponse, "code: %d, message: %s", code, http.StatusText(code))
+	}
+	return nil
+}
+
 func encodeUpdateDatasetResponse(response *DatasetResponseStatusCode, w http.ResponseWriter) error {
 	if err := func() error {
 		if err := response.Validate(); err != nil {
